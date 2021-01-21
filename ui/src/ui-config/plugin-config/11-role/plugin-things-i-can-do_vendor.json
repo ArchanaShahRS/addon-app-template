@@ -1,0 +1,37 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-things-i-can-do_vendor_uiConfig",
+            "name": "plugin_plugin-things-i-can-do_vendor",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-things-i-can-do",
+                            "role":"vendor"                     
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "customEntityType": "stagingitem"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}

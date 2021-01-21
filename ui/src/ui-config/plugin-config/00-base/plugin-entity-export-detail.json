@@ -1,0 +1,42 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-entity-export-detail-base_uiConfig",
+            "name": "plugin_plugin-entity-export-detail",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-entity-export-detail",
+                            "sysApp": "_DEFAULT",
+                            "sysDomain": "_DEFAULT",
+                            "sysEntityType": "_DEFAULT",
+                            "sysRelationship": "_DEFAULT",
+                            "sysRole": "_DEFAULT"
+                           
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "profilename": "EventHub_JSON_Export_Process"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}

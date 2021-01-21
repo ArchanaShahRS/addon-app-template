@@ -29,12 +29,12 @@
         "build:sass:polymer": "sass-render --q --suffix \".css.js\" -t node_modules/@riversandtechnologies/ui-platform-tools/templates/sass-polymer-template.js \"./src/**/*.polymer.scss\""
     },
     "dependencies": {
-        "config": "^3.2.4",
+        "@riversandtechnologies/ui-platform-business-elements": "1.0.1",
         "@riversandtechnologies/ui-platform-dataaccess": "1.0.1",
         "@riversandtechnologies/ui-platform-elements": "1.0.1",
-        "@riversandtechnologies/ui-platform-business-elements": "1.0.1",
         "@riversandtechnologies/ui-platform-tools": "1.0.2",
         "@riversandtechnologies/ui-platform-utils": "1.0.1",
+        "config": "^3.2.4",
         "underscore": "^1.9.1"
     },
     "devDependencies": {

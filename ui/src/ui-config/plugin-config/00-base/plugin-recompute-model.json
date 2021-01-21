@@ -1,0 +1,36 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-recompute-model-base_uiConfig",
+            "name": "plugin_plugin-recompute-model",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-recompute-model"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "value": ""
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}

@@ -1,0 +1,95 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-my-catalog-base_uiConfig",
+            "name": "plugin_plugin-my-catalog",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-my-catalog",
+                            "sysApp": "_DEFAULT",
+                            "sysDomain": "_DEFAULT",
+                            "sysEntityType": "_DEFAULT",
+                            "sysRelationship": "_DEFAULT",
+                            "sysRole": "_DEFAULT"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "wfchart1": {
+                                        "visible": true,
+                                        "label": "Pending Submission",
+                                        "workflowshortname": "collaboration",
+                                        "workflowstepshortname": "tobesubmitted",
+                                        "entityTypeshortname": "stagingitem"
+                                    },
+                                    "wfchart2": {
+                                        "visible": true,
+                                        "label": "Pending Approval",
+                                        "workflowshortname": "collaboration",
+                                        "workflowstepshortname": "tobeapproved",
+                                        "entityTypeshortname": "stagingitem"
+                                    },
+                                    "wfchart3": {
+                                        "visible": true,
+                                        "label": "Pending Review",
+                                        "workflowshortname": "collaboration",
+                                        "workflowstepshortname": "tobereviewed",
+                                        "entityTypeshortname": "stagingitem"
+                                    },
+                                    "wfchart4": {
+                                        "visible": false,
+                                        "label": "",
+                                        "workflowshortname": "",
+                                        "workflowstepshortname": "",
+                                        "entityTypeshortname": ""
+                                    },
+                                    "createdchart": {
+                                        "visible": true,
+                                        "label": "Entities Created",
+                                        "entityTypeshortname": "stagingitem",
+                                        "attributeshortname": "thgdatecreated"
+                                    },
+                                    "modifiedchart": {
+                                        "visible": true,
+                                        "label": "Entities Modified",
+                                        "entityTypeshortname": "stagingitem",
+                                        "attributeshortname": "thgdatemodified"
+                                    },
+                                    "discontinuedchart": {
+                                        "visible": true,
+                                        "label": "Entities Discontinued",
+                                        "entityTypeshortname": "stagingitem",
+                                        "attributeshortname": "thgstatus",
+                                        "attributevalue": "Discontinue"
+                                    },
+                                    "publishedchart": {
+                                        "visible": true,
+                                        "label": "Entities Published",
+                                        "entityTypeshortname": "stagingitem",
+                                        "attributeshortname": "thgstatus",
+                                        "attributevalue": "Published"
+                                    },
+                                    "referenceAttrShortname":"thgbrand",
+                                    "referenceEntityShortname":"brand"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

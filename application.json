@@ -1,5 +1,5 @@
 {
-    "id": "helloworld",
+    "id": "addonappascend",
     "description": "This is a sample application",
     "sdkDependencies": {
         "uiPluginSDK": "1.2.0",

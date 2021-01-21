@@ -1,0 +1,56 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-quality-score-card-base_uiConfig",
+            "name": "plugin_plugin-quality-score-card",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-quality-score-card",
+                            "sysApp": "_DEFAULT",
+                            "sysDomain": "_DEFAULT",
+                            "sysEntityType": "_DEFAULT",
+                            "sysRelationship": "_DEFAULT",
+                            "sysRole": "_DEFAULT"                           
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "entityTypes": ["parentitem","item","stagingitem"],
+                                    "referenceAttrShortname":"thgbrand",
+                                    "taxonomyAttrShortname":"thgmastertaxonomy",
+                                    "referenceEntityShortname":"brand",
+                                    "_rootNode":"productclassificationroot",
+                                    "dynamicRelationship":{
+                                        "visible":false,
+                                        "relshortname": "ischildof",
+                                        "label": "Missing Parent"
+                                    },
+                                    "rejectedItems":{
+                                       "visible": true,
+                                        "wfShortname":"collaboration",
+                                        "wfStepShortname": "tobereviewed",
+                                        "entityTypeShortname":"stagingitem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}

@@ -1,0 +1,52 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-quality-score-card_vendor_uiConfig",
+            "name": "plugin_plugin-quality-score-card_vendor",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-quality-score-card",
+                            "role":"vendor"                         
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "entityTypes": ["stagingitem"],
+                                    "referenceAttrShortname":"thgbrand",
+                                    "referenceEntityShortname":"brand",
+                                    "_rootNode":"productclassificationroot",
+                                    "taxonomyAttrShortname":"thgmastertaxonomy",
+                                    "dynamicRelationship":{
+                                        "visible":false,
+                                        "relshortname": "ischildof",
+                                        "label": "Missing Parent"
+                                    },
+                                    "rejectedItems":{
+                                       "visible": true,
+                                        "wfShortname":"collaboration",
+                                        "wfStepShortname": "tobereviewed",
+                                        "entityTypeShortname":"stagingitem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}

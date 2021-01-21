@@ -1,0 +1,46 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-quality-score-card_businessadmin_uiConfig",
+            "name": "plugin_plugin-quality-score-card_businessadmin",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-quality-score-card",
+                            "role":"businessadmin"                         
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "entityTypes": ["item"],
+                                    "showCreateEntity":true,
+                                    "showThingModelLink":true,
+                                    "showTaxonomyModelLink":true,
+                                    "showReferenceModelLink":true,
+                                    "showDigitalModelLink":true,
+                                    "showWorkflowModelLink":true,
+                                    "showGovernanceModelLink":true,
+                                    "showContextModelLink":true,
+                                    "showAuthModelLink":true
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}

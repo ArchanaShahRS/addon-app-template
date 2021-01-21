@@ -1,0 +1,78 @@
+<<<<<<< Updated upstream
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-workflow-invocation-deletion-model-base_uiConfig",
+            "name": "plugin_plugin-workflow-invocation-deletion-model",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-workflow-invocation-deletion-model"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "valueEntityType": "",
+                                    "valueEntityId":"",
+                                    "valueWorkflowName":""
+
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+=======
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-workflow-invocation-deletion-model-base_uiConfig",
+            "name": "plugin_plugin-workflow-invocation-deletion-model",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-workflow-invocation-deletion-model"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "valueEntityType": "",
+                                    "valueEntityId":"",
+                                    "valueWorkflowName":""
+
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+>>>>>>> Stashed changes
+}
