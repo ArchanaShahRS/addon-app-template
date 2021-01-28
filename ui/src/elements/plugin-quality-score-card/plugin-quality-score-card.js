@@ -233,7 +233,7 @@ class PluginQualityScoreCard extends PolymerElement {
         
            <div class="div-table-col-left">
               <div  class="avg-item-container">
-                 <b>Average Quality</b> 
+               
                  <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
                 <!-- <pebble-graph-progress-ring  percentage="{{grandavg}}" _showPercentage="true"></pebble-graph-progress-ring> -->
               </div>
@@ -1330,10 +1330,10 @@ class PluginQualityScoreCard extends PolymerElement {
         }
 
         let totalPer = parseInt(this.missingImagesCountPercentage) + parseInt(this.missingRelCountPercentage) + parseInt(this.invalidValuePercentage) + parseInt(this.missingRequiredAttributesPercentage) + parseInt(this.rejectedItemsCountPercentage);
-        this.grandavg =Math.round(100-( totalPer / counter));
+        this.grandavg =Math.round(100-(totalPer / counter));
      
         let totalweightage = (parseInt(this.missingImagesCountPercentage) *20)/100 + (parseInt(this.invalidValuePercentage)*10)/100 + (parseInt(this.missingRequiredAttributesPercentage)*30)/100 + (parseInt(this.rejectedItemsCountPercentage)*40)/100;
-        this.weightage =(totalweightage/100).toFixed(2);
+        this.weightage =1-((totalweightage/100).toFixed(2));
 
         let badDataCount=parseInt(this.missingImagesCount) + parseInt(this.missingRelCount) + parseInt(this.invalidValue) + parseInt(this.missingRequiredAttributes) + parseInt(this.rejectedItemsCount);
         let badDataAvg=Math.round(badDataCount/counter);

@@ -28,10 +28,17 @@
                         "jsonData": {
                             "config": {
                                 "properties": {
-                                    "entityTypes": ["stagingitem"],
+                                  
                                     "ownershipAttrShortname":"thgvendornumber",
                                     "taxonomyAttrShortname":"thgmastertaxonomy",
-                                    "_rootNode":"productclassificationroot"                                  
+                                    "_rootNode":"productclassificationroot",
+                                    "WorkflowDetail":{
+                                        "workflowshortname": "collaboration",
+                                        "workflowstepshortname": "tobesubmitted",
+                                        "entityTypeshortname": "stagingitem"
+                                    },
+                                    "rejectionScoreAttrshortame":"thgentityrejectionscore"     
+
                                 }
                             }
                         }
