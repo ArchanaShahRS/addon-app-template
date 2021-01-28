@@ -9,6 +9,9 @@ import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-button/p
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-icon/pebble-icon.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-lov/pebble-lov.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-graph-progress-ring/pebble-graph-progress-ring.js';
+import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-graph-pie/pebble-graph-pie.js';
+
+import { AppInstanceManager } from '@riversandtechnologies/ui-platform-elements/lib/managers/app-instance-manager.js';
 
 // ui-platform-dataaccess
 import { ConfigurationManager } from '@riversandtechnologies/ui-platform-dataaccess/lib/managers/ConfigurationManager.js';
@@ -29,14 +32,11 @@ class PluginQualityScoreCard extends PolymerElement {
         super();
     }
     static get template() {
-        return html`
-       <style>
-       .contextTreecustom {
-       
+        return html`<style>
+        .contextTreecustom {       
         height: 82vh;
-       }
-
-       .tag-item-container {
+        }
+        .tag-item-container {
         border: solid 1px #d2d7dd;
         border-left: solid 4px #d2d7dd;
         border-radius: 3px;      
@@ -51,95 +51,339 @@ class PluginQualityScoreCard extends PolymerElement {
         display: flex;
         flex-direction: row;
         align-items: center;
-    }
-
-        paper-progress {
-               --paper-progress-height:15px;
-               --paper-progress-transition-duration: 0.08s;
-               --paper-progress-transition-timing-function: ease;
-               --paper-progress-transition-delay: 0s;
-               --paper-progress-container-color: #d2d7dd;
         }
+        .div-container {
+        display:flex;
+        border: solid 1px #d2d7dd;
+        border-radius: 3px;      
+        padding: 0 15px 0px 5px;
+        position: relative;
+        background: #fff;
+        margin: 4px;
+        max-width: 100%;
+        min-width:  20px;
+        flex-direction: row;
+        align-items: center;
+        }
+        .div-item-container {
+        border: solid 1px #d2d7dd;
+        border-radius: 3px;      
+        padding: 0 5px 0px 5px;
+        font-size: 12px;
+        position: relative;
+        background: #fff;
+        margin: 12px;
+        max-width: 100%;
+        min-width:  20px;
+        line-height: 20px;
+        flex-direction: row;
+        align-items: center;
+        }
+        .div-item-container:hover {
+        cursor:pointer;
+        }
+        .avg-item-container {
+        border: solid 1px #d2d7dd;
+        border-radius: 3px;      
+        padding: 35% 7% 35% 15%;
+        font-size: 14px;
+        position: relative;
+        background: #fff;
+        margin: 15px 0px 0px 0px;
+        max-width: 100%;
+        min-width:  20px;
+        line-height: 20px;
+        flex-direction: row;
+        align-items: center;
+        }
+        .displayflexwrap{
+        display:flex;
+        flex-wrap: wrap;
+        }
+        paper-progress{
+        width: 570px;
+        padding-right: 8px;
+        --paper-progress-height:15px;
+        --paper-progress-transition-duration: 0.08s;
+        --paper-progress-transition-timing-function: ease;
+        --paper-progress-transition-delay: 0s;
+        --paper-progress-container-color: #d2d7dd;
+        }
+        .paper-progress-orange {
+        --paper-progress-active-color:#F78E1E;
+        }
+        .paper-progress-purple {
+        --paper-progress-active-color:#785DA8;
+        }
+        .paper-progress-yellow {
+        --paper-progress-active-color:#F6D40C;
+        }
+        .paper-progress-blue {
+        --paper-progress-active-color:#129CE6;
+        }
+        .paper-progress-red {
+        --paper-progress-active-color:#EE204C;
+        }
+        .scoreclss{
+        color: #364653;
        
-       </style>
-   
+        }
+        .div-table {
+        display: table;         
+        width: 100%;         
      
-         <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>          
-            <template is="dom-if" if="true">
-             <div class="caegory-selector contextTreecustom">
-                <rock-classification-selector
-                        id="classificationTree"         
-                        is-model-tree="[[isModelTree]]"
-                        context-data="[[classificationContextData]]"
-                        multi-select="[[multiSelect]]"
-                        leaf-node-only="[[leafNodeOnly]]"
-                        enable-node-click="true"
-                        hide-leaf-node-checkbox="[[hideLeafNodeCheckbox]]"
-                        root-node-data="{{_rootNodeData}}"
-                        root-node="[[_rootNode]]"
-                        path-entity-type="[[_rootEntityType]]"
-                        path-relationship-name="[[_rootRelationshipName]]"
-                        tags="{{tags}}"
-                        selected-classifications = "{{preselectedClassifications}}">
-              
-                </rock-classification-selector>   
-                </div>
-                <div class="buttons">
-                <pebble-button dialog-confirm class="btn btn-success"  button-text="Save" on-tap ="_onSave"></pebble-button>
-                <pebble-button dialog-confirm class="btn btn-secondary" button-text="Cancel" on-tap ="_onCancel"></pebble-button>
-        </template> 
-        
-       
-        </pebble-dialog>
-        <pebble-dialog  id= "myDialogCancel" modal dialog-title="Confirmation" scrollable style="width:fit-content">
+        }
+        .div-table-row {
+        display: table-row;
+        width: auto;
+        clear: both;
+        }
+        .div-table-col-left{
+            float: left; /* fix for  buggy browsers */
+            display: table-column;         
+            width: 28%;         
+            text-align:left;
+        }
+        .div-table-col-right-72 {
+            float: left; /* fix for  buggy browsers */
+            display: table-column;         
+            width: 72%;         
+            }
+        .div-table-col-80 {
+        float: left; /* fix for  buggy browsers */
+        display: table-column;         
+        width: 78%;         
+        }
+     
+        .div-table-col-right {
+        float: left; /* fix for  buggy browsers */
+        display: table-column;         
+        width: 20%;         
+        text-align:right;
+        }
+        .div-table-col-merge {
+        float: left; /* fix for  buggy browsers */
+        display: table-column;         
+        width: 100%;         
+        }
+     </style>
+     <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>
+        <template is="dom-if" if="true">
+           <div class="caegory-selector contextTreecustom">
+              <rock-classification-selector
+                 id="classificationTree"         
+                 is-model-tree="[[isModelTree]]"
+                 context-data="[[classificationContextData]]"
+                 multi-select="[[multiSelect]]"
+                 leaf-node-only="[[leafNodeOnly]]"
+                 enable-node-click="true"
+                 hide-leaf-node-checkbox="[[hideLeafNodeCheckbox]]"
+                 root-node-data="{{_rootNodeData}}"
+                 root-node="[[_rootNode]]"
+                 path-entity-type="[[_rootEntityType]]"
+                 path-relationship-name="[[_rootRelationshipName]]"
+                 tags="{{tags}}"
+                 selected-classifications = "{{preselectedClassifications}}">
+              </rock-classification-selector>
+           </div>
+           <div class="buttons">
+           <pebble-button dialog-confirm class="btn btn-success"  button-text="Save" on-tap ="_onSave"></pebble-button>
+           <pebble-button dialog-confirm class="btn btn-secondary" button-text="Cancel" on-tap ="_onCancel"></pebble-button>
+        </template>
+     </pebble-dialog>
+     <pebble-dialog  id= "myDialogCancel" modal dialog-title="Confirmation" scrollable style="width:fit-content">
         <div style="text-align: center; padding: 13px;">
-        <label> Discard Changes? </label> <br><br>
-       
-        <pebble-button dialog-confirm class="btn btn-success"  button-text="Yes" on-tap ="_yesClick"></pebble-button>
-        <pebble-button dialog-confirm class="btn btn-secondary" button-text="No" on-tap ="_noClick"></pebble-button>
+           <label> Discard Changes? </label> <br><br>
+           <pebble-button dialog-confirm class="btn btn-success"  button-text="Yes" on-tap ="_yesClick"></pebble-button>
+           <pebble-button dialog-confirm class="btn btn-secondary" button-text="No" on-tap ="_noClick"></pebble-button>
         </div>
-        </pebble-dialog>    
-          <div>
-           Taxonomy 
-            <pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
-                     <div> Selected Taxonomies </div>
-                     <div style="display:flex; flex-wrap: wrap;">
-                     <dom-repeat items="{{selectedTax}}">
-                        <template>
-                        <span class="tag-item-container border">{{item}}</span>
-                        </template>
-                    </dom-repeat>  
-                    </div>
-          </div>
-          
-          <div>
-         <pebble-combo-box id='multi-select-lov' on-click="_openDataList" items={{refentitydata}}  multi-select label="Filter More With {{referenceEntityShortname}}"> </pebble-combo-box>
-          </div>
+     </pebble-dialog>
+     <br>
+     <pebble-spinner active=[[spinnerFlag]]></pebble-spinner>
 
-          <div>
-            <pebble-button  class="btn btn-success" button-text="Apply" on-tap ="_applyFilter"></pebble-button>
+     <div class="div-table">
+
+     <div class="div-table-row">
+        <div class="div-table-col-80">
+           <div class="displayflexwrap">
+           Taxonomy &nbsp;
+           <pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
+        
+           <dom-repeat items="{{selectedTax}}">
+              <template>
+                 <span class="tag-item-container border">{{item}}</span>
+              </template>
+           </dom-repeat>
         </div>
-          <table>
-          <tr>
-          <td> <pebble-graph-progress-ring  percentage="{{grandavg}}" _showPercentage="true"></pebble-graph-progress-ring></td>
-          <td>
-                <div>Missing Images <br>  <paper-progress value=[[missingImagesCount]]></paper-progress></div>
-                <div>Invalid Value <br>  <paper-progress value=[[invalidValue]]></paper-progress> </div>
-                <div> Missing Required Attributes <br>  <paper-progress value=[[missingRequiredAttributes]]></paper-progress> </div>
-                <div  id="rejectedItemsid">Rejected Items <br>  <paper-progress value=[[rejectedItemsCount]]></paper-progress></div>
-                <div id="missingRel">
-                [[dynamicRelationship.label]]  <paper-progress value=[[missingRelCount]]></paper-progress>
-                </div>
-          </td>
-          </tr>
-          </table>
+        </div>
+        <div class="scoreclss div-table-col-right">
+           [[scoreLabel]] : <span id="weitagespan"><b>[[weightage]]</b></span> <br>
+        
+        </div>
+     </div>
 
-            <pebble-progress-bar state="warning" min="0" max="100" current="40" isLabeled> </pebble-progress-bar>
-            `;
+     <div class="div-table-row">
+        <div id="refEntityDiv" class="div-table-col">
+           {{referenceFilter.label}} &nbsp;          
+           <pebble-combo-box class="tab-title" id='multi-select-lov' selection-changed="_applyFilter" tag-removed="_applyFilter" on-click="_openDataList" items={{refentitydata}}  multi-select label="Select {{referenceFilter.label}}"> </pebble-combo-box>
+        </div>
+     </div>
+     
+     <div class="div-table-row">
+        
+           <div class="div-table-col-left">
+              <div  class="avg-item-container">
+                 <b>Average Quality</b> 
+                 <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
+                <!-- <pebble-graph-progress-ring  percentage="{{grandavg}}" _showPercentage="true"></pebble-graph-progress-ring> -->
+              </div>
+           </div>
+           
+        <div class="div-table-col-right-72">
+           <div id="missingImgDiv" class="div-item-container" on-click="_missingImgDivClicked">
+              [[missingImagesBlock.label]] <br>
+              <div class="displayflexwrap">
+                 <paper-progress class="paper-progress-purple" value=[[missingImagesCountPercentage]]></paper-progress>
+                 [[missingImagesCountPercentage]]% 
+              </div>
+           </div>
+           <div  id="invalidValDiv" class="div-item-container" on-click="_invalidValDivClicked">
+              [[invalidValueBlock.label]]<br> 
+              <div class="displayflexwrap">
+                 <paper-progress class="paper-progress-red" value=[[invalidValuePercentage]]></paper-progress>
+                 [[invalidValuePercentage]]% 
+              </div>
+           </div>
+           <div  id="missingReqDiv" class="div-item-container" on-click="_missingReqDivClicked">
+              [[missingRequiredBlock.label]]<br> 
+              <div class="displayflexwrap">
+                 <paper-progress class="paper-progress-yellow" value=[[missingRequiredAttributesPercentage]]></paper-progress>
+                 [[missingRequiredAttributesPercentage]]% 
+              </div>
+           </div>
+           <div  id="rejectedItemDiv" class="div-item-container" on-click="_rejectedItemDivClicked">
+              [[rejectedItems.label]] <br> 
+              <div class="displayflexwrap">
+                 <paper-progress class="paper-progress-blue" value=[[rejectedItemsCountPercentage]]></paper-progress>
+                 [[rejectedItemsCountPercentage]]% 
+              </div>
+           </div>
+           <div id="missingRelDiv" class="div-item-container" on-click="_missingRelDivClicked">
+              [[dynamicRelationship.label]]
+              <div class="displayflexwrap">
+                 <paper-progress class="paper-progress-orange" value=[[missingRelCountPercentage]]></paper-progress>
+                 [[missingRelCountPercentage]]%
+              </div>
+           </div>
+        </div>
+     </div>   
+     </div>
+     </div>
+     `;
     }
 
-    _applyFilter() {
+    _missingImgDivClicked()
+    {
+        let queryParam = {
+            relationships:[ {
+                hasimages: {
+                    hasvalue:false
+                }
+            }
+            ],
+           valueContextsString: [
+                {
+                    source: 'internal',
+                    locale:'en-US'
+                }
+            ]
+        };
+        this._redirectTo('search-thing', queryParam);
 
+    }
+
+    _invalidValDivClicked()
+    {
+        let queryParam = {
+            
+        };
+        this._redirectTo('search-thing', queryParam);
+
+    }
+
+    _missingReqDivClicked()
+    {
+        let queryParam = {
+        };
+        this._redirectTo('search-thing', queryParam);
+
+    }
+
+    _rejectedItemDivClicked()
+    {
+      
+        let queryParam = {
+            "attributes":{},
+            "wfName": this.rejectedItems.wfShortname,
+            "wfShortName": this.rejectedItems.wfShortname,
+            "wfActivityName": this.rejectedItems.wfStepShortname,
+            "wfActivityExternalName": this.rejectedItems.wfStepShortname,
+            "mappedEntityTypesString": this.rejectedItems.entityTypeShortname,
+            "mappedContextsString": [
+                {
+                    "self": "self"
+                }
+            ]
+        };
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+/*
+            var word = ' or ';
+            var newword="";
+            var n = searchString.lastIndexOf(word);
+            searchString = searchString.slice(0, n) + searchString.slice(n).replace(word, newword);*/
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
+        this._redirectTo('search-thing', queryParam);
+
+    }
+
+    _missingRelDivClicked()
+    {
+        let queryParam = {
+            relationships:[ {
+                [this.dynamicRelationship.relshortname]: {
+                    hasvalue:false
+                }
+            }
+            ],
+           valueContextsString: [
+                {
+                    source: 'internal',
+                    locale:'en-US'
+                }
+            ]
+        };
+        this._redirectTo('search-thing', queryParam);
+
+    }
+
+
+    _redirectTo(appName, queryParam) {
+        let queryparam = { state: JSON.stringify(queryParam) };
+        AppInstanceManager.navigateToRoute(appName, queryparam);
+    }
+
+    async _applyFilter() {
+        this.spinnerFlag = true;
         //getting selected filter value
         let lov = this.shadowRoot.querySelector('#multi-select-lov');
         let tempArray = new Array();
@@ -150,12 +394,14 @@ class PluginQualityScoreCard extends PolymerElement {
             }
             this.selectedFilters = tempArray;
         }
-        this._getMissingImagesCount();
-        this._getInvalidValueCount();
-        this._getMissingRequiredAttributesCount();
-        this._getrejectedItemsCount();
-        this._getmissingRelCount();
-        this._getAvgBasedonGrandTotal();
+        await this._getMissingImagesCount();
+        await this._getInvalidValueCount();
+        await this._getMissingRequiredAttributesCount();
+        await this._getrejectedItemsCount();
+        await this._getmissingRelCount();
+        await this._getAvgBasedonGrandTotal();
+         this._colorCodeScore();
+        this.spinnerFlag = false;
     }
     _onSave() {
 
@@ -175,11 +421,14 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         this.selectedTax = temparry;
 
-
+        if(this.tags.length==0)
+        {
+            this.selectedTax[0]="No Taxonomy Selected";
+        }
 
         // this.treeItems = ObjectUtils.cloneObject(contextTree.selectedClassifications);
         this.shadowRoot.querySelector('#myDialog').close();
-
+        this._applyFilter();
     }
 
     _onCancel() {
@@ -258,13 +507,13 @@ class PluginQualityScoreCard extends PolymerElement {
         };
 
         let res = await this._sendRequestToGetCount(reqBody);
-        return res.response.content.totalRecords;
+        this.totalEntities = res.response.content.totalRecords;
     }
     async _getRefEntityModel() {
         let requestData = {
             params: {
                 query: {
-                    id: this.referenceEntityShortname + '_entityManageModel',
+                    id: this.referenceFilter.referenceEntityShortname + '_entityManageModel',
                     filters: {
                         typesCriterion: ['entityManageModel']
                     }
@@ -299,7 +548,7 @@ class PluginQualityScoreCard extends PolymerElement {
                         }
                     ],
                     filters: {
-                        typesCriterion: [this.referenceEntityShortname]
+                        typesCriterion: [this.referenceFilter.referenceEntityShortname]
                     }
                 },
                 fields: {
@@ -335,7 +584,7 @@ class PluginQualityScoreCard extends PolymerElement {
                         ],
                         relationshipsCriterion: [
                             {
-                                hasimages: {
+                                [this.missingImagesBlock.relShortname]: {
                                     hasvalue: false
                                 }
                             }
@@ -354,7 +603,7 @@ class PluginQualityScoreCard extends PolymerElement {
             }
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -373,7 +622,7 @@ class PluginQualityScoreCard extends PolymerElement {
         //adding ref attr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -409,7 +658,7 @@ class PluginQualityScoreCard extends PolymerElement {
                                   }
                               },
                               {
-                                  [this.referenceAttrShortname]: {
+                                  [this.referenceFilter.referenceAttrShortname]: {
                                       "startswith": this.selectedFilters,
                                       "operator": "_OR",
                                       "type": "_STRING",
@@ -443,7 +692,9 @@ class PluginQualityScoreCard extends PolymerElement {
               }
           };*/
         let res = await this._sendRequestToGetCount(requestData);
-        this.missingImagesCount = res.response.content.totalRecords;
+        this.missingImagesCount= res.response.content.totalRecords;
+        this.missingImagesCountPercentage = Math.round(parseInt(res.response.content.totalRecords) * 100 / this.totalEntities);
+    
     }
 
     async _getInvalidValueCount() {
@@ -542,7 +793,7 @@ class PluginQualityScoreCard extends PolymerElement {
             "operation": "initiatesearch"
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -561,7 +812,7 @@ class PluginQualityScoreCard extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -577,7 +828,8 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
-        this.invalidValue = res.response.totalRecords;
+        this.invalidValue =res.response.totalRecords;
+        this.invalidValuePercentage =Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
 
     async _getMissingRequiredAttributesCount() {
@@ -676,7 +928,7 @@ class PluginQualityScoreCard extends PolymerElement {
             "operation": "initiatesearch"
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -695,7 +947,7 @@ class PluginQualityScoreCard extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -711,7 +963,8 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
-        this.missingRequiredAttributes = res.response.totalRecords;
+        this.missingRequiredAttributes =res.response.totalRecords;
+        this.missingRequiredAttributesPercentage =Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
 
     async _getrejectedItemsCount() {
@@ -879,7 +1132,7 @@ class PluginQualityScoreCard extends PolymerElement {
             "operation": "initiatesearch"
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -898,7 +1151,7 @@ class PluginQualityScoreCard extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -915,36 +1168,37 @@ class PluginQualityScoreCard extends PolymerElement {
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
         this.rejectedItemsCount = res.response.totalRecords;
+        this.rejectedItemsCountPercentage = Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
 
     async _getmissingRelCount() {
-    /*    let requestData = {
-            params: {
-                query: {
-                    filters: {
-                        typesCriterion: this.entityTypes,
-                        relationshipsCriterion: [
-                            {
-                                [[this.dynamicRelationship.relshortname]]: {
-                                    hasvalue: false
+        /*    let requestData = {
+                params: {
+                    query: {
+                        filters: {
+                            typesCriterion: this.entityTypes,
+                            relationshipsCriterion: [
+                                {
+                                    [[this.dynamicRelationship.relshortname]]: {
+                                        hasvalue: false
+                                    }
                                 }
+                            ]
+                        },
+                        valueContexts: [
+                            {
+                                source: 'internal',
+                                locale: 'en-US'
                             }
                         ]
                     },
-                    valueContexts: [
-                        {
-                            source: 'internal',
-                            locale: 'en-US'
-                        }
-                    ]
-                },
-                options: {
-                    maxRecords: 1
+                    options: {
+                        maxRecords: 1
+                    }
                 }
-            }
-        };
-        var res = await this._sendRequestToGetCount(requestData);
-        this.missingRelCount = res.response.content.totalRecords;*/
+            };
+            var res = await this._sendRequestToGetCount(requestData);
+            this.missingRelCount = res.response.content.totalRecords;*/
 
         let requestData = {
             "params": {
@@ -971,7 +1225,7 @@ class PluginQualityScoreCard extends PolymerElement {
                                             "typesCriterion": this.entityTypes,
                                             "relationshipsCriterion": [
                                                 {
-                                                    [[this.dynamicRelationship.relshortname]]: {
+                                                    [this.dynamicRelationship.relshortname]: {
                                                         "hasvalue": false
                                                     }
                                                 }
@@ -1016,7 +1270,7 @@ class PluginQualityScoreCard extends PolymerElement {
             "operation": "initiatesearch"
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -1035,7 +1289,7 @@ class PluginQualityScoreCard extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -1051,20 +1305,88 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
-        this.missingRelCount = res.response.totalRecords;
+        this.missingRelCount =res.response.totalRecords;
+        this.missingRelCountPercentage =Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
 
 
-    _getAvgBasedonGrandTotal()
-    {
-        let total=parseInt(this.missingImagesCount)+parseInt(this.missingRelCount)+parseInt(this.invalidValue)+parseInt(this.missingRequiredAttributes)+parseInt(this.rejectedItemsCount);
-        this.grandavg=total/parseInt(this._getTotalEntities());
+    async _getAvgBasedonGrandTotal() {
+        let counter=0;
+        if (this.invalidValueBlock.visible) {
+           counter++;
+        }
+        if (this.missingRequiredBlock.visible) {
+         counter++;
+        }    
+        if (this.dynamicRelationship.visible) {
+            counter++;
+        }
+        
+        if (this.rejectedItems.visible) {
+            counter++;
+        }
+        if(this.missingImagesBlock.visible){
+            counter++;
+        }
 
+        let totalPer = parseInt(this.missingImagesCountPercentage) + parseInt(this.missingRelCountPercentage) + parseInt(this.invalidValuePercentage) + parseInt(this.missingRequiredAttributesPercentage) + parseInt(this.rejectedItemsCountPercentage);
+        this.grandavg =Math.round(100-( totalPer / counter));
+     
+        let totalweightage = (parseInt(this.missingImagesCountPercentage) *20)/100 + (parseInt(this.invalidValuePercentage)*10)/100 + (parseInt(this.missingRequiredAttributesPercentage)*30)/100 + (parseInt(this.rejectedItemsCountPercentage)*40)/100;
+        this.weightage =(totalweightage/100).toFixed(2);
+
+        let badDataCount=parseInt(this.missingImagesCount) + parseInt(this.missingRelCount) + parseInt(this.invalidValue) + parseInt(this.missingRequiredAttributes) + parseInt(this.rejectedItemsCount);
+        let badDataAvg=Math.round(badDataCount/counter);
+        let entitydata=new Array();
+        entitydata.push({
+            id: 1,
+            key: "Appropriate Data",
+            value: this.grandavg,
+            count: (this.totalEntities-badDataAvg),
+            unit: '%',
+            clickable: true,
+            section: 'processing',
+            label:"Appropriate Data",
+            color: '#36B44A'
+        });
+        entitydata.push({
+            id: 2,
+            key: "Inappropriate Data",
+            value:(100-this.grandavg),
+            count: badDataAvg,
+            unit: '%',
+            clickable: true,
+            section: 'processing',
+            label:"Inappropriate Data",
+            color: '#EE204C'
+        });
+        this.data=entitydata;
+        this._colorCodeScore();
     }
 
     manageVisibility() {
-        let lirel = this.shadowRoot.querySelector('#missingRel');
-        let lirej = this.shadowRoot.querySelector('#rejectedItemsid');
+        let lirel = this.shadowRoot.querySelector('#missingRelDiv');
+        let lirej = this.shadowRoot.querySelector('#rejectedItemDiv');
+        let divmissingimg = this.shadowRoot.querySelector('#missingImgDiv');
+        let invalidValDiv = this.shadowRoot.querySelector('#invalidValDiv');
+        let missingRequiredDiv = this.shadowRoot.querySelector('#missingReqDiv');
+       
+        let ReferenceFilterDiv=this.shadowRoot.querySelector("#refEntityDiv");
+
+        if (this.invalidValueBlock.visible) {
+            invalidValDiv.style.display = 'block';
+        }
+        else {
+            invalidValDiv.style.display = 'none';
+        }
+        if (this.missingRequiredBlock.visible) {
+            missingRequiredDiv.style.display = 'block';
+        }
+        else {
+            missingRequiredDiv.style.display = 'none';
+        }
+
+
         if (this.dynamicRelationship.visible) {
             lirel.style.display = 'block';
         }
@@ -1077,6 +1399,38 @@ class PluginQualityScoreCard extends PolymerElement {
         else {
             lirej.style.display = 'none';
         }
+        if (this.referenceFilter.visible) {
+            ReferenceFilterDiv.style.display = 'block';
+        }
+        else {
+            ReferenceFilterDiv.style.display = 'none';
+        }
+        if(this.missingImagesBlock.visible){
+            divmissingimg.style.display = 'block';
+        }
+        else {
+            divmissingimg.style.display = 'none';
+        }
+        
+        this.spinnerFlag=false;
+    }
+    _colorCodeScore()
+    {
+        let span=this.shadowRoot.querySelector("#weitagespan");
+        if(this.weightage<0.5)
+        {
+            span.style.color='#EE204C';
+        }   
+        if(this.weightage>0.5 && this.weightage<0.75)
+        {
+            span.style.color='#F78E1E';
+        }  
+        if(this.weightage>0.75)
+        {
+            span.style.color='#36B44A';
+        }  
+
+
     }
     async _sendRequestToGetModel(requestData) {
         let entitySearchAndGetRequest = DataObjectManager.createRequest('searchandget', requestData, '', {
@@ -1123,13 +1477,87 @@ class PluginQualityScoreCard extends PolymerElement {
 
     static get properties() {
         return {
+            scoreLabel:{
+                type: String,
+                reflectToAttribute:true,
+                value:""
+            },
+            referenceFilter:{
+                type: Object,
+                value: function () {
+                    return {
+                        visible: false,
+                        label: '',
+                        referenceAttrShortname: '',
+                        referenceEntityShortname: ''
+                      
+                    };
+                },
+                reflectToAttribute: true
+            },
+            missingImagesBlock:{
+                type: Object,
+                value: function () {
+                    return {
+                        visible: true,
+                        label: 'Missing Images',
+                        relShortname: 'hasimages'
+                      
+                      
+                    };
+                },
+                reflectToAttribute: true
+            },
+            invalidValueBlock:{
+                type: Object,
+                value: function () {
+                    return {
+                        visible: true,
+                        label: 'Invalid Value'
+                     
+                      
+                    };
+                },
+                reflectToAttribute: true
+            },
+            missingRequiredBlock:{
+                type: Object,
+                value: function () {
+                    return {
+                        visible: true,
+                        label: 'Missing Rquired'
+                      
+                    };
+                },
+                reflectToAttribute: true
+            },
+            data: {
+                type: Array,
+                value: function () {
+                    return [
+                      
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
+            spinnerFlag: {
+                type: Boolean,
+                value: true
+            },
 
+            weightage: {
+                type: String,
+                reflectToAttribute: true
+            },
             grandavg: {
                 type: String,
                 reflectToAttribute: true
             },
-            
-            
+            totalEntities: {
+                type: String,
+                reflectToAttribute: true
+            },
             missingImagesCount: {
                 type: String,
                 reflectToAttribute: true
@@ -1138,7 +1566,6 @@ class PluginQualityScoreCard extends PolymerElement {
                 type: String,
                 reflectToAttribute: true
             },
-
             invalidValue: {
                 type: String,
                 reflectToAttribute: true
@@ -1151,7 +1578,27 @@ class PluginQualityScoreCard extends PolymerElement {
                 type: String,
                 reflectToAttribute: true
             },
-            
+
+            missingImagesCountPercentage: {
+                type: String,
+                reflectToAttribute: true
+            },
+            missingRelCountPercentage: {
+                type: String,
+                reflectToAttribute: true
+            },
+            invalidValuePercentage: {
+                type: String,
+                reflectToAttribute: true
+            },
+            missingRequiredAttributesPercentage: {
+                type: String,
+                reflectToAttribute: true
+            },
+            rejectedItemsCountPercentage: {
+                type: String,
+                reflectToAttribute: true
+            },
             referenceEntiytyIdentifier: {
                 type: String,
                 reflectToAttribute: true
@@ -1168,7 +1615,9 @@ class PluginQualityScoreCard extends PolymerElement {
                 type: Array,
                 reflectToAttribute: true,
                 value: function () {
-                    return [];
+                    return [
+                        "No Taxonomy Selected"
+                    ];
                 },
             },
             selectedFilters: {
@@ -1183,14 +1632,7 @@ class PluginQualityScoreCard extends PolymerElement {
                 notify: true,
                 reflectToAttribute: true
             },
-            referenceAttrShortname: {
-                type: String,
-                reflectToAttribute: true
-            },
-            referenceEntityShortname: {
-                type: String,
-                reflectToAttribute: true
-            },
+          
             dynamicRelationship: {
                 type: Object,
                 value: function () {
@@ -1209,7 +1651,8 @@ class PluginQualityScoreCard extends PolymerElement {
                         visible: false,
                         wfShortname: '',
                         wfStepShortname: '',
-                        entityTypeShortname: ''
+                        entityTypeShortname: '',
+                        label: ''
                     };
                 },
                 reflectToAttribute: true
@@ -1342,6 +1785,21 @@ class PluginQualityScoreCard extends PolymerElement {
             configResponse.response.status == 'success'
         ) {
             this._handleConfigGetSuccess(configResponse);
+            //once the keys are added from custom config file
+            await this._getTotalEntities();
+
+            await this._getMissingImagesCount();
+            if (this.referenceFilter.visible) {
+                 await this._getRefEntityModel();
+            }
+            await this._getMissingRequiredAttributesCount();
+            await this._getInvalidValueCount();
+            await this._getrejectedItemsCount();
+            await this._getmissingRelCount();
+
+            this.manageVisibility();
+            //Bfore calling this method , all the counts should be available
+            this._getAvgBasedonGrandTotal();
         } else {
             this._handleConfigGetError(configResponse);
         }
@@ -1365,16 +1823,7 @@ class PluginQualityScoreCard extends PolymerElement {
                         }
                     }
                 }
-                //once the keys are added from custom config file
-                this._getMissingImagesCount();
-                this._getRefEntityModel();
-                this._getMissingRequiredAttributesCount();
-                this._getInvalidValueCount();
-                this._getrejectedItemsCount();
-                this._getmissingRelCount();
-              
-                this.manageVisibility();
-                this._getAvgBasedonGrandTotal();
+
             }
         }
     }

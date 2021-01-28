@@ -1,0 +1,43 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-vendor-score-card-base_uiConfig",
+            "name": "plugin_plugin-vendor-score-card",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-vendor-score-card",
+                            "sysApp": "_DEFAULT",
+                            "sysDomain": "_DEFAULT",
+                            "sysEntityType": "_DEFAULT",
+                            "sysRelationship": "_DEFAULT",
+                            "sysRole": "_DEFAULT"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "entityTypes": ["stagingitem"],
+                                    "ownershipAttrShortname":"thgvendornumber",
+                                    "taxonomyAttrShortname":"thgmastertaxonomy",
+                                    "_rootNode":"productclassificationroot"                                  
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

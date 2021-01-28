@@ -6,8 +6,8 @@
     },
     "configObjects": [
         {
-            "id": "plugin_plugin-my-catalog-base_uiConfig",
-            "name": "plugin_plugin-my-catalog",
+            "id": "plugin_plugin-my-catalog_merchant_uiConfig",
+            "name": "plugin_plugin-my-catalog_merchant",
             "version": "1.0",
             "type": "uiConfig",
             "properties": {
@@ -19,15 +19,11 @@
                     {
                         "context": {
                             "component": "plugin-my-catalog",
-                            "sysApp": "_DEFAULT",
-                            "sysDomain": "_DEFAULT",
-                            "sysEntityType": "_DEFAULT",
-                            "sysRelationship": "_DEFAULT",
-                            "sysRole": "_DEFAULT"
+                            "role":"merchant"                         
                         },
                         "jsonData": {
                             "config": {
-                                "properties": {
+                                "properties":  {
                                     "wfchart1": {
                                         "visible": true,
                                         "label": "Pending Submission",
@@ -59,34 +55,32 @@
                                     "createdchart": {
                                         "visible": true,
                                         "label": "Entities Created",
-                                        "entityTypeshortname": "stagingitem",
+                                        "entityTypeshortname": "item",
                                         "attributeshortname": "thgdatecreated"
                                     },
                                     "modifiedchart": {
                                         "visible": true,
                                         "label": "Entities Modified",
-                                        "entityTypeshortname": "stagingitem",
+                                        "entityTypeshortname": "item",
                                         "attributeshortname": "thgdatemodified"
                                     },
                                     "discontinuedchart": {
                                         "visible": true,
                                         "label": "Entities Discontinued",
-                                        "entityTypeshortname": "stagingitem",
+                                        "entityTypeshortname": "item",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Discontinue"
                                     },
                                     "publishedchart": {
                                         "visible": true,
                                         "label": "Entities Published",
-                                        "entityTypeshortname": "stagingitem",
+                                        "entityTypeshortname": "item",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Published"
                                     },
                                     "referenceFilter": {
-                                        "visible": true,
-                                        "label": "Brand",
-                                        "referenceAttrShortname":"thgbrand",
-                                           "referenceEntityShortname":"brand"
+                                        "visible": false
+                                      
                                     }
                                 }
                             }
@@ -96,4 +90,5 @@
             }
         }
     ]
+
 }

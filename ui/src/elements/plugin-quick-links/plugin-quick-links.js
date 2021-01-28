@@ -23,45 +23,54 @@ class PluginQuickLinks extends PolymerElement {
     static get template() {
         return html`
             <style>
-                a:link,
-                a:visited {
-                    background-color: white;
-                    color: black;
-                    border: 1px solid #09c021;
-                    padding: 10px 20px;
-                    text-align: center;
-                    text-decoration: none;
-                    display: inline-block;
-                    border-radius: 7px;
-                }
-
-                a:hover,
-                a:active {
-                    background-color: #09c021;
-                    color: white;
-                }
+               
                 pebble-tag-item {
-                    --tag-color: #09c021;
-                    
+                    --tag-color: #d2d7dd;
+                    margin:2px;                    
+                }
+                pebble-tag-item:hover{
+                    cursor:pointer;
+                }
+                            
+                .displayflexwrap{
+                    display:flex;
+                    flex-wrap: wrap;
                 }
             </style>
-            <div style="display:flex;flex-wrap: wrap;">
+            <div class="displayflexwrap">
                  <div>
-                   <pebble-tag-item id="ex1" name="Last Week Entities" show-icon icon="pebble-icon:calender" on-click="_lastWeek"></pebble-tag-item>
+                   <pebble-tag-item class="text-ellipsis" id="ex1" name="Last Week Entities" show-icon icon="pebble-icon:calender" on-click="_lastWeek"></pebble-tag-item>
                    
                  </div>
                  <div>
-                 <pebble-tag-item id="ex2" name="Last Month Entities" show-icon icon="pebble-icon:calender" on-click="_lastMonth"></pebble-tag-item>
+                 <pebble-tag-item id="ex2" name="Last Month Entities" show-icon  icon="pebble-icon:calender" on-click="_lastMonth"></pebble-tag-item>
                
                  </div>
                  <div>
                  <pebble-tag-item id="ex3" name="Last Quarter Entities" show-icon icon="pebble-icon:calender" on-click="_lastQuarter"></pebble-tag-item>
                  
                  </div>
+                 <div>
+                 <pebble-tag-item id="ex4" name="Recently Submitted Entities" show-icon icon="pebble-icon:calender" on-click="_recentlysubmitted"></pebble-tag-item>
+                 
+                 </div>
              </div>
         `;
     }
 
+ 
+    _manageVisibility()
+    {
+        let ex4=this.shadowRoot.querySelector("#ex4");
+        if(this.WorkflowDetail.visible)
+        {
+            ex4.style.display="block";
+        }
+        else{
+            ex4.style.display="none";
+        }
+
+    }
     _createGuid() {
         return 'xxxxxxxxxxxx4xxxyx'.replace(/[xy]/g, function (c) {
             let r = (Math.random() * 16) | 0,
@@ -92,6 +101,34 @@ class PluginQuickLinks extends PolymerElement {
         let edate = endDate.toLocaleDateString('en-US');
         this._searchInBetween(sdate, edate);
     }
+    _recentlysubmitted()
+    {
+        let endDate = new Date();
+        let startDate = new Date(new Date().setDate(new Date().getDate() - 7));
+        let sdate = startDate.toLocaleDateString('en-US');
+        let edate = endDate.toLocaleDateString('en-US');
+        this._searchRecentInWF(sdate, edate);
+    }
+    _searchRecentInWF(startDate,endDate)
+    {
+        let queryParam = {
+            attributes: {
+                rsInternalGenericCreatedDate: startDate + ' - ' + endDate
+            },
+            wfName: this.WorkflowDetail.workflowshortname,
+            wfShortName: this.WorkflowDetail.workflowshortname,
+            wfActivityName: this.WorkflowDetail.workflowstepshortname,
+            wfActivityExternalName: this.WorkflowDetail.workflowstepshortname,
+            mappedEntityTypesString: this.WorkflowDetail.entityTypeshortname,
+            mappedContextsString: [
+                {
+                    self: 'self'
+                }
+            ]
+        };
+        this._redirectTo('search-thing', queryParam);
+
+    }
     _searchInBetween(startDate, endDate) {
         let queryParam = {
             attributes: {
@@ -109,14 +146,32 @@ class PluginQuickLinks extends PolymerElement {
 
     static get properties() {
         return {
-            status: {
-                type: String
+         
+            contextData: {
+                type: Object,
+                value: function () {
+                    return {};
+                },
+                observer: '_onContextDataChange'
+            },
+            WorkflowDetail:{
+                type: Object,
+                value: function () {
+                    return {
+                        visible: false,
+                        label: '',
+                        workflowshortname: '',
+                        workflowstepshortname: '',
+                        entityTypeshortname: ''
+                    };
+                },
+                reflectToAttribute: true
             }
         };
     }
     async connectedCallback() {
         super.connectedCallback();
-        let configResponse = await ConfigurationManager.getConfig('plugin-quick-links');
+        let configResponse = await ConfigurationManager.getConfig('plugin-quick-links',this.contextData);
         if (
             ObjectUtils.isValidObjectPath(configResponse, 'response.status') &&
             configResponse.response.status == 'success'
@@ -146,6 +201,7 @@ class PluginQuickLinks extends PolymerElement {
                         }
                     }
                 }
+            this._manageVisibility();
             }
         }
     }

@@ -6,8 +6,8 @@
     },
     "configObjects": [
         {
-            "id": "plugin_plugin-quality-score-card_vendor_uiConfig",
-            "name": "plugin_plugin-quality-score-card_vendor",
+            "id": "plugin_plugin-quality-score-card_merchant_uiConfig",
+            "name": "plugin_plugin-quality-score-card_merchant",
             "version": "1.0",
             "type": "uiConfig",
             "properties": {
@@ -19,26 +19,35 @@
                     {
                         "context": {
                             "component": "plugin-quality-score-card",
-                            "role":"vendor"                         
+                            "role":"merchant"                         
                         },
                         "jsonData": {
                             "config": {
                                 "properties": {
-                                    "entityTypes": ["stagingitem"],
-                                    "referenceAttrShortname":"thgbrand",
-                                    "referenceEntityShortname":"brand",
+                                    "entityTypes": ["item"],
+                                    "missingImagesBlock":{
+                                         "visible":false
+                                    },
+                                    "scoreLabel":"Overall Score",
                                     "_rootNode":"productclassificationroot",
                                     "taxonomyAttrShortname":"thgmastertaxonomy",
                                     "dynamicRelationship":{
-                                        "visible":false,
+                                        "visible":true,
                                         "relshortname": "ischildof",
                                         "label": "Missing Parent"
                                     },
                                     "rejectedItems":{
                                        "visible": true,
-                                        "wfShortname":"collaboration",
-                                        "wfStepShortname": "tobereviewed",
-                                        "entityTypeShortname":"stagingitem"
+                                        "wfShortname":"enrichment",
+                                        "wfStepShortname": "tobeinitiated",
+                                        "entityTypeShortname":"item",
+                                        "label":"Pending Submission - WebEnrichment"
+                                    },
+                                    "referenceFilter": {
+                                        "visible": false,
+                                        "label": "Brand",
+                                        "referenceAttrShortname": "thgbrand",
+                                        "referenceEntityShortname": "brand"
                                     }
                                 }
                             }

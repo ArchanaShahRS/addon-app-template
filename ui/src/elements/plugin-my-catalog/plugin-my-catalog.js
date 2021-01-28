@@ -31,11 +31,41 @@ class PluginMyCatalog extends PolymerElement {
         <style>
         .pointer {cursor: pointer;}
         .contextTreecustom {
-        
-            height: 82vh;
-           }
-           
-           .tag-item-container {
+           height: 82vh;
+        }
+        .avg-item-container {
+            border: solid 1px #d2d7dd;
+            border-radius: 3px;      
+            padding:20px 160px 20px 160px;
+            font-size: 14px;
+            position: relative;
+            background: #fff;
+            margin: 10px;
+            max-width: 100%;
+            min-width:  20px;
+            line-height: 20px;
+            flex-direction: row;
+            align-items: center;
+        }
+        .div-container {
+            display:flex;
+            border: solid 1px #d2d7dd;
+            border-radius: 3px;      
+            padding: 15px 15px 15px 15px;
+            position: relative;
+            background: #fff;
+            margin: 4px;
+            max-width: 100%;
+            min-width:  20px;
+            flex-direction: row;
+            align-items: center;
+        }
+    
+        .displayflexwrap{
+                display:flex;
+                flex-wrap: wrap;
+            }
+        .tag-item-container {
             border: solid 1px #d2d7dd;
             border-left: solid 4px #d2d7dd;
             border-radius: 3px;      
@@ -52,31 +82,59 @@ class PluginMyCatalog extends PolymerElement {
             align-items: center;
         }
     
+        .div-table {
+            display: table;         
+            width: 100%;         
+         
+            }
+            .div-table-row {
+            display: table-row;
+            width: auto;
+            clear: both;
+            }
+            .div-table-col-80 {
+            float: left; /* fix for  buggy browsers */
+            display: table-column;         
+            width: 78%;         
+            }
+            .div-table-col-70 {
+                float: left; /* fix for  buggy browsers */
+                display: table-column;         
+                width: 69%;         
+                }
+         
+            .div-table-col-right {
+            float: left; /* fix for  buggy browsers */
+            display: table-column;         
+            width: 31%;         
+            text-align:right;
+            }
+            .div-table-col-merge {
+            float: left; /* fix for  buggy browsers */
+            display: table-column;         
+            width: 100%;         
+            }
         </style>  
        
-      
-<!--
-        <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
--->
+       
         <pebble-spinner active=[[spinnerFlag]]></pebble-spinner>
+        <br>
         <div id="maindiv" style="display:none">
       
-        <pebble-popover id="filterPopover" class\$="filter" for="" no-overlap="" vertical-align="auto" horizontal-align="right" allow-multiple>
+        <pebble-popover id="filterPopover" class\$="filter" for="" no-overlap="" vertical-align="auto" horizontal-align="auto" allow-multiple>
         
         <pebble-datetime-picker id="rangepicker" clear-selection\$={{clearSelection}} toggle-calendar\$={{toggleCalendar}} for="" picker-type="daterange" show-ranges="" heading-format="ddd, MMM DD YYYY" start-date-text="{{displaygte}}" end-date-text="{{displaylte}}" start-date-value="{{gte}}" end-date-value="{{lte}}" on-date-range-selected="_onUpdateValue" has-value-checked="false" has-value-toggle-enable="[[attributeValuesExistsSearchEnabled]]">
         </pebble-datetime-picker>
         
         <pebble-button class="focus btn btn-success" elevation="1" raised button-text="Select" on-tap="saveHandler"                    
         ></pebble-button>
-        
+        <pebble-button class="btn btn-secondary" elevation="1" raised button-text="Clear Selection" on-tap="clearHandler"                    
+        ></pebble-button>
+
         </pebble-popover>
-     <div style="display:flex" class="grid">
-     <b>Select Date Range</b>
-     <pebble-icon class="m-l-25 icon-size" title="Select Date Range" icon="pebble-icon:calender" on-tap="calendarClickHandler"></pebble-icon>
-     <span class="tag-item-container border">[[selectedDateRange]]</span>
-     </div>
-      <div>
-            <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>          
+    
+            <div>
+              <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>          
               <template is="dom-if" if="true">
                  <div class="caegory-selector contextTreecustom">
                   <rock-classification-selector
@@ -93,114 +151,131 @@ class PluginMyCatalog extends PolymerElement {
                         path-relationship-name="[[_rootRelationshipName]]"
                         tags="{{tags}}"
                         selected-classifications = "{{preselectedClassifications}}">
-                
-                </rock-classification-selector>   
+                                    </rock-classification-selector>   
                 </div>
-                <div class="buttons">
+                 <div class="buttons">
                 <pebble-button dialog-confirm class="btn btn-success"  button-text="Save" on-tap ="_onSave"></pebble-button>
                 <pebble-button dialog-confirm class="btn btn-secondary" button-text="Cancel" on-tap ="_onCancel"></pebble-button>
-               </template> 
-            </pebble-dialog>
-            <pebble-dialog  id= "myDialogCancel" modal dialog-title="Confirmation" scrollable style="width:fit-content">
-                <div style="text-align: center; padding: 13px;">
-                <label> Discard Changes? </label> <br><br>
-                
-                <pebble-button dialog-confirm class="btn btn-success"  button-text="Yes" on-tap ="_yesClick"></pebble-button>
-                <pebble-button dialog-confirm class="btn btn-secondary" button-text="No" on-tap ="_noClick"></pebble-button>
-                </div>
-            </pebble-dialog>   
-        <b>   Taxonomy </b>
-             <pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
-               <div> Selected Taxonomies </div>
-               <div style="display:flex ; flex-wrap: wrap;">
-               <dom-repeat items="{{selectedTax}}">
-                  <template>
-                  <span class="tag-item-container border">{{item}}</span>
-                  </template>
-              </dom-repeat>  
-              </div>
-    
-        </div>
-                     <!--  <pebble-lov id="refcategory" items={{refCatdata}} show-image no-sub-title on-selection-changed="_onListUpdate"></pebble-lov>-->
-               
-                <br><br>
- 
-                      <pebble-combo-box id='multi-select-lov' on-click="_openDataList" items={{refentitydata}}  multi-select label="Filter More With {{referenceEntityShortname}}"> </pebble-combo-box>
-                      <br>  
-                      <pebble-button class="btn-success"
-                        id="btnClick"
-                        button-text="Apply"
-                        noink=""
-                        large-text
-                        on-tap="_applyFilter"></pebble-button> 
-                </div>
+               </div>
+                </template> 
+                </pebble-dialog>
+                <pebble-dialog  id= "myDialogCancel" modal dialog-title="Confirmation" scrollable style="width:fit-content">
+                    <div style="text-align: center; padding: 13px;">
+                    <label> Discard Changes? </label> <br><br>
+                    
+                    <pebble-button dialog-confirm class="btn btn-success"  button-text="Yes" on-tap ="_yesClick"></pebble-button>
+                    <pebble-button dialog-confirm class="btn btn-secondary" button-text="No" on-tap ="_noClick"></pebble-button>
+                    </div>
+                </pebble-dialog>   
         
-            <div layout fullWidth>
-            <div style="display:flex;flex-wrap: wrap;" flow-layout="grid gap:md">
-                <div  id="chart1" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring class="pointer" percentage="[[wfchart1percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[wfchart1.label]]</label>
-                </div>
-
             
-                <div class="pointer" id="chart2" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[wfchart2percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[wfchart2.label]]</label>
-              
-                </div>
-
+            </div>
+    
+<div class="div-table">
+        <div class="div-table-row">
             
-                <div class="pointer" id="chart3" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[wfchart3percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[wfchart3.label]]</label>
-                <!--  <pebble-progress-bar state="danger" min="0" max="100" current="60" isLabeled> </pebble-progress-bar>-->
+            <div class="div-table-col-70">
+                <div class="displayflexwrap">
+                    Taxonomy &nbsp;
+                    <pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
+                    
+                        <dom-repeat items="{{selectedTax}}">
+                        <template>
+                        <span class="tag-item-container border">{{item}}</span>
+                        </template>
+                        </dom-repeat>  
                 </div>
+             </div>
 
-            
-                <div class="pointer" id="chart4" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[wfchart4percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[wfchart4.label]]</label>
-                <!--<pebble-progress-bar state="suucess" min="0" max="100" current="80" isLabeled> </pebble-progress-bar>-->
+             <div class="div-table-col-right">
+                <div style="display:flex" class="grid">
+                    Select Date Range &nbsp;
+                    <pebble-icon class="m-l-25 icon-size" title="Select Date Range" icon="pebble-icon:calender" on-tap="calendarClickHandler"></pebble-icon>
+                    <span class="tag-item-container border">[[selectedDateRange]]</span>
                 </div>
             </div>
-            </div>
 
+         </div>
 
-            <div layout fullWidth>
-            <div  style="display:flex" flow-layout="grid gap:md">
-                <div  id="chart5" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[createdchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[createdchart.label]]</label>
-                </div>
-            
-                <div id="chart6" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[modifiedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[modifiedchart.label]]</label>
-                <!--  <pebble-progress-bar state="warning" min="0" max="100" current="40" isLabeled> </pebble-progress-bar>-->
-                </div>
-
-            
-                <div id="chart7" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[discontinuedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[discontinuedchart.label]]</label>
-                <!--  <pebble-progress-bar state="danger" min="0" max="100" current="60" isLabeled> </pebble-progress-bar>-->
-                </div>
-
-            
-                <div  id="chart8" style="width:100px;" flow-layout="col:3">
-                <pebble-graph-progress-ring percentage="[[publishedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                <label>[[publishedchart.label]]</label>
-                <!--<pebble-progress-bar state="suucess" min="0" max="100" current="80" isLabeled> </pebble-progress-bar>-->
+         <div class="div-table-row">
+            <div class="div-class-col">
+                <div id="refEntityDiv" class="displayflexwrap" >
+                    <div class="tab-title" style="padding:8px"> [[referenceFilter.label]] </div>
+                    <div style="width: 100%;max-width: 250px;">
+                        <pebble-combo-box class="tab-title" id='multi-select-lov'selection-changed="_applyFilter" tag-removed="_applyFilter" on-click="_openDataList" items={{refentitydata}}  multi-select label="Select  [[referenceFilter.label]] "> </pebble-combo-box>
+                    </div>
                 </div>
             </div>
+         </div>
+        
+        <div class="div-table-row">
+          <div class="div-class-col">
+                <div class="div-container">
+                        <div class="avg-item-container">
+                        <b>  Workflow Summary</b>
+                        <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
+                        </div>
+                        <div class="avg-item-container">    
+                        <b>  Status Summary </b>
+                        <pebble-graph-pie id="pie2" data="[[data2]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
+                        </div>
+                        <!--
+                        <div class="displayflexwrap" flow-layout="grid gap:md">
+                            <div  id="chart1" style="width:100px;" flow-layout="col:3">
+                            <pebble-graph-progress-ring class="pointer" percentage="[[wfchart1percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                            <label>[[wfchart1.label]]</label>
+                            </div>
+                                   
+                            <div class="pointer" id="chart2" style="width:100px;" flow-layout="col:3">
+                            <pebble-graph-progress-ring percentage="[[wfchart2percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                            <label>[[wfchart2.label]]</label>
+                            </div>
+                                    
+                            <div class="pointer" id="chart3" style="width:100px;" flow-layout="col:3">
+                            <pebble-graph-progress-ring percentage="[[wfchart3percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                            <label>[[wfchart3.label]]</label>
+                            </div>
+                                    
+                            <div class="pointer" id="chart4" style="width:100px;" flow-layout="col:3">
+                            <pebble-graph-progress-ring percentage="[[wfchart4percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                            <label>[[wfchart4.label]]</label>
+                            </div>
+                        </div>
+                        </div>
+                        <div layout fullWidth>
+                            <div  class="displayflexwrap" flow-layout="grid gap:md">
+                                    <div  id="chart5" style="width:100px;" flow-layout="col:3">
+                                    <pebble-graph-progress-ring percentage="[[createdchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                                    <label>[[createdchart.label]]</label>
+                                    </div>
+                                
+                                    <div id="chart6" style="width:100px;" flow-layout="col:3">
+                                    <pebble-graph-progress-ring percentage="[[modifiedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                                    <label>[[modifiedchart.label]]</label>
+                                    </div>
+                                            
+                                    <div id="chart7" style="width:100px;" flow-layout="col:3">
+                                    <pebble-graph-progress-ring percentage="[[discontinuedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                                    <label>[[discontinuedchart.label]]</label>
+                                    </div>
+                                          
+                                    <div  id="chart8" style="width:100px;" flow-layout="col:3">
+                                    <pebble-graph-progress-ring percentage="[[publishedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
+                                    <label>[[publishedchart.label]]</label>
+                                    </div>
+                             </div>
+                        </div>
+                        -->
+                </div>
             </div>
-       </div>
+         </div>
+</div>
         `;
     }
 
     async _applyFilter() {
 
-        this.spinnerFlag=true;
+        this.spinnerFlag = true;
         //getting selected filter value
         let lov = this.shadowRoot.querySelector('#multi-select-lov');
         let tempArray = new Array();
@@ -214,7 +289,7 @@ class PluginMyCatalog extends PolymerElement {
 
         //Not showing all blocks till data is calculated
         this.spinnerFlag = !(await this.loadCharts());
-
+        /*
         let chart1 = this.shadowRoot.querySelector('#chart1');
         let chart2 = this.shadowRoot.querySelector('#chart2');
         let chart3 = this.shadowRoot.querySelector('#chart3');
@@ -236,30 +311,30 @@ class PluginMyCatalog extends PolymerElement {
 
         if (!this.spinnerFlag) {
             if (this.wfchart1.visible) {
-            chart1.style.display = 'block';
+                chart1.style.display = 'block';
             }
             if (this.wfchart2.visible) {
-            chart2.style.display = 'block';
+                chart2.style.display = 'block';
             }
             if (this.wfchart3.visible) {
-            chart3.style.display = 'block';
+                chart3.style.display = 'block';
             }
             if (this.wfchart4.visible) {
-            chart4.style.display = 'block';
+                chart4.style.display = 'block';
             }
             if (this.createdchart.visible) {
-            chart5.style.display = 'block';
+                chart5.style.display = 'block';
             }
             if (this.modifiedchart.visible) {
-            chart6.style.display = 'block';
+                chart6.style.display = 'block';
             }
             if (this.discontinuedchart.visible) {
-            chart7.style.display = 'block';
+                chart7.style.display = 'block';
             }
             if (this.publishedchart.visible) {
-            chart8.style.display = 'block';
+                chart8.style.display = 'block';
             }
-        }
+        }*/
 
     }
 
@@ -278,8 +353,15 @@ class PluginMyCatalog extends PolymerElement {
             temparry.push(this.tags[t].longName);
         }
         this.selectedTax = temparry;
+
+        if(this.tags.length==0)
+        {
+            this.selectedTax.push("No Taxonomy Selected");
+        }
         // this.treeItems = ObjectUtils.cloneObject(contextTree.selectedClassifications);
         this.shadowRoot.querySelector('#myDialog').close();
+
+        this._applyFilter();
     }
 
     _onCancel() {
@@ -325,8 +407,15 @@ class PluginMyCatalog extends PolymerElement {
         let filterPopover = this.shadowRoot.querySelector('#filterPopover');
         this.selectedDateRange = this.displaygte + " - " + this.displaylte;
         filterPopover.close();
+        this._applyFilter();
     }
 
+    clearHandler() {
+        let filterPopover = this.shadowRoot.querySelector('#filterPopover');
+        this.selectedDateRange = "No Date Selected";
+        filterPopover.close();
+        this._applyFilter();
+    }
     _openPicker() {
         let rangePicker = this.shadowRoot.querySelector('#rangepicker');
         rangePicker.openPicker();
@@ -344,7 +433,7 @@ class PluginMyCatalog extends PolymerElement {
         let requestData = {
             params: {
                 query: {
-                    id: this.referenceEntityShortname + '_entityManageModel',
+                    id: this.referenceFilter.referenceEntityShortname + '_entityManageModel',
                     filters: {
                         typesCriterion: ['entityManageModel']
                     }
@@ -379,7 +468,7 @@ class PluginMyCatalog extends PolymerElement {
                         }
                     ],
                     filters: {
-                        typesCriterion: [this.referenceEntityShortname]
+                        typesCriterion: [this.referenceFilter.referenceEntityShortname]
                     }
                 },
                 fields: {
@@ -649,7 +738,7 @@ class PluginMyCatalog extends PolymerElement {
             "operation": "initiatesearch"
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -668,7 +757,7 @@ class PluginMyCatalog extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -750,7 +839,7 @@ class PluginMyCatalog extends PolymerElement {
         };
 
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -769,7 +858,7 @@ class PluginMyCatalog extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -837,7 +926,7 @@ class PluginMyCatalog extends PolymerElement {
             }
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -856,7 +945,7 @@ class PluginMyCatalog extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -922,7 +1011,7 @@ class PluginMyCatalog extends PolymerElement {
             }
         };
         //adding taxonomy filter if its selected
-        if (this.selectedTax.length > 0) {
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
                     "startswith": this.selectedTax,
@@ -941,7 +1030,7 @@ class PluginMyCatalog extends PolymerElement {
         //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
-                [this.referenceAttrShortname]: {
+                [this.referenceFilter.referenceAttrShortname]: {
                     "startswith": this.selectedFilters,
                     "operator": "_OR",
                     "type": "_STRING",
@@ -998,7 +1087,7 @@ class PluginMyCatalog extends PolymerElement {
                                 }
                             }
                         ],
-                        
+
                         propertiesCriterion: []
                     }
                 },
@@ -1007,59 +1096,59 @@ class PluginMyCatalog extends PolymerElement {
                 }
             }
         };
-            //adding taxonomy filter if its selected
-            if (this.selectedTax.length > 0) {
-                let taxObj = {
-                    [this.taxonomyAttrShortname]: {
-                        "startswith": this.selectedTax,
-                        "operator": "_OR",
-                        "type": "_STRING",
-                        "valueContexts": [
-                            {
-                                "source": "internal",
-                                "locale": "en-US"
-                            }
-                        ]
-                    }
-                };
-                reqbody.params.query.filters.attributesCriterion.push(taxObj);
-            }
-            //adding refattr filter if its selected
-            if (this.selectedFilters.length > 0) {
-                let filterObj = {
-                    [this.referenceAttrShortname]: {
-                        "startswith": this.selectedFilters,
-                        "operator": "_OR",
-                        "type": "_STRING",
-                        "valueContexts": [
-                            {
-                                "source": "internal",
-                                "locale": "en-US"
-                            }
-                        ]
-                    }
-                };
-                reqbody.params.query.filters.attributesCriterion.push(filterObj);
-            }
-    
-            //adding date criteria if date range is selected
-            let rangePicker = this.shadowRoot.querySelector('#rangepicker');
-            if (this.selectedDateRange != "No Date Selected") {
-                let dateCriteria = {
-                    "createdDate": {
-                        "gte": moment(this.gte).format(rangePicker._isoDateTimeFormat),
-                        "lte": moment(this.lte).format(rangePicker._isoDateTimeFormat),
-                        "type": "_DATETIME",
-                        "valueContexts": [
-                            {
-                                "source": "internal",
-                                "locale": "en-US"
-                            }
-                        ]
-                    }
-                };
-                reqbody.params.query.filters.propertiesCriterion.push(dateCriteria);
-            }
+        //adding taxonomy filter if its selected
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let taxObj = {
+                [this.taxonomyAttrShortname]: {
+                    "startswith": this.selectedTax,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqbody.params.query.filters.attributesCriterion.push(taxObj);
+        }
+        //adding refattr filter if its selected
+        if (this.selectedFilters.length > 0) {
+            let filterObj = {
+                [this.referenceFilter.referenceAttrShortname]: {
+                    "startswith": this.selectedFilters,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqbody.params.query.filters.attributesCriterion.push(filterObj);
+        }
+
+        //adding date criteria if date range is selected
+        let rangePicker = this.shadowRoot.querySelector('#rangepicker');
+        if (this.selectedDateRange != "No Date Selected") {
+            let dateCriteria = {
+                "createdDate": {
+                    "gte": moment(this.gte).format(rangePicker._isoDateTimeFormat),
+                    "lte": moment(this.lte).format(rangePicker._isoDateTimeFormat),
+                    "type": "_DATETIME",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqbody.params.query.filters.propertiesCriterion.push(dateCriteria);
+        }
         let res = await this._sendRequestToGetCount(reqbody);
         return res.response.content.totalRecords;
     }
@@ -1074,10 +1163,13 @@ class PluginMyCatalog extends PolymerElement {
         let chart7 = this.shadowRoot.querySelector('#chart7');
         let chart8 = this.shadowRoot.querySelector('#chart8');
 
+
+        let ReferenceFilterDiv=this.shadowRoot.querySelector("#refEntityDiv");
+
         let workflowdata = new Array();
 
         if (this.wfchart1.visible) {
-            chart1.style.display = 'block';
+         //   chart1.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart1.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart1.workflowshortname,
@@ -1094,15 +1186,15 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label: this.wfchart1.workflowstepshortname,
-                color: '#129CE6'
+                label: this.wfchart1.label,
+                color: '#F6D40C'
             });
         } else {
-            chart1.style.display = 'none';
+           // chart1.style.display = 'none';
         }
 
         if (this.wfchart2.visible) {
-            chart2.style.display = 'block';
+          //  chart2.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart2.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart2.workflowshortname,
@@ -1118,15 +1210,15 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label: this.wfchart2.workflowstepshortname,
-                color: '#785DA8'
+                label: this.wfchart2.label,
+                color: '#36B44A'
             });
         } else {
-            chart2.style.display = 'none';
+          //  chart2.style.display = 'none';
         }
 
         if (this.wfchart3.visible) {
-            chart3.style.display = 'block';
+         //   chart3.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart3.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart3.workflowshortname,
@@ -1142,15 +1234,15 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label: this.wfchart3.workflowstepshortname,
-                color: '#F78E1E'
+                label: this.wfchart3.label,
+                color: '#EE204C'
             });
         } else {
-            chart3.style.display = 'none';
+         //   chart3.style.display = 'none';
         }
 
         if (this.wfchart4.visible) {
-            chart4.style.display = 'block';
+          //  chart4.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart4.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart4.workflowshortname,
@@ -1166,15 +1258,16 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label: this.wfchart4.workflowstepshortname,
-                color: '#F6D40C'
+                label: this.wfchart4.label,
+                color: '#129CE6'
             });
         } else {
-            chart4.style.display = 'none';
+         //   chart4.style.display = 'none';
         }
 
+        let entitydata=new Array();
         if (this.createdchart.visible) {
-            chart5.style.display = 'block';
+          //  chart5.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.createdchart.entityTypeshortname);
             //passing modifieddate attribute name too as we need to check it has no value
             let count = await this._getCreatedCount(
@@ -1183,12 +1276,23 @@ class PluginMyCatalog extends PolymerElement {
                 this.modifiedchart.attributeshortname
             );
             this.createdchartpercentage = (count * 100) / totalEntities;
+            entitydata.push({
+                id: 1,
+                key: this.createdchart.label,
+                value: this.createdchartpercentage,
+                count: count,
+                unit: '%',
+                clickable: true,
+                section: 'processing',
+                label:this.createdchart.label,
+                color: '#F78E1E'
+            });
         } else {
-            chart5.style.display = 'none';
+          //  chart5.style.display = 'none';
         }
 
         if (this.modifiedchart.visible) {
-            chart6.style.display = 'block';
+         //   chart6.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.modifiedchart.entityTypeshortname);
             //passing discontinued attribute name too as we need to check entity is not discontinued
             let count = await this._getModifiedCount(
@@ -1198,12 +1302,23 @@ class PluginMyCatalog extends PolymerElement {
                 this.discontinuedchart.attributevalue
             );
             this.modifiedchartpercentage = (count * 100) / totalEntities;
+            entitydata.push({
+                id: 2,
+                key: this.modifiedchart.label,
+                value: this.modifiedchartpercentage,
+                count: count,
+                unit: '%',
+                clickable: true,
+                section: 'processing',
+                label:this.modifiedchart.label,
+                color: '#785DA8'
+            });
         } else {
-            chart6.style.display = 'none';
+         //   chart6.style.display = 'none';
         }
 
         if (this.discontinuedchart.visible) {
-            chart7.style.display = 'block';
+          //  chart7.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.discontinuedchart.entityTypeshortname);
             let count = await this._getDiscontinuedCount(
                 this.discontinuedchart.entityTypeshortname,
@@ -1211,12 +1326,23 @@ class PluginMyCatalog extends PolymerElement {
                 this.discontinuedchart.attributevalue
             );
             this.discontinuedchartpercentage = (count * 100) / totalEntities;
+            entitydata.push({
+                id: 3,
+                key: this.discontinuedchart.label,
+                value: this.discontinuedchartpercentage,
+                count: count,
+                unit: '%',
+                clickable: true,
+                section: 'processing',
+                label:this.discontinuedchart.label,
+                color: '#EE204C'
+            });
         } else {
-            chart7.style.display = 'none';
+          //  chart7.style.display = 'none';
         }
 
         if (this.publishedchart.visible) {
-            chart8.style.display = 'block';
+          //  chart8.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.publishedchart.entityTypeshortname);
             let count = await this._getPublishedCount(
                 this.publishedchart.entityTypeshortname,
@@ -1224,17 +1350,33 @@ class PluginMyCatalog extends PolymerElement {
                 this.publishedchart.attributevalue
             );
             this.publishedchartpercentage = (count * 100) / totalEntities;
+            entitydata.push({
+                id: 4,
+                key: this.publishedchart.label,
+                value: this.publishedchartpercentage,
+                count: count,
+                unit: '%',
+                clickable: true,
+                section: 'processing',
+                label:this.publishedchart.label,
+                color: '#36B44A'
+            });
         } else {
-            chart8.style.display = 'none';
+         //   chart8.style.display = 'none';
         }
 
+        if (this.referenceFilter.visible) {
+            ReferenceFilterDiv.style.display = 'block';
+           } else {
+                ReferenceFilterDiv.style.display = 'none';
+           }
         this.data = workflowdata;
-
+        this.data2=entitydata;
         return true;
     }
 
     pie1Click(e) {
-     //   alert(e.target._getSelectedSliceDetails(e));
+        //   alert(e.target._getSelectedSliceDetails(e));
     }
 
     static get properties() {
@@ -1267,28 +1409,17 @@ class PluginMyCatalog extends PolymerElement {
                 type: Array,
                 value: function () {
                     return [
-                        {
-                            id: 1,
-                            key: 'success',
-                            value: '70.0',
-                            count: '19',
-                            unit: '%',
-                            clickable: true,
-                            section: 'processing',
-                            label: 'Success',
-                            color: '#09c021'
-                        },
-                        {
-                            id: 2,
-                            key: 'Failure',
-                            value: '30.0',
-                            count: '3',
-                            unit: '%',
-                            clickable: true,
-                            section: 'processing',
-                            label: 'Failure',
-                            color: '#09cF21'
-                        }
+                      
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
+            data2: {
+                type: Array,
+                value: function () {
+                    return [
+                      
                     ];
                 },
                 reflectToAttribute: true,
@@ -1303,14 +1434,20 @@ class PluginMyCatalog extends PolymerElement {
                 type: String,
                 reflectToAttribute: true
             },
-            referenceAttrShortname: {
-                type: String,
+            referenceFilter:{
+                type: Object,
+                value: function () {
+                    return {
+                        visible: false,
+                        label: '',
+                        referenceAttrShortname: '',
+                        referenceEntityShortname: ''
+                      
+                    };
+                },
                 reflectToAttribute: true
             },
-            referenceEntityShortname: {
-                type: String,
-                reflectToAttribute: true
-            },
+
             taxonomyAttrShortname: {
                 type: String,
                 reflectToAttribute: true
@@ -1477,7 +1614,9 @@ class PluginMyCatalog extends PolymerElement {
                 type: Array,
                 reflectToAttribute: true,
                 value: function () {
-                    return [];
+                    return [
+                        "No Taxonomy Selected"
+                    ];
                 },
             },
             selectedFilters: {
@@ -1629,7 +1768,10 @@ class PluginMyCatalog extends PolymerElement {
                         }
                     }
                 }
+                if(this.referenceFilter.visible)
+                {
                 this._getRefEntityModel();
+                }
             }
         }
     }
@@ -1640,7 +1782,7 @@ class PluginMyCatalog extends PolymerElement {
 
     ready() {
         super.ready();
-        this.$.chart1.addEventListener('click', e => {
+      /*  this.$.chart1.addEventListener('click', e => {
             this.chart1Click(e);
         });
         this.$.chart2.addEventListener('click', e => {
@@ -1666,7 +1808,8 @@ class PluginMyCatalog extends PolymerElement {
         });
         //   this.$.pie1.addEventListener('click', e => {
         //     this.pie1Click(e);
-        // });
+        // });*/
+        
     }
 }
 

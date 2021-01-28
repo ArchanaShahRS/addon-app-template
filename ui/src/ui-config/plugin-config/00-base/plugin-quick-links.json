@@ -1,0 +1,46 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-quick-links-base_uiConfig",
+            "name": "plugin_plugin-quick-links",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-quick-links",
+                            "sysApp": "_DEFAULT",
+                            "sysDomain": "_DEFAULT",
+                            "sysEntityType": "_DEFAULT",
+                            "sysRelationship": "_DEFAULT",
+                            "sysRole": "_DEFAULT"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties":{
+                                    "WorkflowDetail":{
+                                        "visible": false,
+                                        "label": "",
+                                        "workflowshortname": "collaboration",
+                                        "workflowstepshortname": "tobeapproved",
+                                        "entityTypeshortname": "stagingitem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -22,23 +22,16 @@ class PluginThingsICanDo extends PolymerElement {
     static get template() {
         return html`
             <style>
-                .block {
-                    display: block;
-                    border: solid;
-                    border-width: thin;
-                    border-color: darkgrey;
-                    border-radius: 6px;
-                }
-
-                .iconblock {
-                    border: solid;
-                    border-width: thin;
-                    padding: 2px;
-                    margin-left: 5px;
-                    margin-right: 5px;
-                    border-color: darkgrey;
-                    border-radius: 2px;
-                }
+            a{
+                color: #364653;
+                text-decoration: none;
+                line-height: 16px;
+                padding: 5px;
+            }
+              
+            pebble-icon{
+                height: 15px;
+            }
             </style>
 
             <ul>
