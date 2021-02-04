@@ -20,6 +20,9 @@ import { DataObjectManager } from '@riversandtechnologies/ui-platform-dataaccess
 import { AppInstanceManager } from '@riversandtechnologies/ui-platform-elements/lib/managers/app-instance-manager.js';
 import { DataAccessManager } from '@riversandtechnologies/ui-platform-dataaccess/lib/index.js';
 
+import './JS/Chart.js';
+import './JS/utils.js';
+
 class PluginMyCatalog extends PolymerElement {
     static get is() {
         return 'plugin-my-catalog';
@@ -29,36 +32,96 @@ class PluginMyCatalog extends PolymerElement {
         return html` 
 
         <style>
+        canvas{
+		    -moz-user-select: none;
+		    -webkit-user-select: none;
+	       	-ms-user-select: none;
+              }
+                /*
+            * DOM element rendering detection
+            * https://davidwalsh.name/detect-node-insertion
+            */
+            @keyframes chartjs-render-animation {
+                from { opacity: 0.99; }
+                to { opacity: 1; }
+            }
+
+            .chartjs-render-monitor {
+                animation: chartjs-render-animation 0.001s;
+            }
+
+            /*
+            * DOM element resizing detection
+            * https://github.com/marcj/css-element-queries
+            */
+            .chartjs-size-monitor,
+            .chartjs-size-monitor-expand,
+            .chartjs-size-monitor-shrink {
+                position: absolute;
+                direction: ltr;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                overflow: hidden;
+                pointer-events: none;
+                visibility: hidden;
+                z-index: -1;
+            }
+
+            .chartjs-size-monitor-expand > div {
+                position: absolute;
+                width: 1000000px;
+                height: 1000000px;
+                left: 0;
+                top: 0;
+            }
+
+            .chartjs-size-monitor-shrink > div {
+                position: absolute;
+                width: 200%;
+                height: 200%;
+                left: 0;
+                top: 0;
+            }
+         #filterPopover{​​​​​​​​
+                position:absolute !important;
+                left:540px !important;
+                top:66px !important;
+            }​​​​​​​​    
         .pointer {cursor: pointer;}
         .contextTreecustom {
            height: 82vh;
         }
         .avg-item-container {
             border: solid 1px #d2d7dd;
-            border-radius: 3px;      
-            padding:20px 160px 20px 160px;
+            border-radius: 3px;
+            padding: 2% 2% 2% 2%;
             font-size: 14px;
             position: relative;
             background: #fff;
-            margin: 10px;
+            margin:0.5% 0.5% 0.5% 0.5%;
             max-width: 100%;
-            min-width:  20px;
+            min-width: 20px;
             line-height: 20px;
             flex-direction: row;
             align-items: center;
+            text-align: center;
+            width: 50%;
         }
         .div-container {
-            display:flex;
+            display: flex;
             border: solid 1px #d2d7dd;
-            border-radius: 3px;      
-            padding: 15px 15px 15px 15px;
+            border-radius: 3px;
+            padding: 1%;
             position: relative;
             background: #fff;
-            margin: 4px;
+            margin: 1%;
             max-width: 100%;
-            min-width:  20px;
+            min-width: 20px;
             flex-direction: row;
             align-items: center;
+            width: 95%;
         }
     
         .displayflexwrap{
@@ -73,7 +136,7 @@ class PluginMyCatalog extends PolymerElement {
             font-size: 12px;
             position: relative;
             background: #fff;
-            margin: 4px;
+            margin: 0px 0px 4px 4px;
             max-width: 100%;
             min-width:  20px;
             line-height: 20px;
@@ -114,15 +177,21 @@ class PluginMyCatalog extends PolymerElement {
             display: table-column;         
             width: 100%;         
             }
+
+            .div-table-col {
+                float: left; /* fix for  buggy browsers */
+                display: table-column;         
+                width: 100%;         
+              }
+             
         </style>  
        
        
         <pebble-spinner active=[[spinnerFlag]]></pebble-spinner>
         <br>
         <div id="maindiv" style="display:none">
-      
-        <pebble-popover id="filterPopover" class\$="filter" for="" no-overlap="" vertical-align="auto" horizontal-align="auto" allow-multiple>
-        
+          
+        <pebble-popover id="filterPopover" for="" vertical-align="top" horizontal-align="auto"   no-overlap>
         <pebble-datetime-picker id="rangepicker" clear-selection\$={{clearSelection}} toggle-calendar\$={{toggleCalendar}} for="" picker-type="daterange" show-ranges="" heading-format="ddd, MMM DD YYYY" start-date-text="{{displaygte}}" end-date-text="{{displaylte}}" start-date-value="{{gte}}" end-date-value="{{lte}}" on-date-range-selected="_onUpdateValue" has-value-checked="false" has-value-toggle-enable="[[attributeValuesExistsSearchEnabled]]">
         </pebble-datetime-picker>
         
@@ -190,7 +259,7 @@ class PluginMyCatalog extends PolymerElement {
              <div class="div-table-col-right">
                 <div style="display:flex" class="grid">
                     Select Date Range &nbsp;
-                    <pebble-icon class="m-l-25 icon-size" title="Select Date Range" icon="pebble-icon:calender" on-tap="calendarClickHandler"></pebble-icon>
+                    <pebble-icon id="iconcal" class="m-l-25 icon-size" title="Select Date Range" icon="pebble-icon:calender" on-tap="calendarClickHandler"></pebble-icon>
                     <span class="tag-item-container border">[[selectedDateRange]]</span>
                 </div>
             </div>
@@ -213,64 +282,80 @@ class PluginMyCatalog extends PolymerElement {
                 <div class="div-container">
                         <div class="avg-item-container">
                         <b>  Workflow Summary</b>
-                        <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
+                            <div id="canvas-holder" style="width:100%">
+                                <canvas id="chart-area"></canvas>
+                            </div>
+
+                      <!--  <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>-->
                         </div>
                         <div class="avg-item-container">    
                         <b>  Status Summary </b>
-                        <pebble-graph-pie id="pie2" data="[[data2]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
+                            <div id="canvas-holder2" style="width:100%">
+                                 <canvas id="chart-area2"></canvas>
+                            </div>
+                        <!--<pebble-graph-pie id="pie2" data="[[data2]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>-->
                         </div>
                         <!--
-                        <div class="displayflexwrap" flow-layout="grid gap:md">
-                            <div  id="chart1" style="width:100px;" flow-layout="col:3">
-                            <pebble-graph-progress-ring class="pointer" percentage="[[wfchart1percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                            <label>[[wfchart1.label]]</label>
+                            <div class="avg-item-container">    
+                            <b>  Onboarding Summary </b>
+                                <div id="canvas-holder3" style="width:100%">
+                                    <canvas id="chart-area3"></canvas>
                             </div>
-                                   
-                            <div class="pointer" id="chart2" style="width:100px;" flow-layout="col:3">
-                            <pebble-graph-progress-ring percentage="[[wfchart2percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                            <label>[[wfchart2.label]]</label>
+                                 <pebble-graph-pie id="pie3" data="[[data3]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
                             </div>
-                                    
-                            <div class="pointer" id="chart3" style="width:100px;" flow-layout="col:3">
-                            <pebble-graph-progress-ring percentage="[[wfchart3percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                            <label>[[wfchart3.label]]</label>
-                            </div>
-                                    
-                            <div class="pointer" id="chart4" style="width:100px;" flow-layout="col:3">
-                            <pebble-graph-progress-ring percentage="[[wfchart4percentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                            <label>[[wfchart4.label]]</label>
-                            </div>
-                        </div>
-                        </div>
-                        <div layout fullWidth>
-                            <div  class="displayflexwrap" flow-layout="grid gap:md">
-                                    <div  id="chart5" style="width:100px;" flow-layout="col:3">
-                                    <pebble-graph-progress-ring percentage="[[createdchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                                    <label>[[createdchart.label]]</label>
-                                    </div>
-                                
-                                    <div id="chart6" style="width:100px;" flow-layout="col:3">
-                                    <pebble-graph-progress-ring percentage="[[modifiedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                                    <label>[[modifiedchart.label]]</label>
-                                    </div>
-                                            
-                                    <div id="chart7" style="width:100px;" flow-layout="col:3">
-                                    <pebble-graph-progress-ring percentage="[[discontinuedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                                    <label>[[discontinuedchart.label]]</label>
-                                    </div>
-                                          
-                                    <div  id="chart8" style="width:100px;" flow-layout="col:3">
-                                    <pebble-graph-progress-ring percentage="[[publishedchartpercentage]]" _showPercentage="true"></pebble-graph-progress-ring>
-                                    <label>[[publishedchart.label]]</label>
-                                    </div>
-                             </div>
-                        </div>
                         -->
+                      
                 </div>
             </div>
          </div>
 </div>
         `;
+    }
+
+    _onChartClick(event, ele) {
+
+        let datasetindex = ele[0]._datasetIndex;
+        //  Getting data set , for sample item entity type data set
+        let dataset = ele[0]._chart.config.data.datasets[datasetindex];
+        let dataindex = ele[0]._index;
+        //  Once we get dataset , the data which got selected on data set that count we can get here
+        switch (dataindex) {
+            case 0:
+                this.piechart1Section1Click();
+                break;
+            case 1:
+                this.piechart1Section2Click();
+                break;
+            case 2:
+                this.piechart1Section3Click();
+                break;
+            case 3:
+                this.piechart1Section4Click();
+                break;
+        }
+
+        let data = dataset.data[dataindex];
+        console.log("Data Clicked :" + data);
+    }
+    _onChart2Click(event, ele) {
+
+        let datasetindex = ele[0]._datasetIndex;
+        //  Getting data set , for sample item entity type data set
+        let dataset = ele[0]._chart.config.data.datasets[datasetindex];
+        let dataindex = ele[0]._index;
+        //  Once we get dataset , the data which got selected on data set that count we can get here
+        let data = dataset.data[dataindex];
+        console.log("Data Clicked 2:" + data);
+    }
+    _onChart3Click(event, ele) {
+
+        let datasetindex = ele[0]._datasetIndex;
+        //  Getting data set , for sample item entity type data set
+        let dataset = ele[0]._chart.config.data.datasets[datasetindex];
+        let dataindex = ele[0]._index;
+        //  Once we get dataset , the data which got selected on data set that count we can get here
+        let data = dataset.data[dataindex];
+        console.log("Data Clicked 3:" + data);
     }
 
     async _applyFilter() {
@@ -289,52 +374,6 @@ class PluginMyCatalog extends PolymerElement {
 
         //Not showing all blocks till data is calculated
         this.spinnerFlag = !(await this.loadCharts());
-        /*
-        let chart1 = this.shadowRoot.querySelector('#chart1');
-        let chart2 = this.shadowRoot.querySelector('#chart2');
-        let chart3 = this.shadowRoot.querySelector('#chart3');
-        let chart4 = this.shadowRoot.querySelector('#chart4');
-        let chart5 = this.shadowRoot.querySelector('#chart5');
-        let chart6 = this.shadowRoot.querySelector('#chart6');
-        let chart7 = this.shadowRoot.querySelector('#chart7');
-        let chart8 = this.shadowRoot.querySelector('#chart8');
-
-        //Hiding all charts
-        chart1.style.display = 'none';
-        chart2.style.display = 'none';
-        chart3.style.display = 'none';
-        chart4.style.display = 'none';
-        chart5.style.display = 'none';
-        chart6.style.display = 'none';
-        chart7.style.display = 'none';
-        chart8.style.display = 'none';
-
-        if (!this.spinnerFlag) {
-            if (this.wfchart1.visible) {
-                chart1.style.display = 'block';
-            }
-            if (this.wfchart2.visible) {
-                chart2.style.display = 'block';
-            }
-            if (this.wfchart3.visible) {
-                chart3.style.display = 'block';
-            }
-            if (this.wfchart4.visible) {
-                chart4.style.display = 'block';
-            }
-            if (this.createdchart.visible) {
-                chart5.style.display = 'block';
-            }
-            if (this.modifiedchart.visible) {
-                chart6.style.display = 'block';
-            }
-            if (this.discontinuedchart.visible) {
-                chart7.style.display = 'block';
-            }
-            if (this.publishedchart.visible) {
-                chart8.style.display = 'block';
-            }
-        }*/
 
     }
 
@@ -354,8 +393,7 @@ class PluginMyCatalog extends PolymerElement {
         }
         this.selectedTax = temparry;
 
-        if(this.tags.length==0)
-        {
+        if (this.tags.length == 0) {
             this.selectedTax.push("No Taxonomy Selected");
         }
         // this.treeItems = ObjectUtils.cloneObject(contextTree.selectedClassifications);
@@ -492,16 +530,15 @@ class PluginMyCatalog extends PolymerElement {
         }
         this.refentitydata = tempArray;
     }
-
-
     _redirectTo(appName, queryParam) {
         let queryparam = { state: JSON.stringify(queryParam) };
         AppInstanceManager.navigateToRoute(appName, queryparam);
     }
 
-    chart1Click(e) {
+    piechart1Section1Click() {
         //redirect with parameter
         let queryParam = {
+            attributes:{},
             wfName: this.wfchart1.workflowshortname,
             wfShortName: this.wfchart1.workflowshortname,
             wfActivityName: this.wfchart1.workflowstepshortname,
@@ -513,11 +550,30 @@ class PluginMyCatalog extends PolymerElement {
                 }
             ]
         };
+        //If taxonomy is available
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
+        //IF date is selected
+        if(this.selectedDateRange.length>0 && this.selectedDateRange!="No Date Selected")
+        {   
+           queryParam.attributes.rsInternalGenericCreatedDate=this.selectedDateRange;
+        }
         this._redirectTo('search-thing', queryParam);
     }
-    chart2Click(e) {
+    piechart1Section2Click() {
         //redirect with parameter
         let queryParam = {
+            attributes:{},
             wfName: this.wfchart2.workflowshortname,
             wfShortName: this.wfchart2.workflowshortname,
             wfActivityName: this.wfchart2.workflowstepshortname,
@@ -529,12 +585,25 @@ class PluginMyCatalog extends PolymerElement {
                 }
             ]
         };
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
     }
 
-    chart3Click(e) {
+    piechart1Section3Click() {
         //redirect with parameter
         let queryParam = {
+            attributes:{},
             wfName: this.wfchart3.workflowshortname,
             wfShortName: this.wfchart3.workflowshortname,
             wfActivityName: this.wfchart3.workflowstepshortname,
@@ -546,11 +615,24 @@ class PluginMyCatalog extends PolymerElement {
                 }
             ]
         };
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
     }
-    chart4Click(e) {
+    piechart1Section4Click() {
         //redirect with parameter
         let queryParam = {
+            attributes:{},
             wfName: this.wfchart4.workflowshortname,
             wfShortName: this.wfchart4.workflowshortname,
             wfActivityName: this.wfchart4.workflowstepshortname,
@@ -562,6 +644,18 @@ class PluginMyCatalog extends PolymerElement {
                 }
             ]
         };
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
     }
 
@@ -607,59 +701,78 @@ class PluginMyCatalog extends PolymerElement {
     }
 
     async _getTotalEntities(entitytype) {
-        let reqBody = {
-            params: {
-                query: {
-                    contexts: [],
-                    filters: {
-                        typesCriterion: [entitytype]
+        let requestData = {
+            "params": {
+                "query": {
+                    "contexts": [],
+                    "filters": {
+                        "typesCriterion": [entitytype],
+                        "attributesCriterion": [],
+                        "propertiesCriterion": [],
                     }
                 },
-                options: {
-                    maxRecords: 200
+                "options": {
+                    "maxRecords": 200
                 }
             }
         };
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let taxObj = {
+                [this.taxonomyAttrShortname]: {
+                    "startswith": this.selectedTax,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            requestData.params.query.filters.attributesCriterion.push(taxObj);
+        }
+        //adding refattr filter if its selected
+        if (this.selectedFilters.length > 0) {
+            let filterObj = {
+                [this.referenceFilter.referenceAttrShortname]: {
+                    "startswith": this.selectedFilters,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            requestData.params.query.filters.attributesCriterion.push(filterObj);
+        }
 
-        let res = await this._sendRequestToGetCount(reqBody);
+        //adding date criteria if date range is selected
+        let rangePicker = this.shadowRoot.querySelector('#rangepicker');
+        if (this.selectedDateRange != "No Date Selected") {
+            let dateCriteria = {
+                "createdDate": {
+                    "gte": moment(this.gte).format(rangePicker._isoDateTimeFormat),
+                    "lte": moment(this.lte).format(rangePicker._isoDateTimeFormat),
+                    "type": "_DATETIME",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            requestData.params.query.filters.propertiesCriterion.push(dateCriteria);
+        }
+
+        let res = await this._sendRequestToGetCount(requestData);
         return res.response.content.totalRecords;
     }
     async _getEntitiesCountIn(wfname, entitytype, activityname) {
-        /*
-        let reqBody = {
-            params: {
-                query: {
-                    contexts: [
-                        {
-                            self: 'self',
-                            workflow: wfname
-                        }
-                    ],
-                    filters: {
-                        typesCriterion: [entitytype],
-                        attributesCriterion: [
-                            {
-                                activities: {
-                                    attributes: [
-                                        {
-                                            activityName: {
-                                                eq: activityname
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                },
-                options: {
-                    maxRecords: 200
-                }
-            }
-        };
-
-        let res = await this._sendRequestToGetGovernCount(reqBody);
-        return res.response.content.totalRecords;*/
 
         let requestData = {
             "params": {
@@ -1153,23 +1266,101 @@ class PluginMyCatalog extends PolymerElement {
         return res.response.content.totalRecords;
     }
 
+    async _getHavingItemsCount(entitytype, attrname, attrval) {
+        let reqbody = {
+            params: {
+                query: {
+                    filters: {
+                        typesCriterion: [entitytype],
+                        attributesCriterion: [
+                            {
+                                [attrname]: {
+                                    exact: attrval,
+                                    type: '_STRING',
+                                    valueContexts: [
+                                        {
+                                            source: 'internal',
+                                            locale: 'en-US'
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+
+                        propertiesCriterion: []
+                    }
+                },
+                fields: {
+                    attributes: ['_ALL']
+                }
+            }
+        };
+        //adding taxonomy filter if its selected
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let taxObj = {
+                [this.taxonomyAttrShortname]: {
+                    "startswith": this.selectedTax,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqbody.params.query.filters.attributesCriterion.push(taxObj);
+        }
+        //adding refattr filter if its selected
+        if (this.selectedFilters.length > 0) {
+            let filterObj = {
+                [this.referenceFilter.referenceAttrShortname]: {
+                    "startswith": this.selectedFilters,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqbody.params.query.filters.attributesCriterion.push(filterObj);
+        }
+
+        //adding date criteria if date range is selected
+        let rangePicker = this.shadowRoot.querySelector('#rangepicker');
+        if (this.selectedDateRange != "No Date Selected") {
+            let dateCriteria = {
+                "createdDate": {
+                    "gte": moment(this.gte).format(rangePicker._isoDateTimeFormat),
+                    "lte": moment(this.lte).format(rangePicker._isoDateTimeFormat),
+                    "type": "_DATETIME",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqbody.params.query.filters.propertiesCriterion.push(dateCriteria);
+        }
+        let res = await this._sendRequestToGetCount(reqbody);
+        return res.response.content.totalRecords;
+    }
     async loadCharts() {
-        let chart1 = this.shadowRoot.querySelector('#chart1');
-        let chart2 = this.shadowRoot.querySelector('#chart2');
-        let chart3 = this.shadowRoot.querySelector('#chart3');
-        let chart4 = this.shadowRoot.querySelector('#chart4');
-        let chart5 = this.shadowRoot.querySelector('#chart5');
-        let chart6 = this.shadowRoot.querySelector('#chart6');
-        let chart7 = this.shadowRoot.querySelector('#chart7');
-        let chart8 = this.shadowRoot.querySelector('#chart8');
 
-
-        let ReferenceFilterDiv=this.shadowRoot.querySelector("#refEntityDiv");
+        let ReferenceFilterDiv = this.shadowRoot.querySelector("#refEntityDiv");
 
         let workflowdata = new Array();
-
+        let workflowdatacount = new Array();
+        let pieBgColor = new Array();
+        let pieLabel = new Array();
         if (this.wfchart1.visible) {
-         //   chart1.style.display = 'block';
+            //   chart1.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart1.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart1.workflowshortname,
@@ -1177,7 +1368,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.wfchart1.workflowstepshortname
             );
             this.wfchart1percentage = (count * 100) / totalEntities;
-
+            if (this.wfchart1percentage != 0) {
+                this.wfchart1percentage = this.wfchart1percentage.toFixed(2);
+            }
             workflowdata.push({
                 id: 1,
                 key: this.wfchart1.workflowstepshortname,
@@ -1189,12 +1382,16 @@ class PluginMyCatalog extends PolymerElement {
                 label: this.wfchart1.label,
                 color: '#F6D40C'
             });
+
+            workflowdatacount.push(count);
+            pieBgColor.push('#F6D40C');
+            pieLabel.push(this.wfchart1.label);
         } else {
-           // chart1.style.display = 'none';
+            // chart1.style.display = 'none';
         }
 
         if (this.wfchart2.visible) {
-          //  chart2.style.display = 'block';
+            //  chart2.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart2.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart2.workflowshortname,
@@ -1202,6 +1399,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.wfchart2.workflowstepshortname
             );
             this.wfchart2percentage = (count * 100) / totalEntities;
+            if (this.wfchart2percentage != 0) {
+                this.wfchart2percentage = this.wfchart2percentage.toFixed(2);
+            }
             workflowdata.push({
                 id: 2,
                 key: this.wfchart2.workflowstepshortname,
@@ -1213,12 +1413,16 @@ class PluginMyCatalog extends PolymerElement {
                 label: this.wfchart2.label,
                 color: '#36B44A'
             });
+
+            workflowdatacount.push(count);
+            pieBgColor.push('#36B44A');
+            pieLabel.push(this.wfchart2.label);
         } else {
-          //  chart2.style.display = 'none';
+            //  chart2.style.display = 'none';
         }
 
         if (this.wfchart3.visible) {
-         //   chart3.style.display = 'block';
+            //   chart3.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart3.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart3.workflowshortname,
@@ -1226,6 +1430,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.wfchart3.workflowstepshortname
             );
             this.wfchart3percentage = (count * 100) / totalEntities;
+            if (this.wfchart3percentage != 0) {
+                this.wfchart3percentage = this.wfchart3percentage.toFixed(2);
+            }
             workflowdata.push({
                 id: 3,
                 key: this.wfchart3.workflowstepshortname,
@@ -1237,12 +1444,15 @@ class PluginMyCatalog extends PolymerElement {
                 label: this.wfchart3.label,
                 color: '#EE204C'
             });
+            workflowdatacount.push(count);
+            pieBgColor.push('#EE204C');
+            pieLabel.push(this.wfchart3.label);
         } else {
-         //   chart3.style.display = 'none';
+            //   chart3.style.display = 'none';
         }
 
         if (this.wfchart4.visible) {
-          //  chart4.style.display = 'block';
+            //  chart4.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.wfchart4.entityTypeshortname);
             let count = await this._getEntitiesCountIn(
                 this.wfchart4.workflowshortname,
@@ -1250,6 +1460,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.wfchart4.workflowstepshortname
             );
             this.wfchart4percentage = (count * 100) / totalEntities;
+            if (this.wfchart4percentage != 0) {
+                this.wfchart4percentage = this.wfchart4percentage.toFixed(2);
+            }
             workflowdata.push({
                 id: 4,
                 key: this.wfchart4.workflowstepshortname,
@@ -1261,13 +1474,17 @@ class PluginMyCatalog extends PolymerElement {
                 label: this.wfchart4.label,
                 color: '#129CE6'
             });
-        } else {
-         //   chart4.style.display = 'none';
+            workflowdatacount.push(count);
+            pieBgColor.push('#129CE6');
+            pieLabel.push(this.wfchart4.label);
         }
+        let entitydata = new Array();
+        let entitydatacount = new Array();
+        let pieBgColor2 = new Array();
+        let pieLabel2 = new Array();
 
-        let entitydata=new Array();
         if (this.createdchart.visible) {
-          //  chart5.style.display = 'block';
+            //  chart5.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.createdchart.entityTypeshortname);
             //passing modifieddate attribute name too as we need to check it has no value
             let count = await this._getCreatedCount(
@@ -1276,6 +1493,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.modifiedchart.attributeshortname
             );
             this.createdchartpercentage = (count * 100) / totalEntities;
+            if (this.createdchartpercentage != 0) {
+                this.createdchartpercentage = this.createdchartpercentage.toFixed(2);
+            }
             entitydata.push({
                 id: 1,
                 key: this.createdchart.label,
@@ -1284,15 +1504,17 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label:this.createdchart.label,
+                label: this.createdchart.label,
                 color: '#F78E1E'
             });
-        } else {
-          //  chart5.style.display = 'none';
-        }
 
+            entitydatacount.push(count);
+            pieBgColor2.push('#F78E1E');
+            pieLabel2.push(this.createdchart.label);
+
+        }
         if (this.modifiedchart.visible) {
-         //   chart6.style.display = 'block';
+            //   chart6.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.modifiedchart.entityTypeshortname);
             //passing discontinued attribute name too as we need to check entity is not discontinued
             let count = await this._getModifiedCount(
@@ -1302,6 +1524,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.discontinuedchart.attributevalue
             );
             this.modifiedchartpercentage = (count * 100) / totalEntities;
+            if (this.modifiedchartpercentage != 0) {
+                this.modifiedchartpercentage = this.modifiedchartpercentage.toFixed(2);
+            }
             entitydata.push({
                 id: 2,
                 key: this.modifiedchart.label,
@@ -1310,15 +1535,16 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label:this.modifiedchart.label,
+                label: this.modifiedchart.label,
                 color: '#785DA8'
             });
-        } else {
-         //   chart6.style.display = 'none';
-        }
 
+            entitydatacount.push(count);
+            pieBgColor2.push('#785DA8');
+            pieLabel2.push(this.modifiedchart.label);
+        }
         if (this.discontinuedchart.visible) {
-          //  chart7.style.display = 'block';
+            //  chart7.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.discontinuedchart.entityTypeshortname);
             let count = await this._getDiscontinuedCount(
                 this.discontinuedchart.entityTypeshortname,
@@ -1326,6 +1552,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.discontinuedchart.attributevalue
             );
             this.discontinuedchartpercentage = (count * 100) / totalEntities;
+            if (this.discontinuedchartpercentage != 0) {
+                this.discontinuedchartpercentage = this.discontinuedchartpercentage.toFixed(2);
+            }
             entitydata.push({
                 id: 3,
                 key: this.discontinuedchart.label,
@@ -1334,15 +1563,17 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label:this.discontinuedchart.label,
+                label: this.discontinuedchart.label,
                 color: '#EE204C'
             });
-        } else {
-          //  chart7.style.display = 'none';
+
+            entitydatacount.push(count);
+            pieBgColor2.push('#EE204C');
+            pieLabel2.push(this.discontinuedchart.label);
         }
 
         if (this.publishedchart.visible) {
-          //  chart8.style.display = 'block';
+            //  chart8.style.display = 'block';
             let totalEntities = await this._getTotalEntities(this.publishedchart.entityTypeshortname);
             let count = await this._getPublishedCount(
                 this.publishedchart.entityTypeshortname,
@@ -1350,6 +1581,9 @@ class PluginMyCatalog extends PolymerElement {
                 this.publishedchart.attributevalue
             );
             this.publishedchartpercentage = (count * 100) / totalEntities;
+            if (this.publishedchartpercentage != 0) {
+                this.publishedchartpercentage = this.publishedchartpercentage.toFixed(2);
+            }
             entitydata.push({
                 id: 4,
                 key: this.publishedchart.label,
@@ -1358,26 +1592,188 @@ class PluginMyCatalog extends PolymerElement {
                 unit: '%',
                 clickable: true,
                 section: 'processing',
-                label:this.publishedchart.label,
+                label: this.publishedchart.label,
                 color: '#36B44A'
             });
-        } else {
-         //   chart8.style.display = 'none';
+
+            entitydatacount.push(count);
+            pieBgColor2.push('#36B44A');
+            pieLabel2.push(this.publishedchart.label);
         }
 
         if (this.referenceFilter.visible) {
             ReferenceFilterDiv.style.display = 'block';
-           } else {
-                ReferenceFilterDiv.style.display = 'none';
-           }
+        } else {
+            ReferenceFilterDiv.style.display = 'none';
+        }
+
+/*
+        let itemExistsData = new Array();
+        let itemExistsDataCount = new Array();
+        let pieBgColor3 = new Array();
+        let pieLabel3 = new Array();
+
+        //Logic for getting vendoritem having items
+        if (this.piechart3.visible) {
+            let totalEntities = parseInt(await this._getTotalEntities(this.piechart3.entityTypeshortname));
+            let count = parseInt(await this._getHavingItemsCount(
+                this.piechart3.entityTypeshortname,
+                this.piechart3.attributeshortname,
+                this.piechart3.attributevalue
+            ));
+            let countper = count * 100 / totalEntities;
+            if (countper != 0) {
+                countper = countper.toFixed(2);
+            }
+            let vendoritemWithNoItems = totalEntities - count;
+            let vendoritemWithNoItemsPer = vendoritemWithNoItems * 100 / totalEntities;
+            if (vendoritemWithNoItemsPer != 0) {
+                vendoritemWithNoItemsPer = vendoritemWithNoItemsPer.toFixed(2);
+            }
+            itemExistsData.push({
+                id: 1,
+                key: "Having Items",
+                value: countper,
+                count: count,
+                unit: '%',
+                clickable: true,
+                section: 'processing',
+                label: "Having Items",
+                color: '#F78E1E'
+            });
+            itemExistsData.push({
+                id: 2,
+                key: "Missing Item",
+                value: vendoritemWithNoItemsPer,
+                count: vendoritemWithNoItems,
+                unit: '%',
+                clickable: true,
+                section: 'processing',
+                label: "Missing Item",
+                color: '#36B44A'
+            });
+
+            itemExistsDataCount.push(count);
+            pieBgColor3.push('#F78E1E');
+            pieLabel3.push("Having Items");
+
+            itemExistsDataCount.push(vendoritemWithNoItems);
+            pieBgColor3.push('#36B44A');
+            pieLabel3.push("Missing Item");
+
+        }
+        */
         this.data = workflowdata;
-        this.data2=entitydata;
+        this.data2 = entitydata;
+       // this.data3 = itemExistsData;
+
+        this.piedata = workflowdatacount;
+        this.piedata2 = entitydatacount;
+      //  this.piedata3 = itemExistsDataCount;
+        //pie 1 config
+
+       
+        if (window.myPie == null) {
+            this.pieconfig = {
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: this.piedata,
+                        backgroundColor: pieBgColor,
+                        label: 'Workflow Summary'
+                    }],
+                    labels: pieLabel
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        onClick(e, legendItem, legend) {
+                            const index = legendItem.datasetIndex;
+                            const ci = legend.chart;
+                            if (ci.isDatasetVisible(index)) {
+                                ci.hide(index);
+                                legendItem.hidden = true;
+                            } else {
+                                ci.show(index);
+                                legendItem.hidden = false;
+                            }
+                        }
+                    },
+                    onClick: (e, ele) => {
+                       
+                        let elements = ele[0]._chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)
+                        this._onChartClick(e, elements);
+                    }
+                }
+            };
+            var ctx = this.shadowRoot.querySelector('#chart-area').getContext('2d');
+            window.myPie = new Chart(ctx, this.pieconfig);
+        }
+        else {
+            this.pieconfig.data.datasets[0].data=this.piedata;
+            window.myPie.update();
+        }
+      
+        if (window.myPie2 == null) {
+            this.pieconfig2 = {
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: this.piedata2,
+                        backgroundColor: pieBgColor2,
+                        label: 'Status Summary'
+                    }],
+                    labels: pieLabel2
+                },
+                options: {
+                    responsive: true,
+                  
+                    onClick: (e, ele) => {
+                        let elements = ele[0]._chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)
+                        this._onChart2Click(e, elements);
+                    }
+                }
+            };
+            var ctx2 = this.shadowRoot.querySelector('#chart-area2').getContext('2d');
+            window.myPie2 = new Chart(ctx2, this.pieconfig2);
+        }
+        else {
+            this.pieconfig2.data.datasets[0].data=this.piedata2;
+            window.myPie2.update();
+        }
+        /*
+       
+        if (window.myPie3 == null) {
+             this.pieconfig3 = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: this.piedata3,
+                    backgroundColor: pieBgColor3,
+                    label: 'Onboarding Summary'
+                }],
+                labels: pieLabel3
+            },
+            options: {
+                responsive: true,
+                events: ['click'],
+                onClick: (e, ele) => {
+                    let elements = ele[0]._chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)
+                    this._onChart3Click(e, elements);
+                }
+            }
+        };
+        var ctx3 = this.shadowRoot.querySelector('#chart-area3').getContext('2d');
+            window.myPie3 = new Chart(ctx3, this.pieconfig3);
+        }
+        else {
+             this.pieconfig3.data.datasets[0].data=this.piedata3;
+            window.myPie3.update();
+        }*/
+        
         return true;
     }
 
-    pie1Click(e) {
-        //   alert(e.target._getSelectedSliceDetails(e));
-    }
 
     static get properties() {
         return {
@@ -1409,7 +1805,7 @@ class PluginMyCatalog extends PolymerElement {
                 type: Array,
                 value: function () {
                     return [
-                      
+
                     ];
                 },
                 reflectToAttribute: true,
@@ -1419,13 +1815,76 @@ class PluginMyCatalog extends PolymerElement {
                 type: Array,
                 value: function () {
                     return [
-                      
+
                     ];
                 },
                 reflectToAttribute: true,
                 observer: '_onDataChanged'
             },
 
+            data3: {
+                type: Array,
+                value: function () {
+                    return [
+
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
+
+            piedata: {
+                type: Array,
+                value: function () {
+                    return [
+
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
+            piedata2: {
+                type: Array,
+                value: function () {
+                    return [
+
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
+
+            piedata3: {
+                type: Array,
+                value: function () {
+                    return [
+
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
+
+            pieconfig: {
+                type: Object,
+                value: function () {
+                    return {};
+                }
+            },
+
+            pieconfig2: {
+                type: Object,
+                value: function () {
+                    return {};
+                }
+            },
+
+            pieconfig3: {
+                type: Object,
+                value: function () {
+                    return {};
+                }
+            },
             referenceEntiytyIdentifier: {
                 type: String,
                 reflectToAttribute: true
@@ -1434,7 +1893,7 @@ class PluginMyCatalog extends PolymerElement {
                 type: String,
                 reflectToAttribute: true
             },
-            referenceFilter:{
+            referenceFilter: {
                 type: Object,
                 value: function () {
                     return {
@@ -1442,7 +1901,7 @@ class PluginMyCatalog extends PolymerElement {
                         label: '',
                         referenceAttrShortname: '',
                         referenceEntityShortname: ''
-                      
+
                     };
                 },
                 reflectToAttribute: true
@@ -1469,6 +1928,19 @@ class PluginMyCatalog extends PolymerElement {
                     return {};
                 },
                 observer: '_onContextDataChange'
+            },
+            piechart3: {
+                type: Object,
+                value: function () {
+                    return {
+                        visible: true,
+                        label: '',
+                        attributeshortname: '',
+                        attributevalue: '',
+                        entityTypeshortname: ''
+                    };
+                },
+                reflectToAttribute: true
             },
             wfchart1: {
                 type: Object,
@@ -1768,9 +2240,8 @@ class PluginMyCatalog extends PolymerElement {
                         }
                     }
                 }
-                if(this.referenceFilter.visible)
-                {
-                this._getRefEntityModel();
+                if (this.referenceFilter.visible) {
+                    this._getRefEntityModel();
                 }
             }
         }
@@ -1782,34 +2253,8 @@ class PluginMyCatalog extends PolymerElement {
 
     ready() {
         super.ready();
-      /*  this.$.chart1.addEventListener('click', e => {
-            this.chart1Click(e);
-        });
-        this.$.chart2.addEventListener('click', e => {
-            this.chart2Click(e);
-        });
-        this.$.chart3.addEventListener('click', e => {
-            this.chart3Click(e);
-        });
-        this.$.chart4.addEventListener('click', e => {
-            this.chart4Click(e);
-        });
-        this.$.chart5.addEventListener('click', e => {
-            this.chart5Click(e);
-        });
-        this.$.chart6.addEventListener('click', e => {
-            this.chart6Click(e);
-        });
-        this.$.chart7.addEventListener('click', e => {
-            this.chart7Click(e);
-        });
-        this.$.chart8.addEventListener('click', e => {
-            this.chart8Click(e);
-        });
-        //   this.$.pie1.addEventListener('click', e => {
-        //     this.pie1Click(e);
-        // });*/
-        
+
+
     }
 }
 

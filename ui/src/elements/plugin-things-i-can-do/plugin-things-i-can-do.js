@@ -32,15 +32,160 @@ class PluginThingsICanDo extends PolymerElement {
             pebble-icon{
                 height: 15px;
             }
+            .div-table {
+                display: table;         
+                width: 100%;         
+           
+              }
+              .div-table-row {
+                display: table-row;
+                width: 100%;
+               
+              }
+              .div-table-col-65 {
+                float: left; /* fix for  buggy browsers */
+                display: table-column;         
+                width: 65%;         
+                margin: 10px 0px 0px 0px;
+                text-align: inherit;
+              }
+              .div-table-col-35 {
+                float: left; /* fix for  buggy browsers */
+                display: table-column;         
+                width: 35%;         
+                margin: 10px 0px 0px 0px;
+                text-align: inherit;
+              }
             </style>
-
+            <div class="div-table">
+            <div class="div-table-row">
+               <div  id="upldexl" class="div-table-col-65" align="center">
+                  <pebble-icon title="Download/Upload Excel" icon="pebble-icon:download"></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadExcel">Download/Upload Excel Data Template</a>
+               </div>
+               <div  id="upldasst" class="div-table-col-35">
+                  <pebble-icon title="Upload Asset" icon="pebble-icon:upload-asset"></pebble-icon>
+                  <a href="#" on-click="_uploadAssets">Upload Assets</a>
+               </div>
+            </div>
+            <div class="div-table-row">
+               <div  id="upldcsv" class="div-table-col-65" align="center">
+                  <pebble-icon
+                     title="Download/Upload CSV"
+                     icon="pebble-icon:download"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadCSV" data-args="8">Download/Upload CSV Data Template</a>
+               </div>
+               <div id="createnew" class="div-table-col-35">
+                  <pebble-icon title="Create New Entity" icon="pebble-icon:entities"></pebble-icon>
+                  <a href="#" on-click="_createNewEntity">Create New Entity</a>
+               </div>
+            </div>
+            <div class="div-table-row">
+            <div  id="mngmapping" class="div-table-col-65" align="center">
+               <pebble-icon
+                  title="Manage Mappings"
+                  icon="pebble-icon:value-mapping"
+                  ></pebble-icon
+                  >
+               <a href="#" on-click="_mngMapping">Manage Mappings</a>
+            </div>
+            <div  class="div-table-col-35">
+              
+            </div>
+         </div>
+            <div class="div-table-row">
+               <div  id="upldthing" class="div-table-col-65" align="center">
+                  <pebble-icon
+                     title="Download/Upload Attribute Data Model"
+                     icon="pebble-icon:model-things-domain"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="1">Download/Upload Attribute Data Model</a>
+               </div>
+               <div id="upldtaxonomy" class="div-table-col-35">
+                  <pebble-icon
+                     title="Download/Upload Taxonomy Model"
+                     icon="pebble-icon:dashboard-taxonomy"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="2">Download/Upload Taxonomy Model</a>
+               </div>
+            </div>
+            <div class="div-table-row">
+               <div  id="upldref" class="div-table-col-65" align="center">
+                  <pebble-icon
+                     title="Download/Upload Reference Model"
+                     icon="pebble-icon:model-reference-data-domain"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="3">Download/Upload Reference Model</a>
+               </div>
+               <div id="uplddigital" class="div-table-col-35">
+                  <pebble-icon
+                     title="Download/Upload Digital Model"
+                     icon="pebble-icon:asset-data-model"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="4">Download/Upload Digital Model</a>
+               </div>
+            </div>
+            <div class="div-table-row">
+               <div  id="upldworkflow" class="div-table-col-65" align="center">
+                  <pebble-icon
+                     title="Download/Upload Workflow Model"
+                     icon="pebble-icon:dashboard-workflow"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="5">Download/Upload Workflow Model</a>
+               </div>
+               <div id="upldgovernance" class="div-table-col-35">
+                  <pebble-icon
+                     title="Download/Upload Governance Model"
+                     icon="pebble-icon:dashboard-governance"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="6">Download/Upload Governance Model</a>
+               </div>
+            </div>
+            <div class="div-table-row">
+               <div  id="upldcontext" class="div-table-col-65" align="center">
+                  <pebble-icon
+                     title="Download/Upload Context Model"
+                     icon="pebble-icon:dashboard-context"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="7">Download/Upload Context Model</a>
+               </div>
+               <div id="upldauth" class="div-table-col-35">
+                  <pebble-icon
+                     title="Download/Upload Auth Model"
+                     icon="pebble-icon:dashboard-authorization"
+                     ></pebble-icon
+                     >
+                  <a href="#" on-click="_uploadModel" data-args="8">Download/Upload Auth Model</a>
+               </div>
+            </div>
+         </div>
+<!--
             <ul>
                 <li id="upldexl">
                     <h4>
                         <pebble-icon title="Download/Upload Excel" icon="pebble-icon:download"></pebble-icon
-                        ><a href="#" on-click="_uploadExcel">Download/Upload Data Template</a>
+                        ><a href="#" on-click="_uploadExcel">Download/Upload Excel Data Template</a>
                     </h4>
                 </li>
+                <li id="upldcsv">
+                <h4>
+                    <pebble-icon
+                        title="Download/Upload CSV"
+                        icon="pebble-icon:download"
+                    ></pebble-icon
+                    ><a href="#" on-click="_uploadCSV" data-args="8">Download/Upload CSV Data Template</a>
+                </h4>
+            </li>
                 <li id="upldasst">
                     <h4>
                         <pebble-icon title="Upload Asset" icon="pebble-icon:upload-asset"></pebble-icon>
@@ -126,6 +271,7 @@ class PluginThingsICanDo extends PolymerElement {
                     </h4>
                 </li>
             </ul>
+            -->
         `;
     }
 
@@ -177,6 +323,13 @@ class PluginThingsICanDo extends PolymerElement {
         let upldworkflow = this.shadowRoot.querySelector('#upldworkflow');
         let upldauth = this.shadowRoot.querySelector('#upldauth');
         let upldcontext = this.shadowRoot.querySelector('#upldcontext');
+        let mngMapping=this.shadowRoot.querySelector("#mngmapping");
+
+        if (this.showManageMapping == true) {
+            mngMapping.style.display = 'block';
+        } else {
+            mngMapping.style.display = 'none';
+        }
 
         if (this.showUploadExcel == true) {
             upldexl.style.display = 'block';
@@ -262,6 +415,11 @@ class PluginThingsICanDo extends PolymerElement {
         let queryParam = { type: this.customEntityType };
         this._redirectTo(appName, queryParam);
     }
+    _uploadCSV() {
+        let appName = 'upload-csv';
+        let queryParam = { type: this.customEntityType };
+        this._redirectTo(appName, queryParam);
+    }
     _uploadAssets() {
         let guid = this._createGuid();
         let appName = 'upload-assets';
@@ -269,6 +427,12 @@ class PluginThingsICanDo extends PolymerElement {
         this._redirectTo(appName, queryParam);
     }
 
+    _mngMapping()
+    {
+        let appName = 'manage-mappings';
+        let queryParam = { type: this.customEntityType };
+        this._redirectTo(appName, queryParam);
+    }
     _redirectTo(appName, queryParam) {
         if (queryParam === null) {
             AppInstanceManager.navigateToRoute(appName);
@@ -282,6 +446,11 @@ class PluginThingsICanDo extends PolymerElement {
             customEntityType: {
                 type: String,
                 reflectToAttribute: true
+            },
+            showManageMapping:{
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
             },
             showUploadExcel: {
                 type: Boolean,

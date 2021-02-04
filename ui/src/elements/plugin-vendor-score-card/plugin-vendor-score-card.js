@@ -2,7 +2,7 @@ import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 
 // ui-platform-utils
 import { ObjectUtils } from '@riversandtechnologies/ui-platform-utils/lib/common/ObjectUtils.js';
-
+import '@polymer/paper-progress/paper-progress.js';
 // ui-platform-elements
 
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-icon/pebble-icon.js';
@@ -42,7 +42,7 @@ class PluginVendorScoreCard extends PolymerElement {
             font-size: 12px;
             position: relative;
             background: #fff;
-            margin: 4px;
+            margin: 0px 0px 4px 4px;
             max-width: 100%;
             min-width:  20px;
             line-height: 20px;
@@ -54,7 +54,7 @@ class PluginVendorScoreCard extends PolymerElement {
             border: solid 1px #d2d7dd;
             border-radius: 3px;      
           
-            margin: 4px 0px 0px 0px;
+            margin: 10px 0px 0px 0px;
             max-width: 100%;
             min-width:  20px;
             align-items: center;
@@ -85,7 +85,7 @@ class PluginVendorScoreCard extends PolymerElement {
         .div-table-col-20 {
             float: left; /* fix for  buggy browsers */
             display: table-column;         
-            width: 20%;         
+            width: 11%;         
             }
         .div-table-col-right {
             float: left;
@@ -94,17 +94,50 @@ class PluginVendorScoreCard extends PolymerElement {
             text-align: center;
            
         }
-        .div-table-col-left-25 {
-            float: left;
-            display: table-column;
-            width: 25%;
-            text-align: center;
-           
-        }
+        
+        .div-table-col-right-72 {
+            float: left; /* fix for  buggy browsers */
+            display: table-column;         
+            width: 86%;         
+            }
+            .div-table-col-right-100 {
+                float: right; /* fix for  buggy browsers */
+                display: table-column;         
+                width: 100%;         
+                }
         .displayflexwrap{
             display:flex;
             flex-wrap: wrap;
         }
+        .div-item-container {
+            border: solid 1px #d2d7dd;
+            border-radius: 3px;      
+            padding: 0 5px 0px 5px;
+            font-size: 12px;
+            position: relative;
+            background: #fff;
+            margin: 10px 0px 12px 12px;
+            max-width: 100%;
+            min-width:  20px;
+            line-height: 20px;
+            flex-direction: row;
+            align-items: center;
+            }
+            paper-progress{
+                width: 100%;
+                padding-right: 8px;
+                --paper-progress-height:15px;
+                --paper-progress-transition-duration: 0.08s;
+                --paper-progress-transition-timing-function: ease;
+                --paper-progress-transition-delay: 0s;
+                --paper-progress-container-color: #d2d7dd;
+                }
+                .paper-progress-purple {
+                    --paper-progress-active-color:#785DA8;
+                    }
+                    .paper-progress-red {
+                        --paper-progress-active-color:#EE204C;
+                        }
      </style>
      <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>
         <template is="dom-if" if="true">
@@ -158,6 +191,7 @@ class PluginVendorScoreCard extends PolymerElement {
             </div>
             <div class="div-table-col-right">
                     <div id="refEntityDiv">
+                   
                     <pebble-combo-box class="tab-title" id='multi-select-lov' selection-changed="_applyFilter" tag-removed="_applyFilter" on-click="_openDataList" items={{refentitydata}}  multi-select label="Select Vendor"> </pebble-combo-box>
                     </div>         
             </div>
@@ -165,7 +199,10 @@ class PluginVendorScoreCard extends PolymerElement {
 
 
         <div class="div-table-row">
-        <pebble-button style="float:right" class="btn btn-success" button-text="Apply" on-tap ="_applyFilter"></pebble-button>
+        <div class="div-table-col-right-100">
+              
+        <pebble-button style="float:right"  class="btn btn-success" button-text="Apply" on-tap ="_applyFilter"></pebble-button>
+        </div>
         </div>
 
         <div class="div-table-row">
@@ -174,11 +211,24 @@ class PluginVendorScoreCard extends PolymerElement {
                 <pebble-graph-progress-ring  percentage="{{average}}" _showPercentage="true"></pebble-graph-progress-ring>
                
             </div>
-            <div class="div-table-col-left-25">
-               <div class="displayflexwrap">
-                Entities Submitted : [[totalSubmitted]]
-                Entities Rejected : [[totalRejected]]
-               </div>
+            <div class="div-table-col-right-72">
+                    <div  class="div-item-container">
+                    Entities Submitted  <br>
+                        <div class="displayflexwrap">
+                      
+                        <paper-progress class="paper-progress-purple" value=[[submittedPercent]]></paper-progress>
+                        [[submittedPercent]]%
+                        </div>
+                   </div>
+                   <div  class="div-item-container">
+                   Entities Rejected <br>
+                       <div class="displayflexwrap">
+                      
+                       <paper-progress class="paper-progress-red" value= [[rejectedPercent]]></paper-progress>
+                       [[rejectedPercent]]%
+                       </div>
+                  </div>
+             
              </div>
         </div>
 
@@ -201,6 +251,7 @@ class PluginVendorScoreCard extends PolymerElement {
                 let entitiesintobesubmitted = await this._getTotalEntitiesByVendorInWFStep(this.selectedFilters[x]);
                 let remainingentities = vendorentitites - entitiesintobesubmitted;
                 let rejecttedentities = await this._getRejectedEntitiesScoreBasedCount(this.selectedFilters[x]);
+                this.totalEntities+=vendorentitites;
                 this.totalSubmitted = this.totalSubmitted + remainingentities;
                 this.totalRejected = this.totalRejected + rejecttedentities;
             }
@@ -210,9 +261,12 @@ class PluginVendorScoreCard extends PolymerElement {
             let entitiesintobesubmitted = await this._getTotalEntitiesByVendorInWFStep(null);
             let remainingentities = vendorentitites - entitiesintobesubmitted;
             let rejecttedentities = await this._getRejectedEntitiesScoreBasedCount(null);
+            this.totalEntities+=vendorentitites;
             this.totalSubmitted = this.totalSubmitted + remainingentities;
             this.totalRejected = this.totalRejected + rejecttedentities;
         }
+        this.submittedPercent=((this.totalSubmitted*100)/this.totalEntities).toFixed(2);
+        this.rejectedPercent=((this.totalRejected*100)/this.totalEntities).toFixed(2);
         this._getAvgQuality();
 
     }
@@ -708,12 +762,19 @@ class PluginVendorScoreCard extends PolymerElement {
                 },
                 reflectToAttribute: true
             },
-            totalEntities: {
+           
+            filteredEntitiesCount: {
                 type: String,
                 reflectToAttribute: true
             },
-            filteredEntitiesCount: {
-                type: String,
+            submittedPercent:{
+                type: Number,
+                value:0,
+                reflectToAttribute: true
+            },
+            rejectedPercent:{
+                type: Number,
+                value:0,
                 reflectToAttribute: true
             },
             totalSubmitted: {
@@ -722,6 +783,11 @@ class PluginVendorScoreCard extends PolymerElement {
                 reflectToAttribute: true
             },
             totalRejected: {
+                type: Number,
+                value:0,
+                reflectToAttribute: true
+            },
+            totalEntities:{
                 type: Number,
                 value:0,
                 reflectToAttribute: true

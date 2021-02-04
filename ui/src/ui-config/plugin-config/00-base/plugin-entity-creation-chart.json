@@ -6,8 +6,8 @@
     },
     "configObjects": [
         {
-            "id": "plugin_plugin-things-i-can-do_vendor_uiConfig",
-            "name": "plugin_plugin-things-i-can-do_vendor",
+            "id": "plugin_plugin-entity-creation-chart-base_uiConfig",
+            "name": "plugin_plugin-entity-creation-chart",
             "version": "1.0",
             "type": "uiConfig",
             "properties": {
@@ -18,15 +18,12 @@
                 "contexts": [
                     {
                         "context": {
-                            "component": "plugin-things-i-can-do",
-                            "role":"vendor"                     
+                            "component": "plugin-entity-creation-chart"
                         },
                         "jsonData": {
                             "config": {
                                 "properties": {
-                                    "customEntityType": "stagingitem",
-                                    "showCreateEntity":true,
-                                    "showManageMapping":true
+                                  "entityTypes":["stagingitem","item","parentitem"]
                                 }
                             }
                         }
@@ -35,5 +32,4 @@
             }
         }
     ]
-
 }

@@ -26,7 +26,7 @@ class PluginQuickLinks extends PolymerElement {
                
                 pebble-tag-item {
                     --tag-color: #d2d7dd;
-                    margin:2px;                    
+                    margin:13px;                    
                 }
                 pebble-tag-item:hover{
                     cursor:pointer;

@@ -34,21 +34,25 @@
                                     "scoreLabel":"Score",
                                     "missingImagesBlock":{
                                         "visible":true,
-                                        "relshortname": "hasimages",
-                                        "label": "Missing Images"
+                                        "relShortname": "hasimages",
+                                        "label": "Missing Images",
+                                        "bcShortname":"missingHasImagesRelationshipBC" 
                                     },
                                     "invalidValueBlock":{
                                         "visible":true,                                       
-                                        "label": "Invalid Value"
+                                        "label": "Invalid Value",
+                                        "bcShortname":"invalidAttributeValidationBC" 
                                     },
                                     "missingRequiredBlock":{
                                         "visible":true,
-                                        "label": "Missing Required"
+                                        "label": "Missing Required",
+                                        "bcShortname":"requiredAttributeValidationBC" 
                                     },
                                     "dynamicRelationship":{
                                         "visible":false,
-                                        "relshortname": "ischildof",
-                                        "label": "Missing Parent"
+                                        "relShortname": "ischildof",
+                                        "label": "Missing Parent",
+                                        "bcShortname":"missingIsChildofRelationshipBC" 
                                     },
                                     "rejectedItems":{
                                        "visible": true,

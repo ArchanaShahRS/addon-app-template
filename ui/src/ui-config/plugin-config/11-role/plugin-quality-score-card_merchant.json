@@ -26,14 +26,15 @@
                                 "properties": {
                                     "entityTypes": ["item"],
                                     "missingImagesBlock":{
-                                         "visible":false
+                                         "visible":false,
+                                         "label": "",
+                                         "relShortname": ""
                                     },
                                     "scoreLabel":"Overall Score",
-                                    "_rootNode":"productclassificationroot",
-                                    "taxonomyAttrShortname":"thgmastertaxonomy",
+                                  
                                     "dynamicRelationship":{
                                         "visible":true,
-                                        "relshortname": "ischildof",
+                                        "relShortname": "ischildof",
                                         "label": "Missing Parent"
                                     },
                                     "rejectedItems":{
@@ -44,10 +45,8 @@
                                         "label":"Pending Submission - WebEnrichment"
                                     },
                                     "referenceFilter": {
-                                        "visible": false,
-                                        "label": "Brand",
-                                        "referenceAttrShortname": "thgbrand",
-                                        "referenceEntityShortname": "brand"
+                                        "visible": false
+                                      
                                     }
                                 }
                             }

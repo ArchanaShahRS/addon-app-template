@@ -39,7 +39,8 @@
                                     "showWorkflowModelLink":false,
                                     "showGovernanceModelLink":false,
                                     "showContextModelLink":false,
-                                    "showAuthModelLink":false
+                                    "showAuthModelLink":false,
+                                    "showManageMapping":false
                                 }
                             }
                         }

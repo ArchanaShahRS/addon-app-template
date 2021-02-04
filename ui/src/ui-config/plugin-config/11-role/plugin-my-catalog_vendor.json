@@ -54,26 +54,26 @@
                                     },
                                     "createdchart": {
                                         "visible": true,
-                                        "label": "Entities Created",
+                                        "label": "Created",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgdatecreated"
                                     },
                                     "modifiedchart": {
                                         "visible": true,
-                                        "label": "Entities Modified",
+                                        "label": "Modified",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgdatemodified"
                                     },
                                     "discontinuedchart": {
                                         "visible": true,
-                                        "label": "Entities Discontinued",
+                                        "label": "Discontinued",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Discontinue"
                                     },
                                     "publishedchart": {
                                         "visible": true,
-                                        "label": "Entities Published",
+                                        "label": "Published",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Published"

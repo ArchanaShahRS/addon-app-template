@@ -44,7 +44,7 @@ class PluginQualityScoreCard extends PolymerElement {
         font-size: 12px;
         position: relative;
         background: #fff;
-        margin: 4px;
+        margin: 0px 0px 4px 4px;
         max-width: 100%;
         min-width:  20px;
         line-height: 20px;
@@ -89,7 +89,7 @@ class PluginQualityScoreCard extends PolymerElement {
         font-size: 14px;
         position: relative;
         background: #fff;
-        margin: 15px 0px 0px 0px;
+        margin: 12px 0px 0px 0px;
         max-width: 100%;
         min-width:  20px;
         line-height: 20px;
@@ -126,6 +126,8 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         .scoreclss{
         color: #364653;
+        font-weight: var(--font-bold, bold);
+        font-size: var(--font-size-default,14px);
        
         }
         .div-table {
@@ -284,6 +286,8 @@ class PluginQualityScoreCard extends PolymerElement {
 
     _missingImgDivClicked()
     {
+        //Relationship based Query temporarilty chaging and passing BCname
+        /*
         let queryParam = {
             relationships:[ {
                 hasimages: {
@@ -297,24 +301,97 @@ class PluginQualityScoreCard extends PolymerElement {
                     locale:'en-US'
                 }
             ]
-        };
+        };*/
+
+        //Updating to BC based for temporary basis
+        let entitytypeString="";
+        for(let x in this.entityTypes)
+        {
+            entitytypeString=entitytypeString+this.entityTypes[x];
+            if(x<this.entityTypes.length-1)
+            {
+                entitytypeString=entitytypeString+"#@#";
+            }
+        }
+        let bcid=this.missingImagesBlock.bcShortname+"_businessCondition";
+        let queryParam = 
+            {"attributes":{},"bcId":bcid,"mappedEntityTypes":this.entityTypes,"mappedContexts":[{"self":"self"}],"bcExternalName":this.missingImagesBlock.bcShortname,"mappedEntityTypesString":entitytypeString,"mappedContextsString":[{"self":"self"}]}
+        ;
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
 
     }
 
     _invalidValDivClicked()
     {
-        let queryParam = {
-            
-        };
+        //"mappedEntityTypesString":"stagingitem#@#item"
+        let entitytypeString="";
+        for(let x in this.entityTypes)
+        {
+            entitytypeString=entitytypeString+this.entityTypes[x];
+            if(x<this.entityTypes.length-1)
+            {
+                entitytypeString=entitytypeString+"#@#";
+            }
+        }
+        let bcid=this.invalidValueBlock.bcShortname+"_businessCondition";
+        let queryParam = 
+            {"attributes":{},"bcId":bcid,"mappedEntityTypes":this.entityTypes,"mappedContexts":[{"self":"self"}],"bcExternalName":this.invalidValueBlock.bcShortname,"mappedEntityTypesString":entitytypeString,"mappedContextsString":[{"self":"self"}]}
+        ;
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
 
     }
 
     _missingReqDivClicked()
     {
-        let queryParam = {
-        };
+        let entitytypeString="";
+        for(let x in this.entityTypes)
+        {
+            entitytypeString=entitytypeString+this.entityTypes[x];
+            if(x<this.entityTypes.length-1)
+            {
+                entitytypeString=entitytypeString+"#@#";
+            }
+        }
+        let bcid=this.missingRequiredBlock.bcShortname+"_businessCondition";
+        let queryParam = 
+            {"attributes":{},"bcId":bcid,"mappedEntityTypes":this.entityTypes,"mappedContexts":[{"self":"self"}],"bcExternalName":this.missingRequiredBlock.bcShortname,"mappedEntityTypesString":entitytypeString,"mappedContextsString":"[{\"self\":\"self\"}]"}
+        ;
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
 
     }
@@ -358,9 +435,10 @@ class PluginQualityScoreCard extends PolymerElement {
 
     _missingRelDivClicked()
     {
+        /*
         let queryParam = {
             relationships:[ {
-                [this.dynamicRelationship.relshortname]: {
+                [this.dynamicRelationship.relShortname]: {
                     hasvalue:false
                 }
             }
@@ -371,7 +449,32 @@ class PluginQualityScoreCard extends PolymerElement {
                     locale:'en-US'
                 }
             ]
-        };
+        };*/
+        let entitytypeString="";
+        for(let x in this.entityTypes)
+        {
+            entitytypeString=entitytypeString+this.entityTypes[x];
+            if(x<this.entityTypes.length-1)
+            {
+                entitytypeString=entitytypeString+"#@#";
+            }
+        }
+        let bcid=this.dynamicRelationship.bcShortname+"_businessCondition";
+        let queryParam = 
+            {"attributes":{},"bcId":bcid,"mappedEntityTypes":this.entityTypes,"mappedContexts":[{"self":"self"}],"bcExternalName":this.dynamicRelationship.bcShortname,"mappedEntityTypesString":entitytypeString,"mappedContextsString":[{"self":"self"}]}
+        ;
+        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+        {
+            let searchString="";
+            for(let i=0;i<this.selectedTax.length;i++)
+            {
+                searchString=searchString+this.selectedTax[i] + "' or '";
+            }        
+
+            let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes=obj;
+
+        }
         this._redirectTo('search-thing', queryParam);
 
     }
@@ -574,34 +677,174 @@ class PluginQualityScoreCard extends PolymerElement {
     }
 
     async _getMissingImagesCount() {
-        let requestData = {
-            params: {
-                query: {
-                    filters: {
-                        typesCriterion: this.entityTypes,
-                        attributesCriterion: [
-
-                        ],
-                        relationshipsCriterion: [
+        //Changing this body temporarily as relationship pass is not functionality currently
+       /* let requestData = {
+            "params": {
+                "isCombinedQuerySearch": true,
+                "options": {
+                    "from": 0,
+                    "to": 50
+                }
+            },
+            "entity": {
+                "id": "combinedGet",
+                "name": "combinedGet",
+                "type": "config",
+                "data": {
+                    "jsonData": {
+                        "searchQueries": [
                             {
-                                [this.missingImagesBlock.relShortname]: {
-                                    hasvalue: false
+                                "serviceName": "entitygovernservice",
+                                "action": "get",
+                                "searchSequence": 1,
+                                "searchQuery": {
+                                    "query": {
+                                        "filters": {
+                                            "typesCriterion": this.entityTypes,
+                                            "relationshipsCriterion": [
+                                                {
+                                                    [this.missingImagesBlock.relShortname]: {
+                                                        "hasvalue": false
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "valueContexts": [
+                                            {
+                                                "source": "internal",
+                                                "locale": "en-US"
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "serviceName": "entityservice",
+                                "action": "get",
+                                "searchSequence": 2,
+                                "searchQuery": {
+                                    "query": {
+                                        "filters": {
+                                            "typesCriterion": this.entityTypes,
+                                            "attributesCriterion": []
+                                        },
+                                        "valueContexts": [
+                                            {
+                                                "source": "internal",
+                                                "locale": "en-US"
+                                            }
+                                        ]
+                                    },
+                                    "options": {
+                                        "maxRecords": 1
+                                    }
                                 }
                             }
                         ]
-                    },
-                    valueContexts: [
-                        {
-                            source: 'internal',
-                            locale: 'en-US'
-                        }
-                    ]
-                },
-                options: {
-                    maxRecords: 1
+                    }
                 }
-            }
+            },
+            "domain": "thing",
+            "operation": "initiatesearch"
+        };*/
+
+        let bcid=this.missingImagesBlock.bcShortname+"_businessCondition";
+        let requestData = {
+            "params": {
+                "isCombinedQuerySearch": true,
+                "options": {
+                    "from": 0,
+                    "to": 50
+                }
+            },
+            "entity": {
+                "id": "combinedGet",
+                "name": "combinedGet",
+                "type": "config",
+                "data": {
+                    "jsonData": {
+                        "searchQueries": [
+                            {
+                                "serviceName": "entitygovernservice",
+                                "action": "get",
+                                "searchSequence": 1,
+                                "searchQuery": {
+                                    "query": {
+                                        "contexts": [
+                                            {
+                                                "self": "self"
+                                            }
+                                        ],
+                                        "filters": {
+                                            "attributesCriterion": [
+                                                {
+                                                    "businessConditions": {
+                                                        "attributes": [
+                                                            {
+                                                                "businessConditionName": {
+                                                                    "eq": bcid,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            },
+                                                            {
+                                                                "businessConditionStatus": {
+                                                                    "eq": true,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ],
+                                                        "not": true
+                                                    }
+                                                }
+                                            ],
+                                            "typesCriterion":this.entityTypes,
+                                            "nonContextual": false
+                                        }
+                                    },
+                                    "options": {
+                                        "from": 0,
+                                        "to": 0
+                                    }
+                                }
+                            },
+                            {
+                                "serviceName": "entityservice",
+                                "action": "get",
+                                "searchSequence": 2,
+                                "searchQuery": {
+                                    "query": {
+                                        "filters": {
+                                            "typesCriterion": this.entityTypes,
+                                            "attributesCriterion": []
+                                        },
+                                        "valueContexts": [
+                                            {
+                                                "source": "internal",
+                                                "locale": "en-US"
+                                            }
+                                        ]
+                                    },
+                                    "options": {
+                                        "maxRecords": 1
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "domain": "thing",
+            "operation": "initiatesearch"
         };
+
         //adding taxonomy filter if its selected
         if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
@@ -617,9 +860,9 @@ class PluginQualityScoreCard extends PolymerElement {
                     ]
                 }
             };
-            requestData.params.query.filters.attributesCriterion.push(taxObj);
+            requestData.entity.data.jsonData.searchQueries[1].searchQuery.query.filters.attributesCriterion.push(taxObj);
         }
-        //adding ref attr filter if its selected
+        //adding refattr filter if its selected
         if (this.selectedFilters.length > 0) {
             let filterObj = {
                 [this.referenceFilter.referenceAttrShortname]: {
@@ -634,95 +877,18 @@ class PluginQualityScoreCard extends PolymerElement {
                     ]
                 }
             };
-            requestData.params.query.filters.attributesCriterion.push(filterObj);
+            requestData.entity.data.jsonData.searchQueries[1].searchQuery.query.filters.attributesCriterion.push(filterObj);
         }
-
-        //brand attr value check filter pending
-        /*  let requestData = {
-              params: {
-                  query: {
-                      filters: {
-                          typesCriterion: this.entityTypes,
-                          attributesCriterion: [
-                              {
-                                  [this.taxonomyAttrShortname]: {
-                                      "startswith": this.selectedTax,
-                                      "operator": "_OR",
-                                      "type": "_STRING",
-                                      "valueContexts": [
-                                          {
-                                              "source": "internal",
-                                              "locale": "en-US"
-                                          }
-                                      ]
-                                  }
-                              },
-                              {
-                                  [this.referenceFilter.referenceAttrShortname]: {
-                                      "startswith": this.selectedFilters,
-                                      "operator": "_OR",
-                                      "type": "_STRING",
-                                      "valueContexts": [
-                                          {
-                                              "source": "internal",
-                                              "locale": "en-US"
-                                          }
-                                      ]
-                                  }
-                              }
-                          ],
-                          relationshipsCriterion: [
-                              {
-                                  hasimages: {
-                                      hasvalue: false
-                                  }
-                              }
-                          ]
-                      },
-                      valueContexts: [
-                          {
-                              source: 'internal',
-                              locale: 'en-US'
-                          }
-                      ]
-                  },
-                  options: {
-                      maxRecords: 1
-                  }
-              }
-          };*/
+       
         let res = await this._sendRequestToGetCount(requestData);
-        this.missingImagesCount= res.response.content.totalRecords;
+        this.missingImagesCount= res.response.totalRecords;
         this.missingImagesCountPercentage = Math.round(parseInt(res.response.content.totalRecords) * 100 / this.totalEntities);
     
     }
 
     async _getInvalidValueCount() {
-        /*  let requestData = {
-              params: {
-                  query: {
-                      filters: {
-                          typesCriterion: this.entityTypes,
-                          keywordsCriterion: {
-                              operator: '_AND',
-                              keywords: 'InvalidVal001'
-                          }
-                      },
-                      valueContexts: [
-                          {
-                              source: 'internal',
-                              locale: 'en-US'
-                          }
-                      ]
-                  },
-                  options: {
-                      maxRecords: 200
-                  }
-              }
-          };
-          var res = await this._sendRequestToGetGovernCount(requestData);
-          this.invalidValue = res.response.content.totalRecords;
-          */
+    
+        let bcid=this.invalidValueBlock.bcShortname+"_businessCondition";
         let requestData = {
             "params": {
                 "isCombinedQuerySearch": true,
@@ -744,22 +910,48 @@ class PluginQualityScoreCard extends PolymerElement {
                                 "searchSequence": 1,
                                 "searchQuery": {
                                     "query": {
-                                        "filters": {
-                                            "typesCriterion": this.entityTypes,
-                                            "keywordsCriterion": {
-                                                "operator": "_AND",
-                                                "keywords": "InvalidVal001"
-                                            }
-                                        },
-                                        "valueContexts": [
+                                        "contexts": [
                                             {
-                                                "source": "internal",
-                                                "locale": "en-US"
+                                                "self": "self"
                                             }
-                                        ]
+                                        ],
+                                        "filters": {
+                                            "attributesCriterion": [
+                                                {
+                                                    "businessConditions": {
+                                                        "attributes": [
+                                                            {
+                                                                "businessConditionName": {
+                                                                    "eq": bcid,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            },
+                                                            {
+                                                                "businessConditionStatus": {
+                                                                    "eq": true,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ],
+                                                        "not": true
+                                                    }
+                                                }
+                                            ],
+                                            "typesCriterion":this.entityTypes,
+                                            "nonContextual": false
+                                        }
                                     },
                                     "options": {
-                                        "maxRecords": 200
+                                        "from": 0,
+                                        "to": 0
                                     }
                                 }
                             },
@@ -828,36 +1020,12 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
-        this.invalidValue =res.response.totalRecords;
+        this.invalidValueCount =res.response.totalRecords;
         this.invalidValuePercentage =Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
 
     async _getMissingRequiredAttributesCount() {
-        /*
-        let requestData = {
-            params: {
-                query: {
-                    filters: {
-                        typesCriterion: this.entityTypes,
-                        keywordsCriterion: {
-                            operator: '_AND',
-                            keywords: 'Req001'
-                        }
-                    },
-                    valueContexts: [
-                        {
-                            source: 'internal',
-                            locale: 'en-US'
-                        }
-                    ]
-                },
-                options: {
-                    maxRecords: 200
-                }
-            }
-        };
-        var res = await this._sendRequestToGetGovernCount(requestData);
-        this.missingRequiredAttributes = res.response.content.totalRecords;*/
+        let bcid=this.missingRequiredBlock.bcShortname+"_businessCondition";
         let requestData = {
             "params": {
                 "isCombinedQuerySearch": true,
@@ -879,22 +1047,48 @@ class PluginQualityScoreCard extends PolymerElement {
                                 "searchSequence": 1,
                                 "searchQuery": {
                                     "query": {
-                                        "filters": {
-                                            "typesCriterion": this.entityTypes,
-                                            "keywordsCriterion": {
-                                                "operator": "_AND",
-                                                "keywords": "Req001"
-                                            }
-                                        },
-                                        "valueContexts": [
+                                        "contexts": [
                                             {
-                                                "source": "internal",
-                                                "locale": "en-US"
+                                                "self": "self"
                                             }
-                                        ]
+                                        ],
+                                        "filters": {
+                                            "attributesCriterion": [
+                                                {
+                                                    "businessConditions": {
+                                                        "attributes": [
+                                                            {
+                                                                "businessConditionName": {
+                                                                    "eq": bcid,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            },
+                                                            {
+                                                                "businessConditionStatus": {
+                                                                    "eq": true,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ],
+                                                        "not": true
+                                                    }
+                                                }
+                                            ],
+                                            "typesCriterion":this.entityTypes,
+                                            "nonContextual": false
+                                        }
                                     },
                                     "options": {
-                                        "maxRecords": 200
+                                        "from": 0,
+                                        "to": 0
                                     }
                                 }
                             },
@@ -963,70 +1157,12 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
-        this.missingRequiredAttributes =res.response.totalRecords;
+        this.missingRequiredAttributesCount =res.response.totalRecords;
         this.missingRequiredAttributesPercentage =Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
 
     async _getrejectedItemsCount() {
-        /*
-        let requestData = {
-            "params": {
-                "query": {
-                    "contexts": [
-                        {
-                            "self": "self"
-                        },
-                        {
-                            "self": "self",
-                            "workflow": this.rejectedItems.wfShortname
-                        }
-                    ],
-                    "filters": {
-                        "attributesCriterion": [
-                            {
-                                "activities": {
-                                    "attributes": [
-                                        {
-                                            "status": {
-                                                "exacts": [
-                                                    "Executing",
-                                                    "AssignmentChange"
-                                                ],
-                                                "operator": "_OR"
-                                            }
-                                        },
-                                        {
-                                            "activityName": {
-                                                "eq": this.rejectedItems.wfStepShortname
-                                            }
-                                        }
-                                    ],
-                                    "contexts": [
-                                        {
-                                            "self": "self",
-                                            "workflow": this.rejectedItems.wfShortname
-                                        }
-                                    ],
-                                    "valueContexts": [
-                                        {
-                                            "source": "internal",
-                                            "locale": "en-US"
-                                        }
-                                    ],
-                                    "nonContextual": false
-                                }
-                            }
-                        ],
-                        "typesCriterion": [
-                            this.rejectedItems.entityTypeShortname
-                        ],
-                        "nonContextual": false
-                    }
-                }
-            }
-        };
-        var res = await this._sendRequestToGetGovernCount(requestData);
-        this.rejectedItemsCount = res.response.content.totalRecords;*/
+        
 
         let requestData = {
             "params": {
@@ -1172,34 +1308,7 @@ class PluginQualityScoreCard extends PolymerElement {
     }
 
     async _getmissingRelCount() {
-        /*    let requestData = {
-                params: {
-                    query: {
-                        filters: {
-                            typesCriterion: this.entityTypes,
-                            relationshipsCriterion: [
-                                {
-                                    [[this.dynamicRelationship.relshortname]]: {
-                                        hasvalue: false
-                                    }
-                                }
-                            ]
-                        },
-                        valueContexts: [
-                            {
-                                source: 'internal',
-                                locale: 'en-US'
-                            }
-                        ]
-                    },
-                    options: {
-                        maxRecords: 1
-                    }
-                }
-            };
-            var res = await this._sendRequestToGetCount(requestData);
-            this.missingRelCount = res.response.content.totalRecords;*/
-
+      /*
         let requestData = {
             "params": {
                 "isCombinedQuerySearch": true,
@@ -1225,7 +1334,7 @@ class PluginQualityScoreCard extends PolymerElement {
                                             "typesCriterion": this.entityTypes,
                                             "relationshipsCriterion": [
                                                 {
-                                                    [this.dynamicRelationship.relshortname]: {
+                                                    [this.dynamicRelationship.relShortname]: {
                                                         "hasvalue": false
                                                     }
                                                 }
@@ -1237,6 +1346,103 @@ class PluginQualityScoreCard extends PolymerElement {
                                                 "locale": "en-US"
                                             }
                                         ]
+                                    }
+                                }
+                            },
+                            {
+                                "serviceName": "entityservice",
+                                "action": "get",
+                                "searchSequence": 2,
+                                "searchQuery": {
+                                    "query": {
+                                        "filters": {
+                                            "typesCriterion": this.entityTypes,
+                                            "attributesCriterion": []
+                                        },
+                                        "valueContexts": [
+                                            {
+                                                "source": "internal",
+                                                "locale": "en-US"
+                                            }
+                                        ]
+                                    },
+                                    "options": {
+                                        "maxRecords": 1
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "domain": "thing",
+            "operation": "initiatesearch"
+        };*/
+        
+        let bcid=this.dynamicRelationship.bcShortname+"_businessCondition";
+        let requestData = {
+            "params": {
+                "isCombinedQuerySearch": true,
+                "options": {
+                    "from": 0,
+                    "to": 50
+                }
+            },
+            "entity": {
+                "id": "combinedGet",
+                "name": "combinedGet",
+                "type": "config",
+                "data": {
+                    "jsonData": {
+                        "searchQueries": [
+                            {
+                                "serviceName": "entitygovernservice",
+                                "action": "get",
+                                "searchSequence": 1,
+                                "searchQuery": {
+                                    "query": {
+                                        "contexts": [
+                                            {
+                                                "self": "self"
+                                            }
+                                        ],
+                                        "filters": {
+                                            "attributesCriterion": [
+                                                {
+                                                    "businessConditions": {
+                                                        "attributes": [
+                                                            {
+                                                                "businessConditionName": {
+                                                                    "eq": bcid,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            },
+                                                            {
+                                                                "businessConditionStatus": {
+                                                                    "eq": true,
+                                                                    "contexts": [
+                                                                        {
+                                                                            "self": "self"
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ],
+                                                        "not": true
+                                                    }
+                                                }
+                                            ],
+                                            "typesCriterion":this.entityTypes,
+                                            "nonContextual": false
+                                        }
+                                    },
+                                    "options": {
+                                        "from": 0,
+                                        "to": 0
                                     }
                                 }
                             },
@@ -1305,6 +1511,7 @@ class PluginQualityScoreCard extends PolymerElement {
         }
         let URL = "/data/pass-through/entityappservice/getcombined";
         let res = await this._sendRequestToURL(URL, requestData);
+
         this.missingRelCount =res.response.totalRecords;
         this.missingRelCountPercentage =Math.round(parseInt(res.response.totalRecords) * 100 / this.totalEntities);
     }
@@ -1334,8 +1541,8 @@ class PluginQualityScoreCard extends PolymerElement {
      
         let totalweightage = (parseInt(this.missingImagesCountPercentage) *20)/100 + (parseInt(this.invalidValuePercentage)*10)/100 + (parseInt(this.missingRequiredAttributesPercentage)*30)/100 + (parseInt(this.rejectedItemsCountPercentage)*40)/100;
         this.weightage =1-((totalweightage/100).toFixed(2));
-
-        let badDataCount=parseInt(this.missingImagesCount) + parseInt(this.missingRelCount) + parseInt(this.invalidValue) + parseInt(this.missingRequiredAttributes) + parseInt(this.rejectedItemsCount);
+        this.weightage=this.weightage.toFixed(2);
+        let badDataCount=parseInt(this.missingImagesCount) + parseInt(this.missingRelCount) + parseInt(this.invalidValueCount) + parseInt(this.missingRequiredAttributesCount) + parseInt(this.rejectedItemsCount);
         let badDataAvg=Math.round(badDataCount/counter);
         let entitydata=new Array();
         entitydata.push({
@@ -1417,11 +1624,11 @@ class PluginQualityScoreCard extends PolymerElement {
     _colorCodeScore()
     {
         let span=this.shadowRoot.querySelector("#weitagespan");
-        if(this.weightage<0.5)
+        if(this.weightage<=0.5)
         {
             span.style.color='#EE204C';
         }   
-        if(this.weightage>0.5 && this.weightage<0.75)
+        if(this.weightage>0.5 && this.weightage<=0.75)
         {
             span.style.color='#F78E1E';
         }  
@@ -1429,8 +1636,6 @@ class PluginQualityScoreCard extends PolymerElement {
         {
             span.style.color='#36B44A';
         }  
-
-
     }
     async _sendRequestToGetModel(requestData) {
         let entitySearchAndGetRequest = DataObjectManager.createRequest('searchandget', requestData, '', {
@@ -1501,9 +1706,8 @@ class PluginQualityScoreCard extends PolymerElement {
                     return {
                         visible: true,
                         label: 'Missing Images',
-                        relShortname: 'hasimages'
-                      
-                      
+                        relShortname: 'hasimages',
+                        bcShortname:"" 
                     };
                 },
                 reflectToAttribute: true
@@ -1513,9 +1717,34 @@ class PluginQualityScoreCard extends PolymerElement {
                 value: function () {
                     return {
                         visible: true,
-                        label: 'Invalid Value'
-                     
-                      
+                        label: 'Invalid Value',
+                        bcShortname:""                    
+                    };
+                },
+                reflectToAttribute: true
+            },
+             
+            dynamicRelationship: {
+                type: Object,
+                value: function () {
+                    return {
+                        visible: false,
+                        relShortname: '',
+                        label: '',
+                        bcShortname:""
+                    };
+                },
+                reflectToAttribute: true
+            },
+            rejectedItems: {
+                type: Object,
+                value: function () {
+                    return {
+                        visible: false,
+                        wfShortname: '',
+                        wfStepShortname: '',
+                        entityTypeShortname: '',
+                        label: ''
                     };
                 },
                 reflectToAttribute: true
@@ -1525,8 +1754,8 @@ class PluginQualityScoreCard extends PolymerElement {
                 value: function () {
                     return {
                         visible: true,
-                        label: 'Missing Rquired'
-                      
+                        label: 'Missing Rquired',
+                        bcShortname:""                   
                     };
                 },
                 reflectToAttribute: true
@@ -1535,7 +1764,6 @@ class PluginQualityScoreCard extends PolymerElement {
                 type: Array,
                 value: function () {
                     return [
-                      
                     ];
                 },
                 reflectToAttribute: true,
@@ -1548,56 +1776,69 @@ class PluginQualityScoreCard extends PolymerElement {
 
             weightage: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             grandavg: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             totalEntities: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             missingImagesCount: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             missingRelCount: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
-            invalidValue: {
+            invalidValueCount: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
-            missingRequiredAttributes: {
+            missingRequiredAttributesCount: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             rejectedItemsCount: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
 
             missingImagesCountPercentage: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             missingRelCountPercentage: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             invalidValuePercentage: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             missingRequiredAttributesPercentage: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             rejectedItemsCountPercentage: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value:0
             },
             referenceEntiytyIdentifier: {
                 type: String,
@@ -1632,31 +1873,7 @@ class PluginQualityScoreCard extends PolymerElement {
                 notify: true,
                 reflectToAttribute: true
             },
-          
-            dynamicRelationship: {
-                type: Object,
-                value: function () {
-                    return {
-                        visible: false,
-                        relshortname: '',
-                        label: ''
-                    };
-                },
-                reflectToAttribute: true
-            },
-            rejectedItems: {
-                type: Object,
-                value: function () {
-                    return {
-                        visible: false,
-                        wfShortname: '',
-                        wfStepShortname: '',
-                        entityTypeShortname: '',
-                        label: ''
-                    };
-                },
-                reflectToAttribute: true
-            },
+         
 
             refentitydata: {
                 type: Array,
@@ -1783,7 +2000,8 @@ class PluginQualityScoreCard extends PolymerElement {
         if (
             ObjectUtils.isValidObjectPath(configResponse, 'response.status') &&
             configResponse.response.status == 'success'
-        ) {
+        ) 
+        {
             this._handleConfigGetSuccess(configResponse);
             //once the keys are added from custom config file
             await this._getTotalEntities();
@@ -1795,7 +2013,10 @@ class PluginQualityScoreCard extends PolymerElement {
             await this._getMissingRequiredAttributesCount();
             await this._getInvalidValueCount();
             await this._getrejectedItemsCount();
-            await this._getmissingRelCount();
+            if(this.dynamicRelationship.visible)
+            {
+                await this._getmissingRelCount();
+            }
 
             this.manageVisibility();
             //Bfore calling this method , all the counts should be available

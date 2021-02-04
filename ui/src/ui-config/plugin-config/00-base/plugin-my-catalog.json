@@ -28,6 +28,14 @@
                         "jsonData": {
                             "config": {
                                 "properties": {
+                                    "taxonomyAttrShortname":"thgmastertaxonomy",
+                                    "_rootNode":"productclassificationroot",
+                                    "piechart3": {
+                                        "visible": true,
+                                        "attributeshortname": "thgitemlifecycle",
+                                        "attributevalue": "Pending Item Approval",                                       
+                                        "entityTypeshortname": "stagingitem"
+                                    },
                                     "wfchart1": {
                                         "visible": true,
                                         "label": "Pending Submission",
@@ -58,26 +66,26 @@
                                     },
                                     "createdchart": {
                                         "visible": true,
-                                        "label": "Entities Created",
+                                        "label": "Created",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgdatecreated"
                                     },
                                     "modifiedchart": {
                                         "visible": true,
-                                        "label": "Entities Modified",
+                                        "label": "Modified",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgdatemodified"
                                     },
                                     "discontinuedchart": {
                                         "visible": true,
-                                        "label": "Entities Discontinued",
+                                        "label": "Discontinued",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Discontinue"
                                     },
                                     "publishedchart": {
                                         "visible": true,
-                                        "label": "Entities Published",
+                                        "label": "Published",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Published"
