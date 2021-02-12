@@ -66,10 +66,10 @@
                                     },
                                     "discontinuedchart": {
                                         "visible": true,
-                                        "label": "Discontinued",
+                                        "label": "Canceled",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
-                                        "attributevalue": "Discontinue"
+                                        "attributevalue": "Cancel"
                                     },
                                     "publishedchart": {
                                         "visible": true,
@@ -81,6 +81,11 @@
                                     "referenceFilter": {
                                         "visible": false
                                       
+                                    },
+                                    "piechart3": {
+                                        "visible": true,
+                                        "attributeshortname": "thgitemcreationstatus",
+                                        "entityTypeshortname": "stagingitem"
                                     }
                                 }
                             }

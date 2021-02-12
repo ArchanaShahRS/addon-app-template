@@ -322,11 +322,15 @@ class PluginQualityScoreCard extends PolymerElement {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
+     
+            queryParam.attributes[this.taxonomyAttrShortname]=searchString;
 
         }
         this._redirectTo('search-thing', queryParam);
@@ -354,11 +358,15 @@ class PluginQualityScoreCard extends PolymerElement {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
+     
+            queryParam.attributes[this.taxonomyAttrShortname]=searchString;
 
         }
         this._redirectTo('search-thing', queryParam);
@@ -385,11 +393,15 @@ class PluginQualityScoreCard extends PolymerElement {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
+     
+            queryParam.attributes[this.taxonomyAttrShortname]=searchString;
 
         }
         this._redirectTo('search-thing', queryParam);
@@ -417,16 +429,13 @@ class PluginQualityScoreCard extends PolymerElement {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
-            }        
-
-/*
-            var word = ' or ';
-            var newword="";
-            var n = searchString.lastIndexOf(word);
-            searchString = searchString.slice(0, n) + searchString.slice(n).replace(word, newword);*/
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
+            }       
+            queryParam.attributes[this.taxonomyAttrShortname]=searchString;
 
         }
         this._redirectTo('search-thing', queryParam);
@@ -468,7 +477,11 @@ class PluginQualityScoreCard extends PolymerElement {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
             let obj={[this.taxonomyAttrShortname]:searchString }
@@ -600,7 +613,8 @@ class PluginQualityScoreCard extends PolymerElement {
                 query: {
                     contexts: [],
                     filters: {
-                        typesCriterion: this.entityTypes
+                        typesCriterion: this.entityTypes,
+                        "attributesCriterion": []
                     }
                 },
                 options: {
@@ -608,6 +622,40 @@ class PluginQualityScoreCard extends PolymerElement {
                 }
             }
         };
+           //adding taxonomy filter if its selected
+           if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let taxObj = {
+                [this.taxonomyAttrShortname]: {
+                    "startswith": this.selectedTax,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqBody.param.query.filters.attributesCriterion.push(taxObj);
+        }
+        //adding refattr filter if its selected
+        if (this.selectedFilters.length > 0) {
+            let filterObj = {
+                [this.referenceFilter.referenceAttrShortname]: {
+                    "startswith": this.selectedFilters,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqBody.param.query.filters.attributesCriterion.push(filterObj);
+        }
 
         let res = await this._sendRequestToGetCount(reqBody);
         this.totalEntities = res.response.content.totalRecords;
@@ -881,7 +929,8 @@ class PluginQualityScoreCard extends PolymerElement {
         }
        
         let res = await this._sendRequestToGetCount(requestData);
-        this.missingImagesCount= res.response.totalRecords;
+        //this.missingImagesCount= res.response.totalRecords;
+        this.missingImagesCount= res.response.content.totalRecords;
         this.missingImagesCountPercentage = Math.round(parseInt(res.response.content.totalRecords) * 100 / this.totalEntities);
     
     }

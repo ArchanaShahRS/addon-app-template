@@ -84,6 +84,12 @@ class PluginMyCatalog extends PolymerElement {
                 left: 0;
                 top: 0;
             }
+
+
+        .canvasHolder{
+            width:100%;
+            text-align: -webkit-center;
+        }
          #filterPopover{​​​​​​​​
                 position:absolute !important;
                 left:540px !important;
@@ -282,28 +288,29 @@ class PluginMyCatalog extends PolymerElement {
                 <div class="div-container">
                         <div class="avg-item-container">
                         <b>  Workflow Summary</b>
-                            <div id="canvas-holder" style="width:100%">
+                            <div class="canvasHolder" id="canvas-holder">
                                 <canvas id="chart-area"></canvas>
                             </div>
 
                       <!--  <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>-->
                         </div>
+                        <!--
                         <div class="avg-item-container">    
                         <b>  Status Summary </b>
-                            <div id="canvas-holder2" style="width:100%">
+                            <div class="canvasHolder" id="canvas-holder2">
                                  <canvas id="chart-area2"></canvas>
                             </div>
-                        <!--<pebble-graph-pie id="pie2" data="[[data2]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>-->
+                       <pebble-graph-pie id="pie2" data="[[data2]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
                         </div>
-                        <!--
+                        -->
                             <div class="avg-item-container">    
                             <b>  Onboarding Summary </b>
-                                <div id="canvas-holder3" style="width:100%">
+                                <div class="canvasHolder" id="canvas-holder3">
                                     <canvas id="chart-area3"></canvas>
                             </div>
-                                 <pebble-graph-pie id="pie3" data="[[data3]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
+                            <!--     <pebble-graph-pie id="pie3" data="[[data3]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>-->
                             </div>
-                        -->
+                        
                       
                 </div>
             </div>
@@ -319,24 +326,10 @@ class PluginMyCatalog extends PolymerElement {
         let dataset = ele[0]._chart.config.data.datasets[datasetindex];
         let dataindex = ele[0]._index;
         //  Once we get dataset , the data which got selected on data set that count we can get here
-        switch (dataindex) {
-            case 0:
-                this.piechart1Section1Click();
-                break;
-            case 1:
-                this.piechart1Section2Click();
-                break;
-            case 2:
-                this.piechart1Section3Click();
-                break;
-            case 3:
-                this.piechart1Section4Click();
-                break;
-        }
-
-        let data = dataset.data[dataindex];
-        console.log("Data Clicked :" + data);
+        this.piechartSectionClick(dataindex);
+       
     }
+    /*
     _onChart2Click(event, ele) {
 
         let datasetindex = ele[0]._datasetIndex;
@@ -344,9 +337,11 @@ class PluginMyCatalog extends PolymerElement {
         let dataset = ele[0]._chart.config.data.datasets[datasetindex];
         let dataindex = ele[0]._index;
         //  Once we get dataset , the data which got selected on data set that count we can get here
-        let data = dataset.data[dataindex];
-        console.log("Data Clicked 2:" + data);
-    }
+        let data = dataset.data[dataindex];      
+        this.piechart2SectionClick(dataindex);
+             
+    }*/
+    
     _onChart3Click(event, ele) {
 
         let datasetindex = ele[0]._datasetIndex;
@@ -354,8 +349,8 @@ class PluginMyCatalog extends PolymerElement {
         let dataset = ele[0]._chart.config.data.datasets[datasetindex];
         let dataindex = ele[0]._index;
         //  Once we get dataset , the data which got selected on data set that count we can get here
-        let data = dataset.data[dataindex];
-        console.log("Data Clicked 3:" + data);
+        let data = dataset.data[dataindex];      
+        this.piechart3SectionClick(dataindex);
     }
 
     async _applyFilter() {
@@ -535,28 +530,87 @@ class PluginMyCatalog extends PolymerElement {
         AppInstanceManager.navigateToRoute(appName, queryparam);
     }
 
-    piechart1Section1Click() {
-        //redirect with parameter
-        let queryParam = {
-            attributes:{},
-            wfName: this.wfchart1.workflowshortname,
-            wfShortName: this.wfchart1.workflowshortname,
-            wfActivityName: this.wfchart1.workflowstepshortname,
-            wfActivityExternalName: this.wfchart1.workflowstepshortname,
-            mappedEntityTypesString: this.wfchart1.entityTypeshortname,
-            mappedContextsString: [
-                {
-                    self: 'self'
-                }
-            ]
-        };
+    piechartSectionClick(ch) {
+        let queryParam ;
+        switch(ch)
+        {
+            case 0:
+                //redirect with parameter
+                queryParam = {
+                    attributes:{},
+                    wfName: this.wfchart1.workflowshortname,
+                    wfShortName: this.wfchart1.workflowshortname,
+                    wfActivityName: this.wfchart1.workflowstepshortname,
+                    wfActivityExternalName: this.wfchart1.workflowstepshortname,
+                    mappedEntityTypesString: this.wfchart1.entityTypeshortname,
+                    mappedContextsString: [
+                        {
+                            self: 'self'
+                        }
+                    ]
+                };
+                break;
+            case 1:
+                queryParam = {
+                    attributes:{},
+                    wfName: this.wfchart2.workflowshortname,
+                    wfShortName: this.wfchart2.workflowshortname,
+                    wfActivityName: this.wfchart2.workflowstepshortname,
+                    wfActivityExternalName: this.wfchart2.workflowstepshortname,
+                    mappedEntityTypesString: this.wfchart2.entityTypeshortname,
+                    mappedContextsString: [
+                        {
+                            self: 'self'
+                        }
+                    ]
+                };
+                break;
+
+                case 2:
+                    queryParam = {
+                        attributes:{},
+                        wfName: this.wfchart3.workflowshortname,
+                        wfShortName: this.wfchart3.workflowshortname,
+                        wfActivityName: this.wfchart3.workflowstepshortname,
+                        wfActivityExternalName: this.wfchart3.workflowstepshortname,
+                        mappedEntityTypesString: this.wfchart3.entityTypeshortname,
+                        mappedContextsString: [
+                            {
+                                self: 'self'
+                            }
+                        ]
+                    };
+                    break;
+
+                    case 3:
+                        queryParam = {
+                            attributes:{},
+                            wfName: this.wfchart4.workflowshortname,
+                            wfShortName: this.wfchart4.workflowshortname,
+                            wfActivityName: this.wfchart4.workflowstepshortname,
+                            wfActivityExternalName: this.wfchart4.workflowstepshortname,
+                            mappedEntityTypesString: this.wfchart4.entityTypeshortname,
+                            mappedContextsString: [
+                                {
+                                    self: 'self'
+                                }
+                            ]
+                        };
+                        break;
+
+
+      }
         //If taxonomy is available
         if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
         {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
             let obj={[this.taxonomyAttrShortname]:searchString }
@@ -570,91 +624,130 @@ class PluginMyCatalog extends PolymerElement {
         }
         this._redirectTo('search-thing', queryParam);
     }
-    piechart1Section2Click() {
-        //redirect with parameter
-        let queryParam = {
-            attributes:{},
-            wfName: this.wfchart2.workflowshortname,
-            wfShortName: this.wfchart2.workflowshortname,
-            wfActivityName: this.wfchart2.workflowstepshortname,
-            wfActivityExternalName: this.wfchart2.workflowstepshortname,
-            mappedEntityTypesString: this.wfchart2.entityTypeshortname,
-            mappedContextsString: [
-                {
-                    self: 'self'
-                }
-            ]
-        };
+
+    piechart2SectionClick(ch) {
+        let queryParam;
+        switch(ch)
+        {
+            case 0:
+              //Created
+                queryParam = {
+                    attributes:{
+                        [this.createdchart.attributeshortname]:true,
+                        [this.modifiedchart.attributeshortname]:false
+
+                    },
+                    entitytype:this.modifiedchart.entityTypeshortname
+                  
+                };
+               
+                break;
+            case 1:
+                //Modified
+                queryParam = {
+                    attributes:{
+                        [this.modifiedchart.attributeshortname]:true
+                    },
+                    entitytype:this.modifiedchart.entityTypeshortname
+                    
+                };
+                break;
+
+                case 2:
+                    //Discontinued
+                    queryParam = {
+                        attributes:{
+                            [this.discontinuedchart.attributeshortname]:this.discontinuedchart.attributevalue
+                        },
+                        entitytype:this.discontinuedchart.entityTypeshortname
+                        
+                    };
+                    break;
+
+                    case 3:
+                        //Published
+                        queryParam = {
+                            attributes:{
+                                [this.publishedchart.attributeshortname]:this.publishedchart.attributevalue
+                            },
+                            entitytype:this.publishedchart.entityTypeshortname
+                            
+                        };
+                        break;
+
+
+      }
+        //If taxonomy is available
         if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
         {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
+          //  let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes[this.taxonomyAttrShortname]=searchString;
 
+        }
+        //IF date is selected
+        if(this.selectedDateRange.length>0 && this.selectedDateRange!="No Date Selected")
+        {   
+           queryParam.attributes.rsInternalGenericCreatedDate=this.selectedDateRange;
         }
         this._redirectTo('search-thing', queryParam);
     }
+    piechart3SectionClick(ch) {
+        let queryParam;
+        switch(ch)
+        {
+            case 0:
+              //Item Exists
+                queryParam = {
+                    attributes:{
+                        [this.piechart3.attributeshortname]:"true"
+                    },
+                    entitytype:this.piechart3.entityTypeshortname
+                };
+               
+                break;
+            case 1:
+                //Item do not exists
+                queryParam = {
+                    attributes:{
+                        [this.piechart3.attributeshortname]:"false"
+                    },
+                    entitytype:this.piechart3.entityTypeshortname                    
+                };
+                break; 
 
-    piechart1Section3Click() {
-        //redirect with parameter
-        let queryParam = {
-            attributes:{},
-            wfName: this.wfchart3.workflowshortname,
-            wfShortName: this.wfchart3.workflowshortname,
-            wfActivityName: this.wfchart3.workflowstepshortname,
-            wfActivityExternalName: this.wfchart3.workflowstepshortname,
-            mappedEntityTypesString: this.wfchart3.entityTypeshortname,
-            mappedContextsString: [
-                {
-                    self: 'self'
-                }
-            ]
-        };
+
+      }
+        //If taxonomy is available
         if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
         {
             let searchString="";
             for(let i=0;i<this.selectedTax.length;i++)
             {
-                searchString=searchString+this.selectedTax[i] + "' or '";
+                searchString=searchString+"'"+this.selectedTax[i] + "'";
+                 if(this.selectedTax.length-(i+1)>0)
+                {
+                    searchString=searchString+" or ";
+                }
             }        
 
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
+          //  let obj={[this.taxonomyAttrShortname]:searchString }
+            queryParam.attributes[this.taxonomyAttrShortname]=searchString;
 
         }
-        this._redirectTo('search-thing', queryParam);
-    }
-    piechart1Section4Click() {
-        //redirect with parameter
-        let queryParam = {
-            attributes:{},
-            wfName: this.wfchart4.workflowshortname,
-            wfShortName: this.wfchart4.workflowshortname,
-            wfActivityName: this.wfchart4.workflowstepshortname,
-            wfActivityExternalName: this.wfchart4.workflowstepshortname,
-            mappedEntityTypesString: this.wfchart4.entityTypeshortname,
-            mappedContextsString: [
-                {
-                    self: 'self'
-                }
-            ]
-        };
-        if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
-        {
-            let searchString="";
-            for(let i=0;i<this.selectedTax.length;i++)
-            {
-                searchString=searchString+this.selectedTax[i] + "' or '";
-            }        
-
-            let obj={[this.taxonomyAttrShortname]:searchString }
-            queryParam.attributes=obj;
-
+        //IF date is selected
+        if(this.selectedDateRange.length>0 && this.selectedDateRange!="No Date Selected")
+        {   
+           queryParam.attributes.rsInternalGenericCreatedDate=this.selectedDateRange;
         }
         this._redirectTo('search-thing', queryParam);
     }
@@ -775,81 +868,126 @@ class PluginMyCatalog extends PolymerElement {
     async _getEntitiesCountIn(wfname, entitytype, activityname) {
 
         let requestData = {
-            "params": {
-                "isCombinedQuerySearch": true,
-                "options": {
-                    "from": 0,
-                    "to": 50
-                }
-            },
+            "domain": "thing",
             "entity": {
-                "id": "combinedGet",
-                "name": "combinedGet",
-                "type": "config",
                 "data": {
                     "jsonData": {
                         "searchQueries": [
                             {
-                                "serviceName": "entitygovernservice",
                                 "action": "get",
-                                "searchSequence": 1,
                                 "searchQuery": {
+                                    "options": {
+                                        "from": 0,
+                                        "to": 0
+                                    },
                                     "query": {
                                         "contexts": [
+                                            {
+                                                "self": "self"
+                                            },
                                             {
                                                 "self": "self",
                                                 "workflow": wfname
                                             }
                                         ],
                                         "filters": {
-                                            "typesCriterion": [entitytype],
                                             "attributesCriterion": [
                                                 {
                                                     "activities": {
                                                         "attributes": [
                                                             {
+                                                                "status": {
+                                                                    "exacts": [
+                                                                        "Executing",
+                                                                        "AssignmentChange"
+                                                                    ],
+                                                                    "operator": "_OR"
+                                                                }
+                                                            },
+                                                            {
                                                                 "activityName": {
                                                                     "eq": activityname
                                                                 }
                                                             }
-                                                        ]
+                                                        ],
+                                                        "contexts": [
+                                                            {
+                                                                "self": "self",
+                                                                "workflow": wfname
+                                                            }
+                                                        ],
+                                                        "nonContextual": false
+                                                    }
+                                                },
+                                                {
+                                                    "status": {
+                                                        "contexts": [
+                                                            {
+                                                                "self": "self",
+                                                                "workflow": wfname
+                                                            }
+                                                        ],
+                                                        "eq": "Executing",
+                                                        "nonContextual": false
                                                     }
                                                 }
+                                            ],
+                                            "nonContextual": false,
+                                            "typesCriterion": [
+                                               entitytype
                                             ]
                                         }
                                     }
-                                }
+                                },
+                                "searchSequence": 1,
+                                "serviceName": "entitygovernservice"
                             },
                             {
-                                "serviceName": "entityservice",
                                 "action": "get",
-                                "searchSequence": 2,
                                 "searchQuery": {
+                                    "appName": "app-entity-discovery",
+                                    "authorizationType": "accommodate",
+                                    "options": {
+                                        "maxRecords": 200
+                                    },
                                     "query": {
                                         "filters": {
-                                            "typesCriterion": [entitytype],
-                                            "attributesCriterion": [],
-                                            "propertiesCriterion": []
+                                            "typesCriterion": [
+                                               entitytype
+                                            ],
+                                            "attributesCriterion": [
+                                              
+                                            ],
+                                            "propertiesCriterion":[]
                                         },
                                         "valueContexts": [
                                             {
-                                                "source": "internal",
-                                                "locale": "en-US"
+                                                "locale": "en-US",
+                                                "source": "internal"
                                             }
                                         ]
-                                    },
-                                    "options": {
-                                        "maxRecords": 1
                                     }
-                                }
+                                },
+                                "searchSequence": 2,
+                                "serviceName": "entityservice"
                             }
                         ]
                     }
-                }
+                },
+                "id": "combinedGet",
+                "name": "combinedGet",
+                "type": "config"
             },
-            "domain": "thing",
-            "operation": "initiatesearch"
-        };
+            "operation": "initiatesearch",
+            "params": {
+                "isCombinedQuerySearch": true,
+                "options": {
+                    "from": 0,
+                    "to": 50
+                }
+            }
+        }
+        
         //adding taxonomy filter if its selected
         if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
@@ -1478,6 +1616,8 @@ class PluginMyCatalog extends PolymerElement {
             pieBgColor.push('#129CE6');
             pieLabel.push(this.wfchart4.label);
         }
+
+/*
         let entitydata = new Array();
         let entitydatacount = new Array();
         let pieBgColor2 = new Array();
@@ -1599,7 +1739,7 @@ class PluginMyCatalog extends PolymerElement {
             entitydatacount.push(count);
             pieBgColor2.push('#36B44A');
             pieLabel2.push(this.publishedchart.label);
-        }
+        }*/
 
         if (this.referenceFilter.visible) {
             ReferenceFilterDiv.style.display = 'block';
@@ -1607,7 +1747,7 @@ class PluginMyCatalog extends PolymerElement {
             ReferenceFilterDiv.style.display = 'none';
         }
 
-/*
+
         let itemExistsData = new Array();
         let itemExistsDataCount = new Array();
         let pieBgColor3 = new Array();
@@ -1662,20 +1802,20 @@ class PluginMyCatalog extends PolymerElement {
             pieLabel3.push("Missing Item");
 
         }
-        */
+        
         this.data = workflowdata;
-        this.data2 = entitydata;
-       // this.data3 = itemExistsData;
+      //  this.data2 = entitydata;
+        this.data3 = itemExistsData;
 
         this.piedata = workflowdatacount;
-        this.piedata2 = entitydatacount;
-      //  this.piedata3 = itemExistsDataCount;
-        //pie 1 config
-
+        //this.piedata2 = entitydatacount;
+       this.piedata3 = itemExistsDataCount;
        
+      //pie 1 config
+
         if (window.myPie == null) {
             this.pieconfig = {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     datasets: [{
                         data: this.piedata,
@@ -1687,17 +1827,7 @@ class PluginMyCatalog extends PolymerElement {
                 options: {
                     responsive: true,
                     legend: {
-                        onClick(e, legendItem, legend) {
-                            const index = legendItem.datasetIndex;
-                            const ci = legend.chart;
-                            if (ci.isDatasetVisible(index)) {
-                                ci.hide(index);
-                                legendItem.hidden = true;
-                            } else {
-                                ci.show(index);
-                                legendItem.hidden = false;
-                            }
-                        }
+                        display: true
                     },
                     onClick: (e, ele) => {
                        
@@ -1713,10 +1843,10 @@ class PluginMyCatalog extends PolymerElement {
             this.pieconfig.data.datasets[0].data=this.piedata;
             window.myPie.update();
         }
-      
+      /*
         if (window.myPie2 == null) {
             this.pieconfig2 = {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     datasets: [{
                         data: this.piedata2,
@@ -1727,7 +1857,9 @@ class PluginMyCatalog extends PolymerElement {
                 },
                 options: {
                     responsive: true,
-                  
+                    legend: {
+                        display: false
+                    },
                     onClick: (e, ele) => {
                         let elements = ele[0]._chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)
                         this._onChart2Click(e, elements);
@@ -1740,12 +1872,12 @@ class PluginMyCatalog extends PolymerElement {
         else {
             this.pieconfig2.data.datasets[0].data=this.piedata2;
             window.myPie2.update();
-        }
-        /*
+        }*/
+        
        
         if (window.myPie3 == null) {
              this.pieconfig3 = {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 datasets: [{
                     data: this.piedata3,
@@ -1756,7 +1888,9 @@ class PluginMyCatalog extends PolymerElement {
             },
             options: {
                 responsive: true,
-                events: ['click'],
+                legend: {
+                    display: true
+                },
                 onClick: (e, ele) => {
                     let elements = ele[0]._chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)
                     this._onChart3Click(e, elements);
@@ -1769,7 +1903,7 @@ class PluginMyCatalog extends PolymerElement {
         else {
              this.pieconfig3.data.datasets[0].data=this.piedata3;
             window.myPie3.update();
-        }*/
+        }
         
         return true;
     }
@@ -2020,7 +2154,8 @@ class PluginMyCatalog extends PolymerElement {
                     return {
                         visible: false,
                         label: '',
-                        entityTypeshortname: ''
+                        entityTypeshortname: '',
+                        attributeshortname:''
                     };
                 },
                 reflectToAttribute: true
@@ -2036,7 +2171,8 @@ class PluginMyCatalog extends PolymerElement {
                     return {
                         visible: false,
                         label: '',
-                        entityTypeshortname: ''
+                        entityTypeshortname: '',
+                        attributeshortname:''
                     };
                 },
                 reflectToAttribute: true
@@ -2071,7 +2207,8 @@ class PluginMyCatalog extends PolymerElement {
                         visible: false,
                         label: '',
                         entityTypeshortname: '',
-                        attributevalue: ''
+                        attributevalue: '',
+                        attributeshortname:''
                     };
                 },
                 reflectToAttribute: true

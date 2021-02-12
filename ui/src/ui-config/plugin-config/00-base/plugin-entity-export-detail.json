@@ -29,7 +29,8 @@
                         "jsonData": {
                             "config": {
                                 "properties": {
-                                    "profilename": "EventHub_JSON_Export_Process"
+                                    "profilename": "EventHub_JSON_Export_Process",
+                                    "displaytop":5
                                 }
                             }
                         }

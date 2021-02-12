@@ -30,7 +30,7 @@
                                 "properties":{
                                     "WorkflowDetail":{
                                         "visible": false,
-                                        "label": "",
+                                        "label": "Recently Submitted Entities",
                                         "workflowshortname": "collaboration",
                                         "workflowstepshortname": "tobeapproved",
                                         "entityTypeshortname": "stagingitem"

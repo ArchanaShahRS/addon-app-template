@@ -51,7 +51,7 @@ class PluginQuickLinks extends PolymerElement {
                  
                  </div>
                  <div>
-                 <pebble-tag-item id="ex4" name="Recently Submitted Entities" show-icon icon="pebble-icon:calender" on-click="_recentlysubmitted"></pebble-tag-item>
+                 <pebble-tag-item id="ex4" name="[[WorkflowDetail.label]]" show-icon icon="pebble-icon:calender" on-click="_recentlysubmitted"></pebble-tag-item>
                  
                  </div>
              </div>

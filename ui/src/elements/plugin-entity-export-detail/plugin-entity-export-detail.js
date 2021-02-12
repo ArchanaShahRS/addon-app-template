@@ -6,10 +6,13 @@ import { ObjectUtils } from '@riversandtechnologies/ui-platform-utils/lib/common
 // ui-platform-elements
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-textbox/pebble-textbox.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-button/pebble-button.js';
+import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-spinner/pebble-spinner.js';
 
 // ui-platform-dataaccess
 import { ConfigurationManager } from '@riversandtechnologies/ui-platform-dataaccess/lib/managers/ConfigurationManager.js';
 import { AppInstanceManager } from '@riversandtechnologies/ui-platform-elements/lib/managers/app-instance-manager.js';
+import { DataAccessManager } from '@riversandtechnologies/ui-platform-dataaccess/lib/index.js';
+import { DateTimeFormatUtils } from '@riversandtechnologies/ui-platform-utils/lib/common/DateTimeFormatUtils.js';
 
 class PluginEntityExportDetail extends PolymerElement {
     static get is() {
@@ -21,57 +24,68 @@ class PluginEntityExportDetail extends PolymerElement {
     }
     static get template() {
         return html`
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" />
-
-            <style>
-                .dialogTitle {
-                    --primary-color: [stylecolor];
-                }
-            </style>
-            <div>
-                <div>
+        <style>
+      
+        .div-container {
+            display: flex;
+            flex-wrap: wrap;
+            border: solid 1px #d2d7dd;
+            border-radius: 3px;
+            padding: 1%;
+            position: relative;
+            background: #fff;
+           
+            max-width: 100%;
+            min-width: 20px;
+            flex-direction: row;
+            align-items: center;
+            width: 95%;
+        }
+        </style>
+        <pebble-spinner active=[[spinnerFlag]]></pebble-spinner>
+        <dom-repeat items="{{exportdetails}}">
+        <template>
+            <div class="div-container">
+                <div style="padding: 1%;     width: 65%;">
+                   
+                    <b>Last Published:</b> [[item.lastexportdate]]
                     <br />
-                    <label>Last Published:</label> [[lastexportdate]]
-
-                    <br />
-                    <label>File Name:</label>
-                    [[fileName]]
+                    <b>File Name:</b> [[item.fileName]]
+                   
                 </div>
-                <br /><br />
-                <div>
-                    <pebble-button
+               
+                <div style="width: 30%;">
+                    <pebble-button style="float:right;"
                         class="btn-success"
                         id="btnClick"
                         button-text="Show Task Detail"
                         large-text
                         no-link="false"
                         on-tap="_redirectTo"
+                        data-args="{{item.taskID}}"
                         disabled="{{disabledProperty}}"
                     ></pebble-button>
                 </div>
             </div>
+            </template>
+            </dom-repeat>
             <br />
         `;
     }
 
-    _redirectTo() {
+    _redirectTo(taskid) {
         let appName = 'task-detail';
-        let queryParam = { id: this.taskID };
+        let queryParam = { id: taskid.currentTarget.dataArgs };
         AppInstanceManager.navigateToRoute(appName, queryParam);
     }
-
-    _loadExportDetail() {
+ 
+    async _loadExportDetail() {
         let currentinstance = this;
 
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const entityid = urlParams.get('id');
-
-        let res;
-        //Get all Users using API
-        let xhttp = new XMLHttpRequest();
-        // Converting JSON data to string
-        let reqbody = JSON.stringify({
+        let requestData = {
             params: {
                 query: {
                     filters: {
@@ -99,49 +113,55 @@ class PluginEntityExportDetail extends PolymerElement {
                     attributes: ['_ALL']
                 }
             }
-        });
-
-        xhttp.onreadystatechange = async function () {
-            if (this.readyState == 4 && this.status == 200) {
-                //JSON response parsing
-                res = JSON.parse(this.responseText);
-                let objEvents = res['response']['events'];
-
-                //Loop through users and add in items array
-                for (let i in objEvents) {
-                    currentinstance.taskID = objEvents[i].data.attributes.taskId.values[0].value;
-                    currentinstance.lastexportdate = objEvents[i].properties.modifiedDate;
-                    await currentinstance._getFileName();
-                    currentinstance.disabledProperty = false;
-                }
-            }
         };
 
-        xhttp.open('POST', 'https://sepik01.riversand.com/api/eventservice/get', true);
-        xhttp.setRequestHeader('Content-Type', 'application/json');
-        xhttp.setRequestHeader('x-rdp-version', '8.1');
-        xhttp.setRequestHeader('x-rdp-tenantId', 'sepik01');
-        xhttp.setRequestHeader('x-rdp-userId', 'archana.shah@riversand.com');
-        xhttp.setRequestHeader('x-rdp-clientId', 'rdpclient');
-        xhttp.setRequestHeader('x-rdp-tenantId', 'sepik01');
-        xhttp.setRequestHeader('auth-client-id', 'G4uOqlaNHpjS620YzvEkHEo2U1x30Pjh');
-        xhttp.setRequestHeader(
-            'auth-client-secret',
-            '3G2SLyB6jjQIAlZKW4mbWmibQ_5FYNhztDEk6j4Cw_RnUTY2CFvCGgCT4siHYnQo'
-        );
-        xhttp.send(reqbody);
+
+        let URL = "/data/pass-through/eventservice/get";
+        let res = await this._sendRequestToURL(URL, requestData);
+        let objEvents = res['response']['events'];
+        let dataarr=new Array();
+        for (let i in objEvents) 
+        {
+            if(i<this.displaytop)
+            {
+            //put a condition to display only last 5 and it should show from latest to old  so need to make for loop in reverse
+            let taskID = objEvents[i].data.attributes.taskId.values[0].value;
+            let val=objEvents[i].properties.modifiedDate;
+            let lastexportdate = DateTimeFormatUtils.convertFromISODateTimeToClientFormat(val,"datetime");
+          
+            let filename= await currentinstance._getFileName(taskID);
+            currentinstance.disabledProperty = false;
+            dataarr.push({
+                "lastexportdate":lastexportdate,
+                "taskID":taskID,
+                "fileName":filename
+            });
+          }
+          else{
+              break;
+          }
+
+        }
+        if(objEvents!=undefined)
+        {
+            this.exportdetails=dataarr;
+        }
+        this.spinnerFlag=false;       
     }
 
-    async _getFileName() {
-        let currentinstance = this;
-        let res;
-        //Get all Users using API
-        let xhttp = new XMLHttpRequest();
-        // Converting JSON data to string
-        let reqbody = JSON.stringify({
+    async _sendRequestToURL(URL, requestData) {
+        let response = await DataAccessManager.rest(
+            URL,
+            requestData
+        );
+        return response;
+    }
+    async _getFileName(taskid) {
+      
+        let requestData = {
             params: {
                 query: {
-                    id: currentinstance.taskID,
+                    id: taskid,
                     filters: {
                         typesCriterion: ['tasksummaryobject']
                     }
@@ -153,40 +173,39 @@ class PluginEntityExportDetail extends PolymerElement {
                     maxRecords: 1
                 }
             }
-        });
-
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                //JSON response parsing
-                res = JSON.parse(this.responseText);
-                let objReqObj = res['response']['requestObjects'];
-
-                //Loop through users and add in items array
-                for (let i in objReqObj) {
-                    currentinstance.fileName = objReqObj[i].data.attributes.fileName.values[0].value;
-                }
-            }
         };
-
-        xhttp.open('POST', 'https://sepik01.riversand.com/api/requesttrackingservice/get', true);
-        xhttp.setRequestHeader('Content-Type', 'application/json');
-        xhttp.setRequestHeader('x-rdp-version', '8.1');
-        xhttp.setRequestHeader('x-rdp-tenantId', 'sepik01');
-        xhttp.setRequestHeader('x-rdp-userId', 'archana.shah@riversand.com');
-        xhttp.setRequestHeader('x-rdp-clientId', 'rdpclient');
-        xhttp.setRequestHeader('x-rdp-tenantId', 'sepik01');
-        xhttp.setRequestHeader('auth-client-id', 'G4uOqlaNHpjS620YzvEkHEo2U1x30Pjh');
-        xhttp.setRequestHeader(
-            'auth-client-secret',
-            '3G2SLyB6jjQIAlZKW4mbWmibQ_5FYNhztDEk6j4Cw_RnUTY2CFvCGgCT4siHYnQo'
-        );
-        xhttp.send(reqbody);
+        let URL = "/data/pass-through/requesttrackingservice/get";
+        let res = await this._sendRequestToURL(URL, requestData);
+        let objReqObj = res['response']['requestObjects'];
+        return objReqObj[0].data.attributes.fileName.values[0].value;
+      
     }
     static get properties() {
         return {
+            displaytop:{
+                type:Number,
+                value:2
+            },
+            exportdetails:{
+                type: Array,
+                reflectToAttribute: true,
+                value: function () {
+                    return [
+                        {
+                            lastexportdate:"Pending Publish",
+                            taskID:'',
+                            fileName:''
+                        }
+                    ];
+                },
+            },
+            spinnerFlag: {
+                type: Boolean,
+                value: true
+            },
             lastexportdate: {
                 type: String,
-                value: 'Pending Publish',
+             
                 reflectToAttribute: true
             },
             taskID: {
@@ -199,34 +218,37 @@ class PluginEntityExportDetail extends PolymerElement {
             },
             profilename: {
                 type: String,
-                value: 'EventHub_JSON_Export_Process'
-            },
-            stylecolor: {
-                type: String,
-                value: '#fff',
-                notify: true,
                 reflectToAttribute: true
             },
+          
             disabledProperty: {
                 type: String,
                 value: true,
                 reflectToAttribute: true
+            },
+            contextData: {
+                type: Object,
+                value: function () {
+                    return {};
+                },
+                observer: '_onContextDataChange'
             }
         };
     }
 
     async connectedCallback() {
         super.connectedCallback();
-
-        let configResponse = await ConfigurationManager.getConfig('plugin-entity-export-detail');
-
+        let configResponse = await ConfigurationManager.getConfig('plugin-entity-export-detail',this.ContextData);
         if (
             ObjectUtils.isValidObjectPath(configResponse, 'response.status') &&
             configResponse.response.status == 'success'
         ) {
+          
             this._handleConfigGetSuccess(configResponse);
+            await this._loadExportDetail();
         } else {
             this._handleConfigGetError(configResponse);
+          
         }
     }
 
@@ -251,7 +273,7 @@ class PluginEntityExportDetail extends PolymerElement {
                 }
             }
         }
-        this._loadExportDetail();
+       
     }
     _handleConfigGetError(configResponse) {
         console.error('UI config get failed with error', configResponse);
