@@ -24,68 +24,44 @@
                         "jsonData": {
                             "config": {
                                 "properties":  {
-                                    "wfchart1": {
-                                        "visible": true,
-                                        "label": "Pending Submission",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobesubmitted",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart2": {
-                                        "visible": true,
-                                        "label": "Pending Approval",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobeapproved",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart3": {
-                                        "visible": true,
-                                        "label": "Pending Review",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobereviewed",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart4": {
-                                        "visible": false,
-                                        "label": "",
-                                        "workflowshortname": "",
-                                        "workflowstepshortname": "",
-                                        "entityTypeshortname": ""
-                                    },
+                                 
                                     "createdchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Created",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgdatecreated"
                                     },
                                     "modifiedchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Modified",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgdatemodified"
                                     },
                                     "discontinuedchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Canceled",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Cancel"
                                     },
                                     "publishedchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Published",
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Published"
                                     },
-                                    "referenceFilter": {
-                                        "visible": false
-                                      
+                                    "piechart1":{
+                                        "visible": true,
+                                        "workflowshortname": "collaboration",
+                                        "entityTypeshortname": "stagingitem"
                                     },
                                     "piechart3": {
                                         "visible": true,
                                         "attributeshortname": "thgitemcreationstatus",
-                                        "entityTypeshortname": "stagingitem"
+                                        "entityTypeshortname": "stagingitem",
+                                        "label":"Items",
+                                        "attributevalue": "true"
                                     }
                                 }
                             }

@@ -159,7 +159,7 @@ class PluginQuickLinks extends PolymerElement {
                 value: function () {
                     return {
                         visible: false,
-                        label: '',
+                        label: 'Recently Submitted',
                         workflowshortname: '',
                         workflowstepshortname: '',
                         entityTypeshortname: ''

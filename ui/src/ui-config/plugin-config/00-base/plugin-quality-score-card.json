@@ -42,29 +42,35 @@
                                         "visible":true,
                                         "relShortname": "hasimages",
                                         "label": "Missing Images",
-                                        "bcShortname":"missingHasImagesRelationshipBC" 
+                                        "bcShortname":"missingHasImagesRelationshipBC",
+                                        "weightage":40
+                                        
                                     },
                                     "invalidValueBlock":{
                                         "visible":true,                                       
                                         "label": "Invalid Value",
-                                        "bcShortname":"invalidAttributeValidationBC" 
+                                        "bcShortname":"invalidAttributeValidationBC" ,
+                                        "weightage":30
                                     },
                                     "missingRequiredBlock":{
                                         "visible":true,
                                         "label": "Missing Required",
-                                        "bcShortname":"requiredAttributeValidationBC" 
+                                        "bcShortname":"requiredAttributeValidationBC" ,
+                                        "weightage":20
                                     },
                                     "dynamicRelationship":{
                                         "visible":false,
                                         "relShortname": "ischildof",
                                         "label": "Missing Parent",
-                                        "bcShortname":"missingIsChildofRelationshipBC" 
+                                        "bcShortname":"missingIsChildofRelationshipBC",
+                                        "weightage":0
                                     },
                                     "rejectedItems":{
                                        "visible": true,
                                         "wfShortname":"collaboration",
                                         "wfStepShortname": "tobereviewed",
-                                        "entityTypeShortname":"stagingitem"
+                                        "entityTypeShortname":"stagingitem",
+                                        "weightage":10
                                     }
                                     
                                 }

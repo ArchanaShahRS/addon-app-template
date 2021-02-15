@@ -219,7 +219,7 @@ class PluginQualityScoreCard extends PolymerElement {
         </div>
         </div>
         <div class="scoreclss div-table-col-right">
-           [[scoreLabel]] : <span id="weitagespan"><b>[[weightage]]</b></span> <br>
+           [[scoreLabel]] : <span id="weightagespan"><b>[[weightage]]</b></span> <br>
         
         </div>
      </div>
@@ -582,25 +582,7 @@ class PluginQualityScoreCard extends PolymerElement {
     }
 
     openDailogCategorySelector() {
-        /*
-           //This code is for generation of category tree on click of setting icon
-           let contextTree = this.shadowRoot.querySelector('#classificationTree');
-           this.preselectedClassifications=[["Electrical Supplies"],["Groceries"],["Packaging Taxonomy"]];
-        //   this.tags=[{"longName":"Product Taxonomy>>Electrical Supplies","name":"Electrical Supplies","value":"Electrical Supplies"},{"longName":"Product Taxonomy>>Groceries","name":"Groceries","value":"Groceries"},{"longName":"Product Taxonomy>>Packaging Taxonomy","name":"Packaging Taxonomy","value":"Packaging Taxonomy"}];
-        
-           contextTree.generateRequest();
-        
-           /*let timeInterval = 1500;
-           timeOut.after(timeInterval).run(() => {
-               //this.isConfigLoaded = true;
-               //this._loading = false;
-                  //To show selected classifications next time , in case of discard changes event
-         
-              this.preselectedClassifications=ObjectUtils.cloneObject(this.finalselectedClassifications);
-   
-           });
-         */
-
+      
         this.shadowRoot.querySelector('#myDialog').open();
         let contextTree = this.shadowRoot.querySelector('#classificationTree');
 
@@ -1588,7 +1570,7 @@ class PluginQualityScoreCard extends PolymerElement {
         let totalPer = parseInt(this.missingImagesCountPercentage) + parseInt(this.missingRelCountPercentage) + parseInt(this.invalidValuePercentage) + parseInt(this.missingRequiredAttributesPercentage) + parseInt(this.rejectedItemsCountPercentage);
         this.grandavg =Math.round(100-(totalPer / counter));
      
-        let totalweightage = (parseInt(this.missingImagesCountPercentage) *20)/100 + (parseInt(this.invalidValuePercentage)*10)/100 + (parseInt(this.missingRequiredAttributesPercentage)*30)/100 + (parseInt(this.rejectedItemsCountPercentage)*40)/100;
+        let totalweightage = (parseInt(this.missingImagesCountPercentage) *this.missingImagesBlock.weightage)/100 + (parseInt(this.invalidValuePercentage)*this.invalidValueBlock.weightage)/100 + (parseInt(this.missingRequiredAttributesPercentage)*this.missingRequiredBlock.weightage)/100 + (parseInt(this.rejectedItemsCountPercentage)*this.rejectedItems.weightage)/100 +(parseInt(this.missingRelCountPercentage)*this.dynamicRelationship.weightage)/100;
         this.weightage =1-((totalweightage/100).toFixed(2));
         this.weightage=this.weightage.toFixed(2);
         let badDataCount=parseInt(this.missingImagesCount) + parseInt(this.missingRelCount) + parseInt(this.invalidValueCount) + parseInt(this.missingRequiredAttributesCount) + parseInt(this.rejectedItemsCount);
@@ -1672,7 +1654,7 @@ class PluginQualityScoreCard extends PolymerElement {
     }
     _colorCodeScore()
     {
-        let span=this.shadowRoot.querySelector("#weitagespan");
+        let span=this.shadowRoot.querySelector("#weightagespan");
         if(this.weightage<=0.5)
         {
             span.style.color='#EE204C';
@@ -1756,7 +1738,8 @@ class PluginQualityScoreCard extends PolymerElement {
                         visible: true,
                         label: 'Missing Images',
                         relShortname: 'hasimages',
-                        bcShortname:"" 
+                        bcShortname:"",
+                        "weightage":0
                     };
                 },
                 reflectToAttribute: true
@@ -1767,7 +1750,8 @@ class PluginQualityScoreCard extends PolymerElement {
                     return {
                         visible: true,
                         label: 'Invalid Value',
-                        bcShortname:""                    
+                        bcShortname:"" ,
+                        "weightage":0                   
                     };
                 },
                 reflectToAttribute: true
@@ -1780,7 +1764,8 @@ class PluginQualityScoreCard extends PolymerElement {
                         visible: false,
                         relShortname: '',
                         label: '',
-                        bcShortname:""
+                        bcShortname:"",
+                        "weightage":0
                     };
                 },
                 reflectToAttribute: true
@@ -1793,7 +1778,8 @@ class PluginQualityScoreCard extends PolymerElement {
                         wfShortname: '',
                         wfStepShortname: '',
                         entityTypeShortname: '',
-                        label: ''
+                        label: '',
+                        "weightage":0
                     };
                 },
                 reflectToAttribute: true
@@ -1804,7 +1790,8 @@ class PluginQualityScoreCard extends PolymerElement {
                     return {
                         visible: true,
                         label: 'Missing Rquired',
-                        bcShortname:""                   
+                        bcShortname:"" ,
+                        "weightage":0                  
                     };
                 },
                 reflectToAttribute: true

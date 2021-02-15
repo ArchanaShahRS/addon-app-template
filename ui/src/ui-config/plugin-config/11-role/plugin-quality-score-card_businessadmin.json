@@ -6,8 +6,8 @@
     },
     "configObjects": [
         {
-            "id": "plugin_plugin-quality-score-card_businessadmin_uiConfig",
-            "name": "plugin_plugin-quality-score-card_businessadmin",
+            "id": "plugin_plugin-quick-links_businessadmin_uiConfig",
+            "name": "plugin_plugin-quick-links_businessadmin",
             "version": "1.0",
             "type": "uiConfig",
             "properties": {
@@ -18,7 +18,7 @@
                 "contexts": [
                     {
                         "context": {
-                            "component": "plugin-quality-score-card",
+                            "component": "plugin-quick-links",
                             "role":"businessadmin"                         
                         },
                         "jsonData": {

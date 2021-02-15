@@ -30,39 +30,19 @@
                                 "properties": {
                                     "taxonomyAttrShortname":"thgmastertaxonomy",
                                     "_rootNode":"productclassificationroot",
-                                    "piechart3": {
-                                        "visible": false,
-                                        "attributeshortname": "",
-                                        "entityTypeshortname": ""
-                                    },
-                                    "wfchart1": {
+                                    "piechart1":{
                                         "visible": true,
-                                        "label": "Pending Submission",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobesubmitted",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart2": {
-                                        "visible": true,
-                                        "label": "Pending Approval",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobeapproved",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart3": {
-                                        "visible": true,
-                                        "label": "Pending Review",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobereviewed",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart4": {
-                                        "visible": false,
-                                        "label": "",
                                         "workflowshortname": "",
-                                        "workflowstepshortname": "",
                                         "entityTypeshortname": ""
                                     },
+                                    "piechart3": {
+                                        "visible": true,
+                                        "attributeshortname": "",
+                                        "entityTypeshortname": "",
+                                         "label":"",
+                                         "attributevalue": ""
+                                    },
+                                   
                                     "createdchart": {
                                         "visible": true,
                                         "label": "Created",
@@ -88,12 +68,6 @@
                                         "entityTypeshortname": "stagingitem",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Published"
-                                    },
-                                    "referenceFilter": {
-                                        "visible": true,
-                                        "label": "Brand",
-                                        "referenceAttrShortname":"thgbrand",
-                                           "referenceEntityShortname":"brand"
                                     }
                                 }
                             }

@@ -24,63 +24,43 @@
                         "jsonData": {
                             "config": {
                                 "properties":  {
-                                    "wfchart1": {
+                                    "piechart1":{
                                         "visible": true,
-                                        "label": "Pending Submission",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobesubmitted",
-                                        "entityTypeshortname": "stagingitem"
+                                        "workflowshortname": "enrichment",
+                                        "entityTypeshortname": "item"
                                     },
-                                    "wfchart2": {
+                                    "piechart3": {
                                         "visible": true,
-                                        "label": "Pending Approval",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobeapproved",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart3": {
-                                        "visible": true,
-                                        "label": "Pending Review",
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobereviewed",
-                                        "entityTypeshortname": "stagingitem"
-                                    },
-                                    "wfchart4": {
-                                        "visible": false,
-                                        "label": "",
-                                        "workflowshortname": "",
-                                        "workflowstepshortname": "",
-                                        "entityTypeshortname": ""
+                                        "attributeshortname": "thgitemcreationstatus",
+                                        "entityTypeshortname": "stagingitem",
+                                        "label":"Items",
+                                        "attributevalue": "true"
                                     },
                                     "createdchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Entities Created",
                                         "entityTypeshortname": "item",
                                         "attributeshortname": "thgdatecreated"
                                     },
                                     "modifiedchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Entities Modified",
                                         "entityTypeshortname": "item",
                                         "attributeshortname": "thgdatemodified"
                                     },
                                     "discontinuedchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Entities Discontinued",
                                         "entityTypeshortname": "item",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Discontinue"
                                     },
                                     "publishedchart": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Entities Published",
                                         "entityTypeshortname": "item",
                                         "attributeshortname": "thgstatus",
                                         "attributevalue": "Published"
-                                    },
-                                    "referenceFilter": {
-                                        "visible": false
-                                      
                                     }
                                 }
                             }
