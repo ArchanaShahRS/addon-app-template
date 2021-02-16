@@ -1,0 +1,10 @@
+{
+    "envSettings": {
+        "id": "addonappvendordashboard",
+        "server": "https://{{TENANT}}.riversand.com",
+        "userid": "archana.shah@riversand.com",
+        "authid": "G4uOqlaNHpjS620YzvEkHEo2U1x3",
+        "authsecret": "3G2SLyB6jjQIAlZKW4mbWmibQ_5FY_RnUTY2CFvCGgCT4siHYnQo",
+        "tenantid": "{{TENANT}}"
+    }   
+}

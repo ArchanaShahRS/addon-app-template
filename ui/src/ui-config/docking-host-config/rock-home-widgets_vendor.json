@@ -1,0 +1,221 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "responseObjectName": "response",
+        "collectionName": "configObjects"
+    },
+    "configObjects": [
+        {
+            "id": "rock-home-widgets_vendor_uiConfig",
+            "name": "rock-home-widgets_vendor",
+            "type": "uiConfig",
+            "properties": {
+                "createdService": "configurationManageService",
+                "createdBy": "system_user",
+                "createdDate": "2021-01-29T02:12:25.970-0600",
+                "modifiedService": "configurationManageService",
+                "modifiedBy": "system_user",
+                "modifiedDate": "2021-02-02T01:18:13.981-0600"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "app": "_DEFAULT",
+                            "channel": "_DEFAULT",
+                            "component": "rock-home-widgets",
+                            "country": "_DEFAULT",
+                            "domain": "_DEFAULT",
+                            "entityType": "_DEFAULT",
+                            "relationship": "_DEFAULT",
+                            "role": "vendor",
+                            "tenant": "_DEFAULT",
+                            "user": "_DEFAULT"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "widgets": {
+                                    "plugin-quick-links": {
+                                        "nonMaximizable": false,
+                                        "nonClosable": true,
+                                        "name": "plugin-quick-links",
+                                        "config": {
+                                            "component": {
+                                                "path": "/plugin-src/addonappvendordashboard/elements/plugin-quick-links/plugin-quick-links.js",
+                                                "name": "plugin-quick-links",
+                                                "properties": {
+                                                    "view-mode": true
+                                                }
+                                            },
+                                            "position-x": 3,
+                                            "iconButtons": {
+                                                "refresh": {
+                                                    "name": "refresh",
+                                                    "icon": "pebble-icon:refresh",
+                                                    "label": "Refresh",
+                                                    "showInMoreActions": false
+                                                }
+                                            },
+                                            "heading": "Quick Links",
+                                            "position-y": 5,
+                                            "width": 4,
+                                            "headerIcon": "pebble-icon:saved-search",
+                                            "height": 2
+                                        }
+                                    },
+                                    "plugin-my-catalog": {
+                                        "nonMaximizable": false,
+                                        "nonClosable": true,
+                                        "name": "plugin-my-catalog",
+                                        "config": {
+                                            "component": {
+                                                "path": "/plugin-src/addonappvendordashboard/elements/plugin-my-catalog/plugin-my-catalog.js",
+                                                "name": "plugin-my-catalog",
+                                                "properties": {
+                                                    "view-mode": true
+                                                }
+                                            },
+                                            "position-x": 0,
+                                            "iconButtons": {
+                                                "refresh": {
+                                                    "name": "refresh",
+                                                    "icon": "pebble-icon:refresh",
+                                                    "label": "Refresh",
+                                                    "showInMoreActions": false
+                                                }
+                                            },
+                                            "heading": "My Catalog",
+                                            "position-y": 0,
+                                            "width": 7,
+                                            "headerIcon": "pebble-icon:saved-search",
+                                            "height": 5
+                                        }
+                                    },
+                                    "rock-analytics-widget": {
+                                        "nonMaximizable": true,
+                                        "visible": true,
+                                        "nonClosable": true,
+                                        "displaySequence": 36,
+                                        "name": "rock-analytics-widget",
+                                        "nonDraggable": false,
+                                        "config": {
+                                            "component": {
+                                                "path": "/src/elements/rock-analytics-widget/rock-analytics-widget.html",
+                                                "name": "rock-analytics-widget",
+                                                "properties": {
+                                                    "url-path": "?widgetId=989769e0-6524-11eb-bc3d-47ff1f64d480?embed=true&_g=()",
+                                                    "timeout": 30000,
+                                                    "url": "/extdashboard"
+                                                }
+                                            },
+                                            "position-x": 7,
+                                            "iconButtons": {
+                                                "refresh": {
+                                                    "name": "refresh",
+                                                    "icon": "pebble-icon:refresh",
+                                                    "label": "Refresh",
+                                                    "showInMoreActions": false
+                                                }
+                                            },
+                                            "heading": "Attribute Errors",
+                                            "position-y": 5,
+                                            "width": 5,
+                                            "headerIcon": "pebble-icon:integration",
+                                            "height": 6
+                                        }
+                                    },
+                                    "rock-business-conditions-summary": {
+                                        "visible": false,
+                                        "displaySequence": 20,
+                                        "config": {
+                                            "component": {
+                                                "path": "../rock-business-conditions-summary/rock-business-conditions-summary.js",
+                                                "name": "rock-business-conditions-summary",
+                                                "properties": {
+                                                    "max-business-conditions-to-display": 50
+                                                }
+                                            },
+                                            "position-x": 0,
+                                            "heading": "Catalog Readiness",
+                                            "position-y": 0,
+                                            "width": 7,
+                                            "height": 5
+                                        }
+                                    },
+                                    "plugin-quality-score-card": {
+                                        "nonMaximizable": false,
+                                        "nonClosable": true,
+                                        "name": "plugin-quality-score-card",
+                                        "config": {
+                                            "component": {
+                                                "path": "/plugin-src/addonappvendordashboard/elements/plugin-quality-score-card/plugin-quality-score-card.js",
+                                                "name": "plugin-quality-score-card",
+                                                "properties": {
+                                                    "view-mode": true
+                                                }
+                                            },
+                                            "position-x": 7,
+                                            "iconButtons": {
+                                                "refresh": {
+                                                    "name": "refresh",
+                                                    "icon": "pebble-icon:refresh",
+                                                    "label": "Refresh",
+                                                    "showInMoreActions": false
+                                                }
+                                            },
+                                            "heading": "Catalog Readiness",
+                                            "position-y": 0,
+                                            "width": 5,
+                                            "headerIcon": "pebble-icon:saved-search",
+                                            "height": 5
+                                        }
+                                    },
+                                    "rock-my-todos": {
+                                        "visible": false
+                                    },
+                                    "rock-saved-searches": {
+                                        "visible": true,
+                                        "config": {
+                                            "position-x": 0,
+                                            "position-y": 7,
+                                            "width": 7,
+                                            "height": 4
+                                        }
+                                    },
+                                    "plugin-things-i-can-do": {
+                                        "nonMaximizable": false,
+                                        "nonClosable": true,
+                                        "name": "plugin-things-i-can-do",
+                                        "config": {
+                                            "component": {
+                                                "path": "/plugin-src/addonappvendordashboard/elements/plugin-things-i-can-do/plugin-things-i-can-do.js",
+                                                "name": "plugin-things-i-can-do",
+                                                "properties": {
+                                                    "view-mode": true
+                                                }
+                                            },
+                                            "position-x": 0,
+                                            "iconButtons": {
+                                                "refresh": {
+                                                    "name": "refresh",
+                                                    "icon": "pebble-icon:refresh",
+                                                    "label": "Refresh",
+                                                    "showInMoreActions": false
+                                                }
+                                            },
+                                            "heading": "Things I Can Do",
+                                            "position-y": 5,
+                                            "width": 3,
+                                            "headerIcon": "pebble-icon:saved-search",
+                                            "height": 2
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

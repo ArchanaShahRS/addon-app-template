@@ -1,0 +1,74 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-my-catalog_merchant_uiConfig",
+            "name": "plugin_plugin-my-catalog_merchant",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-my-catalog",
+                            "role":"merchant"                         
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties":  {
+                                    "piechart1":{
+                                        "visible": true,
+                                        "workflowshortname": "enrichment",
+                                        "entityTypeshortname": "item"
+                                    },
+                                    "piechart3": {
+                                        "visible": true,
+                                        "attributeshortname": "thgitemcreationstatus",
+                                        "entityTypeshortname": "stagingitem",
+                                        "label":"Items",
+                                        "attributevalue": "true"
+                                    },
+                                    "createdchart": {
+                                        "visible": false,
+                                        "label": "Entities Created",
+                                        "entityTypeshortname": "item",
+                                        "attributeshortname": "thgdatecreated"
+                                    },
+                                    "modifiedchart": {
+                                        "visible": false,
+                                        "label": "Entities Modified",
+                                        "entityTypeshortname": "item",
+                                        "attributeshortname": "thgdatemodified"
+                                    },
+                                    "discontinuedchart": {
+                                        "visible": false,
+                                        "label": "Entities Discontinued",
+                                        "entityTypeshortname": "item",
+                                        "attributeshortname": "thgstatus",
+                                        "attributevalue": "Discontinue"
+                                    },
+                                    "publishedchart": {
+                                        "visible": false,
+                                        "label": "Entities Published",
+                                        "entityTypeshortname": "item",
+                                        "attributeshortname": "thgstatus",
+                                        "attributevalue": "Published"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+
+}
