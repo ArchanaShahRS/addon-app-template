@@ -1,0 +1,35 @@
+{
+    "metaInfo": {
+        "dataIndex": "config",
+        "collectionName": "configObjects",
+        "responseObjectName": "response"
+    },
+    "configObjects": [
+        {
+            "id": "plugin_plugin-grapesjs-base_uiConfig",
+            "name": "plugin_plugin-grapesjs",
+            "version": "1.0",
+            "type": "uiConfig",
+            "properties": {
+                "createdByService": "system",
+                "createdBy": "system"
+            },
+            "data": {
+                "contexts": [
+                    {
+                        "context": {
+                            "component": "plugin-grapesjs"
+                        },
+                        "jsonData": {
+                            "config": {
+                                "properties": {
+                                    "message": "Welcome to the Riversand DataPlatform UI plugin!!"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
