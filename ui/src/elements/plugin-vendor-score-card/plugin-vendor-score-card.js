@@ -60,6 +60,9 @@ class PluginVendorScoreCard extends PolymerElement {
             align-items: center;
             width:100px;
         }
+        .div-item-container:hover {
+           cursor:pointer;
+        }
       
         .displayflexwrap{
         display:flex;
@@ -212,7 +215,7 @@ class PluginVendorScoreCard extends PolymerElement {
                
             </div>
             <div class="div-table-col-right-72">
-                    <div  class="div-item-container">
+                    <div id="entitiessubmitted" class="div-item-container">
                     Entities Submitted  <br>
                         <div class="displayflexwrap">
                       
@@ -220,7 +223,7 @@ class PluginVendorScoreCard extends PolymerElement {
                         [[submittedPercent]]%
                         </div>
                    </div>
-                   <div  class="div-item-container">
+                   <div id="entitiesrejected" class="div-item-container"  on-click="_entititesRejectedDivClicked">
                    Entities Rejected <br>
                        <div class="displayflexwrap">
                       
@@ -237,6 +240,49 @@ class PluginVendorScoreCard extends PolymerElement {
      `;
     }
 
+ _entititesRejectedDivClicked()
+  {
+    let queryParam ;
+    queryParam = {
+       "attributes":{[this.rejectionScoreAttrshortame]:"1"},
+       "entitytype":this.WorkflowDetail.entityTypeshortname
+    };
+ 
+    //If Vendor is available
+    if(this.selectedFilters.length>0 && this.selectedFilters!=null)
+    {
+        let searchString="";
+        for(let i=0;i<this.selectedFilters.length;i++)
+        {
+            searchString=searchString+"'"+this.selectedFilters[i] + "'";
+             if(this.selectedFilters.length-(i+1)>0)
+            {
+                searchString=searchString+" or ";
+            }
+        }        
+
+        queryParam.attributes[this.ownershipAttrShortname]=searchString;
+
+    }
+    if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
+    {
+        let searchString="";
+        for(let i=0;i<this.selectedTax.length;i++)
+        {
+            searchString=searchString+"'"+this.selectedTax[i] + "'";
+             if(this.selectedTax.length-(i+1)>0)
+            {
+                searchString=searchString+" or ";
+            }
+        }        
+
+ 
+        queryParam.attributes[this.taxonomyAttrShortname]=searchString;
+
+    }
+    this._redirectTo('search-thing', queryParam);
+
+  }
     _redirectTo(appName, queryParam) {
         let queryparam = { state: JSON.stringify(queryParam) };
         AppInstanceManager.navigateToRoute(appName, queryparam);
@@ -275,7 +321,7 @@ class PluginVendorScoreCard extends PolymerElement {
         //getting selected filter value
         let lov = this.shadowRoot.querySelector('#multi-select-lov');
         let tempArray = new Array();
-        if (lov !== null) {
+        if (lov.pebbleLov !== null) {
             /*  for (let v in lov.selectedIds) {
                   let value = lov.selectedIds[v];
                   if(value!=undefined)

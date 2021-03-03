@@ -23,7 +23,7 @@
                         "jsonData": {
                             "config": {
                                 "properties": {
-                                    "message": "Welcome to the Riversand DataPlatform UI plugin!!"
+                                    "contentAttrShortname": "thghtmlcontent"
                                 }
                             }
                         }

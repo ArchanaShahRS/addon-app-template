@@ -85,6 +85,10 @@ class PluginGrapesjs extends PolymerElement {
       htmlcode: {
         type: String
         //value:'<h1 class="welcome">Welcome to Content Editor</h1>'
+      },
+      contentAttrShortname:{
+        type:String,
+        reflectToAttribute:true
       }
     };
   }
@@ -94,7 +98,12 @@ class PluginGrapesjs extends PolymerElement {
     const entityid = urlParams.get('id');
     return entityid;
   }
-
+  _getEntityType() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const entitytype = urlParams.get('type');
+    return entitytype;
+  }
   async _sendRequestToGetDetail(requestData) {
     let initiateSearchRequest = DataObjectManager.createRequest('initiatesearch', requestData, undefined, {
       dataIndex: 'entityData'
@@ -110,6 +119,7 @@ class PluginGrapesjs extends PolymerElement {
 
   async _getHtml() {
     let id = this._getEntityId();
+    let entitytype=this._getEntityType();
     let requestData = {
       params: {
         query: {
@@ -121,11 +131,11 @@ class PluginGrapesjs extends PolymerElement {
             }
           ],
           filters: {
-            typesCriterion: ['enhancedcontent']
+            typesCriterion: [entitytype]
           }
         },
         fields: {
-          attributes: ['thghtmlcontent']
+          attributes: [this.contentAttrShortname]
         }
       }
     };
@@ -145,15 +155,16 @@ class PluginGrapesjs extends PolymerElement {
   async _updateHtml(html) {
     console.log(html)
     let id = this._getEntityId();
+    let entityType=this._getEntityType();
     let requestData = {
       "entity": {
         "id": id,
 
-        "type": "enhancedcontent",
+        "type": entityType,
         "data": {
 
           "attributes": {
-            "thghtmlcontent": {
+            [this.contentAttrShortname]: {
               "values": [
                 {
                   "source": "internal",

@@ -1811,9 +1811,6 @@ class PluginMyCatalog extends PolymerElement {
                 type: String,
                 value: 'margin-top: -5px; margin-left: 60px; margin- bottom: 10px;'
             },
-
-          
-
             piedata: {
                 type: Array,
                 value: function () {

@@ -22,6 +22,10 @@ import { DataObjectManager } from '@riversandtechnologies/ui-platform-dataaccess
 import '@riversandtechnologies/ui-platform-business-elements/src/elements/rock-classification-selector/rock-classification-selector.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-combo-box/pebble-combo-box.js';
 
+
+import './JS/Chart.js';
+import './JS/utils.js';
+
 //import'@riversandtechnologies/ui-platform-elements/lib/flow/elements/pebble-progress-bar';
 
 class PluginQualityScoreCard extends PolymerElement {
@@ -32,255 +36,319 @@ class PluginQualityScoreCard extends PolymerElement {
         super();
     }
     static get template() {
-        return html`<style>
-        .contextTreecustom {       
-        height: 82vh;
-        }
-        .tag-item-container {
-        border: solid 1px #d2d7dd;
-        border-left: solid 4px #d2d7dd;
-        border-radius: 3px;      
-        padding: 0 15px 0px 5px;
-        font-size: 12px;
-        position: relative;
-        background: #fff;
-        margin: 0px 0px 4px 4px;
-        max-width: 100%;
-        min-width:  20px;
-        line-height: 20px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        }
-        .div-container {
-        display:flex;
-        border: solid 1px #d2d7dd;
-        border-radius: 3px;      
-        padding: 0 15px 0px 5px;
-        position: relative;
-        background: #fff;
-        margin: 4px;
-        max-width: 100%;
-        min-width:  20px;
-        flex-direction: row;
-        align-items: center;
-        }
-        .div-item-container {
-        border: solid 1px #d2d7dd;
-        border-radius: 3px;      
-        padding: 0 5px 0px 5px;
-        font-size: 12px;
-        position: relative;
-        background: #fff;
-        margin: 12px;
-        max-width: 100%;
-        min-width:  20px;
-        line-height: 20px;
-        flex-direction: row;
-        align-items: center;
-        }
-        .div-item-container:hover {
-        cursor:pointer;
-        }
-        .avg-item-container {
-        border: solid 1px #d2d7dd;
-        border-radius: 3px;      
-        padding: 35% 7% 35% 15%;
-        font-size: 14px;
-        position: relative;
-        background: #fff;
-        margin: 12px 0px 0px 0px;
-        max-width: 100%;
-        min-width:  20px;
-        line-height: 20px;
-        flex-direction: row;
-        align-items: center;
-        }
-        .displayflexwrap{
-        display:flex;
-        flex-wrap: wrap;
-        }
-        paper-progress{
-        width: 570px;
-        padding-right: 8px;
-        --paper-progress-height:15px;
-        --paper-progress-transition-duration: 0.08s;
-        --paper-progress-transition-timing-function: ease;
-        --paper-progress-transition-delay: 0s;
-        --paper-progress-container-color: #d2d7dd;
-        }
-        .paper-progress-orange {
-        --paper-progress-active-color:#F78E1E;
-        }
-        .paper-progress-purple {
-        --paper-progress-active-color:#785DA8;
-        }
-        .paper-progress-yellow {
-        --paper-progress-active-color:#F6D40C;
-        }
-        .paper-progress-blue {
-        --paper-progress-active-color:#129CE6;
-        }
-        .paper-progress-red {
-        --paper-progress-active-color:#EE204C;
-        }
-        .scoreclss{
-        color: #364653;
-        font-weight: var(--font-bold, bold);
-        font-size: var(--font-size-default,14px);
-       
-        }
-        .div-table {
-        display: table;         
-        width: 100%;         
-     
-        }
-        .div-table-row {
-        display: table-row;
-        width: auto;
-        clear: both;
-        }
-        .div-table-col-left{
-            float: left; /* fix for  buggy browsers */
-            display: table-column;         
-            width: 28%;         
-            text-align:left;
-        }
-        .div-table-col-right-72 {
-            float: left; /* fix for  buggy browsers */
-            display: table-column;         
-            width: 72%;         
-            }
-        .div-table-col-80 {
-        float: left; /* fix for  buggy browsers */
-        display: table-column;         
-        width: 78%;         
-        }
-     
-        .div-table-col-right {
-        float: left; /* fix for  buggy browsers */
-        display: table-column;         
-        width: 20%;         
-        text-align:right;
-        }
-        .div-table-col-merge {
-        float: left; /* fix for  buggy browsers */
-        display: table-column;         
-        width: 100%;         
-        }
-     </style>
-     <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>
-        <template is="dom-if" if="true">
-           <div class="caegory-selector contextTreecustom">
-              <rock-classification-selector
-                 id="classificationTree"         
-                 is-model-tree="[[isModelTree]]"
-                 context-data="[[classificationContextData]]"
-                 multi-select="[[multiSelect]]"
-                 leaf-node-only="[[leafNodeOnly]]"
-                 enable-node-click="true"
-                 hide-leaf-node-checkbox="[[hideLeafNodeCheckbox]]"
-                 root-node-data="{{_rootNodeData}}"
-                 root-node="[[_rootNode]]"
-                 path-entity-type="[[_rootEntityType]]"
-                 path-relationship-name="[[_rootRelationshipName]]"
-                 tags="{{tags}}"
-                 selected-classifications = "{{preselectedClassifications}}">
-              </rock-classification-selector>
-           </div>
-           <div class="buttons">
-           <pebble-button dialog-confirm class="btn btn-success"  button-text="Save" on-tap ="_onSave"></pebble-button>
-           <pebble-button dialog-confirm class="btn btn-secondary" button-text="Cancel" on-tap ="_onCancel"></pebble-button>
-        </template>
-     </pebble-dialog>
-     <pebble-dialog  id= "myDialogCancel" modal dialog-title="Confirmation" scrollable style="width:fit-content">
-        <div style="text-align: center; padding: 13px;">
-           <label> Discard Changes? </label> <br><br>
-           <pebble-button dialog-confirm class="btn btn-success"  button-text="Yes" on-tap ="_yesClick"></pebble-button>
-           <pebble-button dialog-confirm class="btn btn-secondary" button-text="No" on-tap ="_noClick"></pebble-button>
-        </div>
-     </pebble-dialog>
-     <br>
-     <pebble-spinner active=[[spinnerFlag]]></pebble-spinner>
+        return html`
+        <style>
+canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
 
-     <div class="div-table">
 
-     <div class="div-table-row">
-        <div class="div-table-col-80">
-           <div class="displayflexwrap">
-           Taxonomy &nbsp;
-           <pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
-        
-           <dom-repeat items="{{selectedTax}}">
-              <template>
-                 <span class="tag-item-container border">{{item}}</span>
-              </template>
-           </dom-repeat>
-        </div>
-        </div>
-        <div class="scoreclss div-table-col-right">
-           [[scoreLabel]] : <span id="weightagespan"><b>[[weightage]]</b></span> <br>
-        
-        </div>
-     </div>
+/* * DOM element rendering detection * https://davidwalsh.name/detect-node-insertion */
 
-     <div class="div-table-row">
-        <div id="refEntityDiv" class="div-table-col">
-           {{referenceFilter.label}} &nbsp;          
-           <pebble-combo-box class="tab-title" id='multi-select-lov' selection-changed="_applyFilter" tag-removed="_applyFilter" on-click="_openDataList" items={{refentitydata}}  multi-select label="Select {{referenceFilter.label}}"> </pebble-combo-box>
-        </div>
-     </div>
-     
-     <div class="div-table-row">
+@keyframes chartjs-render-animation {
+	from {
+		opacity: 0.99;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.chartjs-render-monitor {
+	animation: chartjs-render-animation 0.001s;
+}
+
+
+/* * DOM element resizing detection * https://github.com/marcj/css-element-queries */
+
+.chartjs-size-monitor,
+.chartjs-size-monitor-expand,
+.chartjs-size-monitor-shrink {
+	position: absolute;
+	direction: ltr;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	pointer-events: none;
+	visibility: hidden;
+	z-index: -1;
+}
+
+.chartjs-size-monitor-expand > div {
+	position: absolute;
+	width: 1000000px;
+	height: 1000000px;
+	left: 0;
+	top: 0;
+}
+
+.chartjs-size-monitor-shrink > div {
+	position: absolute;
+	width: 200%;
+	height: 200%;
+	left: 0;
+	top: 0;
+}
+
+.canvasHolder {
+	width: 100%;
+	text-align: -webkit-center;
+}
+
+.contextTreecustom {
+	height: 82vh;
+}
+
+.tag-item-container {
+	border: solid 1px #d2d7dd;
+	border-left: solid 4px #d2d7dd;
+	border-radius: 3px;
+	padding: 0 15px 0px 5px;
+	font-size: 12px;
+	position: relative;
+	background: #fff;
+	margin: 0px 0px 4px 4px;
+	max-width: 100%;
+	min-width: 20px;
+	line-height: 20px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.div-container {
+	display: flex;
+	border: solid 1px #d2d7dd;
+	border-radius: 3px;
+	padding: 0 15px 0px 5px;
+	position: relative;
+	background: #fff;
+	margin: 4px;
+	max-width: 100%;
+	min-width: 20px;
+	flex-direction: row;
+	align-items: center;
+}
+
+.div-item-container {
+	border: solid 1px #d2d7dd;
+	border-radius: 3px;
+	padding: 0 5px 0px 5px;
+	font-size: 12px;
+	position: relative;
+	background: #fff;
+	margin: 12px;
+	max-width: 100%;
+	min-width: 20px;
+	line-height: 20px;
+	flex-direction: row;
+	align-items: center;
+}
+
+.div-item-container:hover {
+	cursor: pointer;
+}
+
+.avg-item-container {
+  
+    padding: 2% 2% 2% 2%;
+    font-size: 14px;
+    position: relative;
+    background: #fff;
+    margin:0.5% 0.5% 0.5% 0.5%;
+    max-width: 100%;
+    min-width: 20px;
+    line-height: 20px;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    width: 50%;
+}
+
+.displayflexwrap {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+paper-progress {
+	width: 100%;
+	padding-right: 8px;
+	--paper-progress-height: 15px;
+	--paper-progress-transition-duration: 0.08s;
+	--paper-progress-transition-timing-function: ease;
+	--paper-progress-transition-delay: 0s;
+	--paper-progress-container-color: #d2d7dd;
+}
+
+.paper-progress-orange {
+	--paper-progress-active-color: #F78E1E;
+}
+
+.paper-progress-purple {
+	--paper-progress-active-color: #785DA8;
+}
+
+.paper-progress-yellow {
+	--paper-progress-active-color: #F6D40C;
+}
+
+.paper-progress-blue {
+	--paper-progress-active-color: #129CE6;
+}
+
+.paper-progress-red {
+	--paper-progress-active-color: #EE204C;
+}
+
+.scoreclss {
+	color: #364653;
+	font-weight: var(--font-bold, bold);
+	font-size: var(--font-size-default, 14px);
+}
+
+.div-table {
+	display: table;
+	width: 100%;
+	overflow: auto;
+}
+
+.div-table-row {
+	display: table-row;
+	width: 100%;
+	clear: both;
+	overflow: auto;
+}
+
+
+.div-table-col-right {
+	float: right;
+	/* fix for buggy browsers */
+	display: table-column;
+	width: 45%;
+	text-align: right;
+}
+
+.div-table-col-80 {
+	float: left;
+	/* fix for buggy browsers */
+	display: table-column;
+	width: 55%;
+}
+
+.div-table-col-merge {
+	float: left;
+	/* fix for buggy browsers */
+	display: table-column;
+	width: 100%;
+}
+
+.col-container {
+    display: table;
+    width: 100%;
+  }
+   .div-table-cell-left{
+              display: table-cell;         
+              width: 35%;         
+              text-align:center;           
+              border: solid 1px #d2d7dd;
+              border-radius: 3px;  
+  }
+          .div-table-cell-right-75 {
+              display: table-cell;         
+              width: 64%;         
+              text-align:left;   
+              padding-left:0.5%;                 
+              border: solid 1px #d2d7dd;
+              border-radius: 3px;  
+             
+           }
+         
+</style>
+<pebble-dialog class="pebbleDialog" id="myDialog" modal dialog-title="Select Taxonomy" scrollable>
+	<template is="dom-if" if="true">
+		<div class="caegory-selector contextTreecustom">
+			<rock-classification-selector id="classificationTree" is-model-tree="[[isModelTree]]" context-data="[[classificationContextData]]" multi-select="[[multiSelect]]" leaf-node-only="[[leafNodeOnly]]" enable-node-click="true" hide-leaf-node-checkbox="[[hideLeafNodeCheckbox]]" root-node-data="{{_rootNodeData}}" root-node="[[_rootNode]]" path-entity-type="[[_rootEntityType]]" path-relationship-name="[[_rootRelationshipName]]" tags="{{tags}}" selected-classifications="{{preselectedClassifications}}"> </rock-classification-selector>
+		</div>
+		<div class="buttons">
+			<pebble-button dialog-confirm class="btn btn-success" button-text="Save" on-tap="_onSave"></pebble-button>
+			<pebble-button dialog-confirm class="btn btn-secondary" button-text="Cancel" on-tap="_onCancel"></pebble-button>
+		</div>
+	</template>
+</pebble-dialog>
+<pebble-dialog id="myDialogCancel" modal dialog-title="Confirmation" scrollable style="width:fit-content">
+	<div style="text-align: center; padding: 13px;">
+		<label> Discard Changes? </label>
+		<br>
+		<br>
+		<pebble-button dialog-confirm class="btn btn-success" button-text="Yes" on-tap="_yesClick"></pebble-button>
+		<pebble-button dialog-confirm class="btn btn-secondary" button-text="No" on-tap="_noClick"></pebble-button>
+	</div>
+</pebble-dialog>
+<br>
+<pebble-spinner active=[[spinnerFlag]]></pebble-spinner>
+<div class="div-table">
+	<div class="div-table-row">
+		<div class="div-table-col-80">
+			<div class="displayflexwrap"> Taxonomy &nbsp;
+				<pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
+				<dom-repeat items="{{selectedTax}}">
+					<template> <span class="tag-item-container border">{{item}}</span> </template>
+				</dom-repeat>
+			</div>
+		</div>
+		<div class="scoreclss div-table-col-right"> [[scoreLabel]] : <span id="weightagespan"><b>[[weightage]]</b></span>
+			<br> </div>
+	</div>
+	<div class="div-table-row">
+		<div id="refEntityDiv" class="div-table-col"> {{referenceFilter.label}} &nbsp;
+			<pebble-combo-box class="tab-title" id='multi-select-lov' selection-changed="_applyFilter" tag-removed="_applyFilter" on-click="_openDataList" items={{refentitydata}} multi-select label="Select {{referenceFilter.label}}"> </pebble-combo-box>
+		</div>
+	</div>
+</div>
+<!-- table overs here-->
+<!--New Table Start -->
+<div class="col-container">
+	<div class="div-table-cell-left">
         
-           <div class="div-table-col-left">
-              <div  class="avg-item-container">
-               
-                 <pebble-graph-pie id="pie1" data="[[data]]" chart-style="[[pieChartStyle]]"> </pebble-graph-pie>
-                <!-- <pebble-graph-progress-ring  percentage="{{grandavg}}" _showPercentage="true"></pebble-graph-progress-ring> -->
-              </div>
-           </div>
+                <div class="canvasHolder" id="canvas-holder">
+                    <b>Average Quality</b>
+                    <canvas id="chart-area"></canvas>
+                </div>
            
-        <div class="div-table-col-right-72">
-           <div id="missingImgDiv" class="div-item-container" on-click="_missingImgDivClicked">
-              [[missingImagesBlock.label]] <br>
-              <div class="displayflexwrap">
-                 <paper-progress class="paper-progress-purple" value=[[missingImagesCountPercentage]]></paper-progress>
-                 [[missingImagesCountPercentage]]% 
-              </div>
-           </div>
-           <div  id="invalidValDiv" class="div-item-container" on-click="_invalidValDivClicked">
-              [[invalidValueBlock.label]]<br> 
-              <div class="displayflexwrap">
-                 <paper-progress class="paper-progress-red" value=[[invalidValuePercentage]]></paper-progress>
-                 [[invalidValuePercentage]]% 
-              </div>
-           </div>
-           <div  id="missingReqDiv" class="div-item-container" on-click="_missingReqDivClicked">
-              [[missingRequiredBlock.label]]<br> 
-              <div class="displayflexwrap">
-                 <paper-progress class="paper-progress-yellow" value=[[missingRequiredAttributesPercentage]]></paper-progress>
-                 [[missingRequiredAttributesPercentage]]% 
-              </div>
-           </div>
-           <div  id="rejectedItemDiv" class="div-item-container" on-click="_rejectedItemDivClicked">
-              [[rejectedItems.label]] <br> 
-              <div class="displayflexwrap">
-                 <paper-progress class="paper-progress-blue" value=[[rejectedItemsCountPercentage]]></paper-progress>
-                 [[rejectedItemsCountPercentage]]% 
-              </div>
-           </div>
-           <div id="missingRelDiv" class="div-item-container" on-click="_missingRelDivClicked">
-              [[dynamicRelationship.label]]
-              <div class="displayflexwrap">
-                 <paper-progress class="paper-progress-orange" value=[[missingRelCountPercentage]]></paper-progress>
-                 [[missingRelCountPercentage]]%
-              </div>
-           </div>
-        </div>
-     </div>   
-     </div>
-     </div>
+	</div>
+	<div class="div-table-cell-right-75">
+		<div id="missingImgDiv" class="div-item-container" on-click="_missingImgDivClicked"> [[missingImagesBlock.label]]
+			<br>
+			<div class="displayflexwrap">
+				<paper-progress class="paper-progress-purple" value=[[missingImagesCountPercentage]]></paper-progress> [[missingImagesCountPercentage]]% </div>
+		</div>
+		<div id="invalidValDiv" class="div-item-container" on-click="_invalidValDivClicked"> [[invalidValueBlock.label]]
+			<br>
+			<div class="displayflexwrap">
+				<paper-progress class="paper-progress-red" value=[[invalidValuePercentage]]></paper-progress> [[invalidValuePercentage]]% </div>
+		</div>
+		<div id="missingReqDiv" class="div-item-container" on-click="_missingReqDivClicked"> [[missingRequiredBlock.label]]
+			<br>
+			<div class="displayflexwrap">
+				<paper-progress class="paper-progress-yellow" value=[[missingRequiredAttributesPercentage]]></paper-progress> [[missingRequiredAttributesPercentage]]% </div>
+		</div>
+		<div id="rejectedItemDiv" class="div-item-container" on-click="_rejectedItemDivClicked"> [[rejectedItems.label]]
+			<br>
+			<div class="displayflexwrap">
+				<paper-progress class="paper-progress-blue" value=[[rejectedItemsCountPercentage]]></paper-progress> [[rejectedItemsCountPercentage]]% </div>
+		</div>
+		<div id="missingRelDiv" class="div-item-container" on-click="_missingRelDivClicked"> [[dynamicRelationship.label]]
+			<div class="displayflexwrap">
+				<paper-progress class="paper-progress-orange" value=[[missingRelCountPercentage]]></paper-progress> [[missingRelCountPercentage]]% </div>
+		</div>
+	</div>
+</div>
+</div>
+     
      `;
     }
 
@@ -1575,7 +1643,8 @@ class PluginQualityScoreCard extends PolymerElement {
         this.weightage=this.weightage.toFixed(2);
         let badDataCount=parseInt(this.missingImagesCount) + parseInt(this.missingRelCount) + parseInt(this.invalidValueCount) + parseInt(this.missingRequiredAttributesCount) + parseInt(this.rejectedItemsCount);
         let badDataAvg=Math.round(badDataCount/counter);
-        let entitydata=new Array();
+        this.piedataquality=new Array();
+        /* let entitydata=new Array();
         entitydata.push({
             id: 1,
             key: "Appropriate Data",
@@ -1598,7 +1667,48 @@ class PluginQualityScoreCard extends PolymerElement {
             label:"Inappropriate Data",
             color: '#EE204C'
         });
-        this.data=entitydata;
+        this.data=entitydata;*/
+
+       let pieBgColor = new Array();
+       let pieLabel = new Array();
+
+        this.piedataquality.push(this.totalEntities-badDataAvg);
+        pieBgColor.push('#36B44A');
+        pieLabel.push("Appropriate Data");
+
+        this.piedataquality.push(badDataAvg);
+        pieBgColor.push('#EE204C');
+        pieLabel.push("Inappropriate Data");
+        if (window.myPiequality == null) {
+        this.pieconfigquality = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: this.piedataquality,
+                    backgroundColor: pieBgColor,
+                    label: 'Average Quality'
+                }],
+                labels: pieLabel
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                onClick: (e, ele) => {
+                   
+                    let elements = ele[0]._chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)
+                    this._onChartClick(e, elements);
+                }
+            }
+        };
+        var ctx = this.shadowRoot.querySelector('#chart-area').getContext('2d');
+        window.myPiequality = new Chart(ctx, this.pieconfigquality);
+    }
+    else{
+        this.pieconfigquality.data.datasets[0].data=this.piedataquality;
+        window.myPiequality.update();
+    }
         this._colorCodeScore();
     }
 
@@ -1713,6 +1823,23 @@ class PluginQualityScoreCard extends PolymerElement {
 
     static get properties() {
         return {
+            pieconfigquality: {
+                type: Object,
+                value: function () {
+                    return {};
+                }
+            },
+            
+            piedataquality: {
+                type: Array,
+                value: function () {
+                    return [
+
+                    ];
+                },
+                reflectToAttribute: true,
+                observer: '_onDataChanged'
+            },
             scoreLabel:{
                 type: String,
                 reflectToAttribute:true,
