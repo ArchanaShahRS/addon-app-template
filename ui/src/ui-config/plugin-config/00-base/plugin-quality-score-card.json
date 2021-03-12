@@ -32,7 +32,7 @@
                                     "taxonomyAttrShortname":"thgmastertaxonomy",                                  
                                     "_rootNode":"productclassificationroot",
                                     "referenceFilter": {
-                                        "visible": true,
+                                        "visible": false,
                                         "label": "Brand",
                                         "referenceAttrShortname": "thgbrand",
                                         "referenceEntityShortname": "brand"

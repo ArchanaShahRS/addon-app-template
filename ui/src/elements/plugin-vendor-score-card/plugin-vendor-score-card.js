@@ -7,6 +7,7 @@ import '@polymer/paper-progress/paper-progress.js';
 
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-icon/pebble-icon.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-lov/pebble-lov.js';
+import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-dropdown/pebble-dropdown.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-graph-progress-ring/pebble-graph-progress-ring.js';
 import '@riversandtechnologies/ui-platform-elements/lib/elements/pebble-button/pebble-button.js';
 import { AppInstanceManager } from '@riversandtechnologies/ui-platform-elements/lib/managers/app-instance-manager.js';
@@ -79,10 +80,10 @@ class PluginVendorScoreCard extends PolymerElement {
         width: auto;
         clear: both;
         }
-        .div-table-col-80 {
+        .div-table-col-50 {
         float: left; /* fix for  buggy browsers */
         display: table-column;         
-        width: 56%;         
+        width: 50%;         
         }
      
         .div-table-col-20 {
@@ -141,6 +142,19 @@ class PluginVendorScoreCard extends PolymerElement {
                     .paper-progress-red {
                         --paper-progress-active-color:#EE204C;
                         }
+                        .source-dropdown {
+                            background: transparnt;
+                            width: 260px;
+                            padding-left: 15px;
+                            --paper-listbox-t-p: 0px;
+                            --paper-dropdown-listbox: {
+                                width: 350px;
+                                max-height: 250px;
+                            }
+                        }
+                        .source-dropdownhover {
+                            cursor: pointer;
+                        }
      </style>
      <pebble-dialog class="pebbleDialog" id= "myDialog" modal dialog-title="Select Taxonomy" scrollable>
         <template is="dom-if" if="true">
@@ -179,7 +193,7 @@ class PluginVendorScoreCard extends PolymerElement {
      <div class="div-table">
 
         <div class="div-table-row">
-            <div class="div-table-col-80">
+            <div>
                 <div class="displayflexwrap">
                 Taxonomy &nbsp;
                 <pebble-icon class="m-l-25 icon-size" title="Select Taxonomy" icon="pebble-icon:Open-window" on-tap="openDailogCategorySelector"></pebble-icon>
@@ -190,23 +204,33 @@ class PluginVendorScoreCard extends PolymerElement {
                     </template>
                 </dom-repeat>
                 </div>
-                </br>
+               
             </div>
+          
+        </div>
+        <div class="div-table-row">
+           
+            <div id="sourceDiv" class="div-table-col-50">
+                <pebble-dropdown
+                            id="source-dropdown"
+                            class="source-dropdown"
+                            label="Select Source"
+                            input-control
+                            items="{{sourcedata}}"
+                            on-change="_displayVendorDropdown"
+                            on-click="_openSourceList"
+                ></pebble-dropdown>    
+            </div>     
             <div class="div-table-col-right">
-                    <div id="refEntityDiv">
-                   
-                    <pebble-combo-box class="tab-title" id='multi-select-lov' selection-changed="_applyFilter" tag-removed="_applyFilter" on-click="_openDataList" items={{refentitydata}}  multi-select label="Select Vendor"> </pebble-combo-box>
+            <br><br>
+                <div id="refEntityDiv" >                   
+                    <pebble-combo-box class="tab-title" id='multi-select-lov' on-change="_applyFilter"  on-click="_openDataList" items={{refentitydata}}  multi-select label="Select Vendor"> </pebble-combo-box>
+                    <pebble-button style="float:right"  class="btn btn-success" button-text="Apply" on-tap ="_applyFilter"></pebble-button>
                     </div>         
             </div>
         </div>
 
 
-        <div class="div-table-row">
-        <div class="div-table-col-right-100">
-              
-        <pebble-button style="float:right"  class="btn btn-success" button-text="Apply" on-tap ="_applyFilter"></pebble-button>
-        </div>
-        </div>
 
         <div class="div-table-row">
             <div class="avg-item-container div-table-col-20">
@@ -215,17 +239,16 @@ class PluginVendorScoreCard extends PolymerElement {
                
             </div>
             <div class="div-table-col-right-72">
-                    <div id="entitiessubmitted" class="div-item-container">
+                    <div id="entitiessubmitted" class="div-item-container" on-click="_entititesSubmittedDivClicked">
                     Entities Submitted  <br>
-                        <div class="displayflexwrap">
-                      
+                        <div class="displayflexwrap">                      
                         <paper-progress class="paper-progress-purple" value=[[submittedPercent]]></paper-progress>
                         [[submittedPercent]]%
                         </div>
                    </div>
                    <div id="entitiesrejected" class="div-item-container"  on-click="_entititesRejectedDivClicked">
                    Entities Rejected <br>
-                       <div class="displayflexwrap">
+                       <div class="displayflexwrap" >
                       
                        <paper-progress class="paper-progress-red" value= [[rejectedPercent]]></paper-progress>
                        [[rejectedPercent]]%
@@ -240,93 +263,180 @@ class PluginVendorScoreCard extends PolymerElement {
      `;
     }
 
- _entititesRejectedDivClicked()
-  {
-    let queryParam ;
-    queryParam = {
-       "attributes":{[this.rejectionScoreAttrshortame]:"1"},
-       "entitytype":this.WorkflowDetail.entityTypeshortname
-    };
- 
-    //If Vendor is available
-    if(this.selectedFilters.length>0 && this.selectedFilters!=null)
-    {
-        let searchString="";
-        for(let i=0;i<this.selectedFilters.length;i++)
-        {
-            searchString=searchString+"'"+this.selectedFilters[i] + "'";
-             if(this.selectedFilters.length-(i+1)>0)
-            {
-                searchString=searchString+" or ";
-            }
-        }        
-
-        queryParam.attributes[this.ownershipAttrShortname]=searchString;
+    _displayVendorDropdown() {
+        let sourcedropdown = this.shadowRoot.querySelector('#source-dropdown');
+        var selectedVal = sourcedropdown.selectedValue;
+        //if selected value is vendor , display vendor dropdown block
+        this._manageVendorDisplay(selectedVal);
 
     }
-    if(this.selectedTax.length>0 && this.selectedTax!="No Taxonomy Selected")
-    {
-        let searchString="";
-        for(let i=0;i<this.selectedTax.length;i++)
-        {
-            searchString=searchString+"'"+this.selectedTax[i] + "'";
-             if(this.selectedTax.length-(i+1)>0)
-            {
-                searchString=searchString+" or ";
-            }
-        }        
 
- 
-        queryParam.attributes[this.taxonomyAttrShortname]=searchString;
+    _manageVendorDisplay(selectedVal) {
+        let vendordiv = this.shadowRoot.querySelector("#refEntityDiv");
+        if (selectedVal == "vendor") {
+            vendordiv.style.display = 'block';
+            this.selectedSource=selectedVal;
+
+        }
+        else {
+            vendordiv.style.display = 'none';
+            
+            if (selectedVal == "") {
+                    //this is initial level load , when we need to hide vendor selction
+                    //Here in apply filter src will be all 3 values which means no src filter to pass        
+                    this.selectedSource="all";
+            }
+            else {
+                    //based on selected source [feed or api] , the data will be filtered.
+                    this.selectedSource=selectedVal;
+            }
+            this._applyFilter();
+        //if selected value not vendor then call applyFilter method and use source paramater to also to get data
+       }
 
     }
-    this._redirectTo('search-thing', queryParam);
+    _entititesSubmittedDivClicked() {
+        let queryParam;
+        queryParam = {
+            "attributes": { [this.statusAttr.shortName]: this.statusAttr.value },
+            "entitytype": this.entityTypeshortname
+        };
 
-  }
+        //If Vendor is available and the selected source type is vendor
+        if (this.selectedFilters.length > 0 && this.selectedFilters != null && this.selectedSource=="vendor") {
+            let searchString = "";
+            for (let i = 0; i < this.selectedFilters.length; i++) {
+                searchString = searchString + "'" + this.selectedFilters[i] + "'";
+                if (this.selectedFilters.length - (i + 1) > 0) {
+                    searchString = searchString + " or ";
+                }
+            }
+
+          //  queryParam.attributes[this.ownershipAttrShortname] = searchString;
+          queryParam.attributes[this.dataSourceAttrShortname] = searchString;
+          
+        }
+        //if selected source is not vendor or all , mean IC , BB , MDM etc then pass that value
+        if(this.selectedSource!="vendor" && this.selectedSource!="all")
+        {
+            queryParam.attributes[this.dataSourceAttrShortname] = this.selectedSource;
+        }
+        
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let searchString = "";
+            for (let i = 0; i < this.selectedTax.length; i++) {
+                searchString = searchString + "'" + this.selectedTax[i] + "'";
+                if (this.selectedTax.length - (i + 1) > 0) {
+                    searchString = searchString + " or ";
+                }
+            }
+
+
+            queryParam.attributes[this.taxonomyAttrShortname] = searchString;
+
+        }
+        this._redirectTo('search-thing', queryParam);
+
+    }
+    _entititesRejectedDivClicked() {
+        let queryParam;
+        queryParam = {
+            "attributes": { [this.rejectionScoreAttrshortName]: "1" },
+            "entitytype": this.entityTypeshortname
+        };
+
+        //If Vendor is available and the selected source type is vendor
+        if (this.selectedFilters.length > 0 && this.selectedFilters != null && this.selectedSource=="vendor") {
+            let searchString = "";
+            for (let i = 0; i < this.selectedFilters.length; i++) {
+                searchString = searchString + "'" + this.selectedFilters[i] + "'";
+                if (this.selectedFilters.length - (i + 1) > 0) {
+                    searchString = searchString + " or ";
+                }
+            }
+
+          //  queryParam.attributes[this.ownershipAttrShortname] = searchString;
+          queryParam.attributes[this.dataSourceAttrShortname] = searchString;
+          
+        }
+        //if selected source is not vendor or all , mean IC , BB , MDM etc then pass that value
+        if(this.selectedSource!="vendor" && this.selectedSource!="all")
+        {
+            queryParam.attributes[this.dataSourceAttrShortname] = this.selectedSource;
+        }
+
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let searchString = "";
+            for (let i = 0; i < this.selectedTax.length; i++) {
+                searchString = searchString + "'" + this.selectedTax[i] + "'";
+                if (this.selectedTax.length - (i + 1) > 0) {
+                    searchString = searchString + " or ";
+                }
+            }
+
+
+            queryParam.attributes[this.taxonomyAttrShortname] = searchString;
+
+        }
+        this._redirectTo('search-thing', queryParam);
+
+    }
     _redirectTo(appName, queryParam) {
         let queryparam = { state: JSON.stringify(queryParam) };
         AppInstanceManager.navigateToRoute(appName, queryparam);
     }
 
     async _calculateData() {
-        this.totalSubmitted=0;
-        this.totalRejected=0;
-        if (this.selectedFilters.length > 0) {
+        this.totalSubmitted = 0;
+        this.totalRejected = 0;
+        this.totalEntities=0;
+        //IF selected source is vendor and , in vendor dropdown some value is selected
+        if (this.selectedFilters.length > 0 && this.selectedSource=="vendor") {
             for (let x in this.selectedFilters) {
                 let vendorentitites = await this._getTotalEntitiesByVendor(this.selectedFilters[x]);
-                let entitiesintobesubmitted = await this._getTotalEntitiesByVendorInWFStep(this.selectedFilters[x]);
-                let remainingentities = vendorentitites - entitiesintobesubmitted;
+            //    let entitiesintobesubmitted = await this._getTotalEntitiesByVendorInWFStep(this.selectedFilters[x]);
+            let entitiessubmitted = await this._getTotalEntitiesWithStatus(this.selectedFilters[x]);
+         //   let remainingentities = vendorentitites - entitiesintobesubmitted;
                 let rejecttedentities = await this._getRejectedEntitiesScoreBasedCount(this.selectedFilters[x]);
-                this.totalEntities+=vendorentitites;
-                this.totalSubmitted = this.totalSubmitted + remainingentities;
+                this.totalEntities += vendorentitites;
+                this.totalSubmitted = this.totalSubmitted + entitiessubmitted;
                 this.totalRejected = this.totalRejected + rejecttedentities;
             }
         } else {
-            //This mean without any filters
+            //This mean without any filters 
+          
             let vendorentitites = await this._getTotalEntitiesByVendor(null);
-            let entitiesintobesubmitted = await this._getTotalEntitiesByVendorInWFStep(null);
-            let remainingentities = vendorentitites - entitiesintobesubmitted;
+            //let entitiesintobesubmitted = await this._getTotalEntitiesByVendorInWFStep(null);
+            let entitiessubmitted = await this._getTotalEntitiesWithStatus(null);
+         //   let remainingentities = vendorentitites - entitiesintobesubmitted;
             let rejecttedentities = await this._getRejectedEntitiesScoreBasedCount(null);
-            this.totalEntities+=vendorentitites;
-            this.totalSubmitted = this.totalSubmitted + remainingentities;
+            this.totalEntities += vendorentitites;
+            this.totalSubmitted = this.totalSubmitted + entitiessubmitted;
             this.totalRejected = this.totalRejected + rejecttedentities;
+           
         }
-        this.submittedPercent=((this.totalSubmitted*100)/this.totalEntities).toFixed(2);
-        this.rejectedPercent=((this.totalRejected*100)/this.totalEntities).toFixed(2);
+        
+        this.submittedPercent = ((this.totalSubmitted * 100) / this.totalEntities).toFixed(2);
+        this.rejectedPercent = ((this.totalRejected * 100) / this.totalEntities).toFixed(2);
+        if(this.submittedPercent=="NaN")
+        {
+            this.submittedPercent=0;
+        }
+        if(this.rejectedPercent=="NaN")
+        {
+            this.rejectedPercent=0;
+        }
         this._getAvgQuality();
 
     }
     async _applyFilter() {
         this.spinnerFlag = true;
-        //getting selected filter value
+        //getting selected Vendor value
         let lov = this.shadowRoot.querySelector('#multi-select-lov');
         let tempArray = new Array();
-        if (lov.pebbleLov !== null) {
-            /*  for (let v in lov.selectedIds) {
-                  let value = lov.selectedIds[v];
-                  if(value!=undefined)
-                  tempArray.push(value);
-              }*/
+        //if selected source is vendor then only consider vendors filter 
+        if (lov.pebbleLov !== null && this.selectedSource=="vendor") {
+          
             for (let v in lov.pebbleLov.selectedItems) {
                 let value = lov.pebbleLov.selectedItems[v].subtitle;
                 if (value != undefined)
@@ -416,7 +526,10 @@ class PluginVendorScoreCard extends PolymerElement {
                 query: {
                     contexts: [],
                     filters: {
-                        typesCriterion: [this.WorkflowDetail.entityTypeshortname],
+                        typesCriterion: [this.entityTypeshortname],
+                        propertiesCriterion: [
+
+                        ],
                         attributesCriterion: [
 
                         ]
@@ -427,21 +540,35 @@ class PluginVendorScoreCard extends PolymerElement {
                 }
             }
         };
-        if (ownership != null) {
+
+        //Check Source drop down first , if its slected value is vendor then only consider this filter
+       //if selected source is vendor and ownership is present 
+        if (ownership != null && this.selectedSource=="vendor") {
             let attrObj = {
                 [this.ownershipAttrShortname]: {
                     eq: ownership,
                     "type": "_STRING",
-                        "valueContexts": [
-                          {
+                    "valueContexts": [
+                        {
                             "source": "internal",
                             "locale": "en-US"
-                          }
+                        }
                     ]
                 }
             }
+
             reqBody.params.query.filters.attributesCriterion.push(attrObj);
 
+        }
+        //else , if selected source is something apart from vendor or all , then we need to pass source filter as well
+        if(this.selectedSource!="all" && this.selectedSource!="vendor")
+        {
+            let proObj = {
+                "src": {
+                    exact: this.selectedSource                   
+                }
+            }
+            reqBody.params.query.filters.propertiesCriterion.push(proObj);
         }
 
         if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
@@ -464,143 +591,155 @@ class PluginVendorScoreCard extends PolymerElement {
         return res.response.content.totalRecords;
     }
     async _getTotalEntitiesByVendorInWFStep(ownership) {
-        let reqBody ={
+        let reqBody = {
             "params": {
-              "isCombinedQuerySearch": true,
-              "options": {
-                "from": 0,
-                "to": 50
-              }
+                "isCombinedQuerySearch": true,
+                "options": {
+                    "from": 0,
+                    "to": 50
+                }
             },
             "entity": {
-              "id": "combinedGet",
-              "name": "combinedGet",
-              "type": "config",
-              "data": {
-                "jsonData": {
-                  "searchQueries": [
-                    {
-                      "serviceName": "entitygovernservice",
-                      "action": "get",
-                      "searchSequence": 1,
-                      "searchQuery": {
-                        "query": {
-                          "contexts": [
+                "id": "combinedGet",
+                "name": "combinedGet",
+                "type": "config",
+                "data": {
+                    "jsonData": {
+                        "searchQueries": [
                             {
-                              "self": "self"
+                                "serviceName": "entitygovernservice",
+                                "action": "get",
+                                "searchSequence": 1,
+                                "searchQuery": {
+                                    "query": {
+                                        "contexts": [
+                                            {
+                                                "self": "self"
+                                            },
+                                            {
+                                                "self": "self",
+                                                "workflow": this.WorkflowDetail.workflowshortname
+                                            }
+                                        ],
+                                        "filters": {
+                                            "attributesCriterion": [
+                                                {
+                                                    "activities": {
+                                                        "attributes": [
+                                                            {
+                                                                "status": {
+                                                                    "exacts": [
+                                                                        "Executing",
+                                                                        "AssignmentChange"
+                                                                    ],
+                                                                    "operator": "_OR"
+                                                                }
+                                                            },
+                                                            {
+                                                                "activityName": {
+                                                                    "eq": this.WorkflowDetail.workflowstepshortname
+                                                                }
+                                                            }
+                                                        ],
+                                                        "contexts": [
+                                                            {
+                                                                "self": "self",
+                                                                "workflow": this.WorkflowDetail.workflowshortname
+                                                            }
+                                                        ],
+                                                        "nonContextual": false
+                                                    }
+                                                },
+                                                {
+                                                    "status": {
+                                                        "eq": "Executing",
+                                                        "contexts": [
+                                                            {
+                                                                "self": "self",
+                                                                "workflow": this.WorkflowDetail.workflowshortname
+                                                            }
+                                                        ],
+                                                        "nonContextual": false
+                                                    }
+                                                }
+                                            ],
+                                            "typesCriterion": [
+                                                this.WorkflowDetail.entityTypeshortname
+                                            ],
+                                            "nonContextual": false
+                                        }
+                                    },
+                                    "options": {
+                                        "from": 0,
+                                        "to": 0
+                                    }
+                                }
                             },
                             {
-                              "self": "self",
-                              "workflow": this.WorkflowDetail.workflowshortname
-                            }
-                          ],
-                          "filters": {
-                            "attributesCriterion": [
-                              {
-                                "activities": {
-                                  "attributes": [
-                                    {
-                                      "status": {
-                                        "exacts": [
-                                          "Executing",
-                                          "AssignmentChange"
-                                        ],
-                                        "operator": "_OR"
-                                      }
+                                "serviceName": "entityservice",
+                                "action": "get",
+                                "searchSequence": 2,
+                                "searchQuery": {
+                                    "query": {
+                                        "filters": {
+                                            "typesCriterion": [
+                                                this.WorkflowDetail.entityTypeshortname
+                                            ],
+                                            "attributesCriterion": [
+
+                                            ],
+                                            "propertiesCriterion": []
+                                        },
+                                        "valueContexts": [
+                                            {
+                                                "source": "internal",
+                                                "locale": "en-US"
+                                            }
+                                        ]
                                     },
-                                    {
-                                      "activityName": {
-                                        "eq": this.WorkflowDetail.workflowstepshortname
-                                      }
-                                    }
-                                  ],
-                                  "contexts": [
-                                    {
-                                      "self": "self",
-                                      "workflow": this.WorkflowDetail.workflowshortname
-                                    }
-                                  ],
-                                  "nonContextual": false
+                                    "options": {
+                                        "maxRecords": 200
+                                    },
+                                    "appName": "app-entity-discovery",
+                                    "authorizationType": "accommodate"
                                 }
-                              },
-                              {
-                                "status": {
-                                  "eq": "Executing",
-                                  "contexts": [
-                                    {
-                                      "self": "self",
-                                      "workflow": this.WorkflowDetail.workflowshortname
-                                    }
-                                  ],
-                                  "nonContextual": false
-                                }
-                              }
-                            ],
-                            "typesCriterion": [
-                              this.WorkflowDetail.entityTypeshortname
-                            ],
-                            "nonContextual": false
-                          }
-                        },
-                        "options": {
-                          "from": 0,
-                          "to": 0
-                        }
-                      }
-                    },
-                    {
-                      "serviceName": "entityservice",
-                      "action": "get",
-                      "searchSequence": 2,
-                      "searchQuery": {
-                        "query": {
-                          "filters": {
-                            "typesCriterion": [
-                                this.WorkflowDetail.entityTypeshortname
-                            ],
-                            "attributesCriterion": [
-                             
-                            ],
-                            "propertiesCriterion": []
-                          },
-                          "valueContexts": [
-                            {
-                              "source": "internal",
-                              "locale": "en-US"
                             }
-                          ]
-                        },
-                        "options": {
-                          "maxRecords": 200
-                        },
-                        "appName": "app-entity-discovery",
-                        "authorizationType": "accommodate"
-                      }
+                        ]
                     }
-                  ]
                 }
-              }
             },
             "domain": "thing",
             "operation": "initiatesearch"
-          };
-
-        if (ownership != null) {
+        };
+  //Check Source drop down first , if its slected value is vendor then only consider this filter
+         //if selected source is vendor and ownership is present 
+        if (ownership != null && this.selectedSource=="vendor") {
             let attrObj = {
                 [this.ownershipAttrShortname]: {
                     "eq": ownership,
                     "type": "_STRING",
-                        "valueContexts": [
-                          {
+                    "valueContexts": [
+                        {
                             "source": "internal",
                             "locale": "en-US"
-                          }
-                        ]
+                        }
+                    ]
                 }
             };
             reqBody.entity.data.jsonData.searchQueries[1].searchQuery.query.filters.attributesCriterion.push(attrObj);
 
         }
+           //else , if selected source is something apart from vendor or all , then we need to pass source filter as well
+           if(this.selectedSource!="all" && this.selectedSource!="vendor")
+           {
+               let proObj = {
+                   "src": {
+                       exact: this.selectedSource                   
+                   }
+               }
+               reqBody.entity.data.jsonData.searchQueries[1].searchQuery.query.filters.propertiesCriterion.push(proObj);
+           }
+   
         if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
             let taxObj = {
                 [this.taxonomyAttrShortname]: {
@@ -621,7 +760,92 @@ class PluginVendorScoreCard extends PolymerElement {
         let res = await this._sendRequestToURL(URL, reqBody);
         return res.response.totalRecords;
     }
+    async _getTotalEntitiesWithStatus(ownership) {
+        let reqBody ={
+            params: {
+                query: {
+                    contexts: [],
+                    filters: {
+                        typesCriterion: [this.entityTypeshortname],
+                        propertiesCriterion: [
 
+                        ],
+                        attributesCriterion: [
+
+                        ]
+                    }
+                },
+                options: {
+                    maxRecords: 200
+                }
+            }
+        };
+
+        if (ownership != null && this.selectedSource=="vendor") {
+            let attrObj = {
+                [this.ownershipAttrShortname]: {
+                    eq: ownership,
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            }
+
+            reqBody.params.query.filters.attributesCriterion.push(attrObj);
+
+        }
+        
+            let attrObj = {
+                [this.statusAttr.shortName]: {
+                    "eq": this.statusAttr.value,
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqBody.params.query.filters.attributesCriterion.push(attrObj);
+
+        
+           //else , if selected source is something apart from vendor or all , then we need to pass source filter as well
+           if(this.selectedSource!="all" && this.selectedSource!="vendor")
+           {
+               let proObj = {
+                   "src": {
+                       exact: this.selectedSource                   
+                   }
+               }
+               reqBody.params.query.filters.propertiesCriterion.push(proObj);
+           }
+   
+        if (this.selectedTax.length > 0 && this.selectedTax != "No Taxonomy Selected") {
+            let taxObj = {
+                [this.taxonomyAttrShortname]: {
+                    "startswith": this.selectedTax,
+                    "operator": "_OR",
+                    "type": "_STRING",
+                    "valueContexts": [
+                        {
+                            "source": "internal",
+                            "locale": "en-US"
+                        }
+                    ]
+                }
+            };
+            reqBody.params.query.filters.attributesCriterion.push(taxObj);
+        }
+    
+       let URL = "/data/pass-through/entityservice/get";
+        let res = await this._sendRequestToURL(URL, reqBody);
+        return res.response.totalRecords;
+    }
     async _getVendors() {
         let requestData = {
             params: {
@@ -667,10 +891,10 @@ class PluginVendorScoreCard extends PolymerElement {
             "params": {
                 "query": {
                     "filters": {
-                        "typesCriterion": [this.WorkflowDetail.entityTypeshortname],
+                        "typesCriterion": [this.entityTypeshortname],
                         "attributesCriterion": [
                             {
-                                [this.rejectionScoreAttrshortame]: {
+                                [this.rejectionScoreAttrshortName]: {
                                     gte: 1
                                 }
                             }
@@ -709,30 +933,41 @@ class PluginVendorScoreCard extends PolymerElement {
             };
             requestData.params.query.filters.attributesCriterion.push(taxObj);
         }
-
-        if (ownership != null) {
+  //Check Source drop down first , if its slected value is vendor then only consider this filter
+       
+        if (ownership != null && this.selectedSource=="vendor") {
             let attrObj = {
                 [this.ownershipAttrShortname]: {
                     "eq": ownership,
                     "type": "_STRING",
-                        "valueContexts": [
-                          {
+                    "valueContexts": [
+                        {
                             "source": "internal",
                             "locale": "en-US"
-                          }
-                        ]
+                        }
+                    ]
                 }
             };
             requestData.params.query.filters.attributesCriterion.push(attrObj);
 
         }
+          //else , if selected source is something apart from vendor or all , then we need to pass source filter as well
+          if(this.selectedSource!="all" && this.selectedSource!="vendor")
+          {
+              let proObj = {
+                  "src": {
+                      exact: this.selectedSource                   
+                  }
+              }
+              requestData.params.query.filters.propertiesCriterion.push(proObj);
+          }
 
         let res = await this._sendRequestToGetCount(requestData);
         return res.response.content.totalRecords;
     }
 
     async _getAvgQuality() {
-        this.average = 100-( (this.totalRejected * 100) / this.totalSubmitted);
+        this.average = 100 - ((this.totalRejected * 100) / this.totalSubmitted);
     }
     manageVisibility() {
 
@@ -772,6 +1007,11 @@ class PluginVendorScoreCard extends PolymerElement {
 
     static get properties() {
         return {
+            selectedSource:{
+                type:String,
+                value:"all"
+
+            },
             referenceFilter: {
                 type: Object,
                 value: function () {
@@ -785,7 +1025,7 @@ class PluginVendorScoreCard extends PolymerElement {
                 },
                 reflectToAttribute: true
             },
-            rejectionScoreAttrshortame: {
+            rejectionScoreAttrshortName: {
                 type: String
             },
             spinnerFlag: {
@@ -795,47 +1035,48 @@ class PluginVendorScoreCard extends PolymerElement {
             ownershipAttrShortname: {
                 type: String
             },
-            WorkflowDetail: {
+            statusAttr: {
                 type: Object,
                 value: function () {
                     return {
-
-
-                        workflowshortname: '',
-                        workflowstepshortname: '',
-                        entityTypeshortname: ''
+                        shortName: '',
+                        value: ''
                     };
                 },
                 reflectToAttribute: true
             },
-           
+            entityTypeshortname:{
+                type:String,
+                reflectToAttribute: true
+            },
+          
             filteredEntitiesCount: {
                 type: String,
                 reflectToAttribute: true
             },
-            submittedPercent:{
+            submittedPercent: {
                 type: Number,
-                value:0,
+                value: 0,
                 reflectToAttribute: true
             },
-            rejectedPercent:{
+            rejectedPercent: {
                 type: Number,
-                value:0,
+                value: 0,
                 reflectToAttribute: true
             },
             totalSubmitted: {
                 type: Number,
-                value:0,
+                value: 0,
                 reflectToAttribute: true
             },
             totalRejected: {
                 type: Number,
-                value:0,
+                value: 0,
                 reflectToAttribute: true
             },
-            totalEntities:{
+            totalEntities: {
                 type: Number,
-                value:0,
+                value: 0,
                 reflectToAttribute: true
             },
             average: {
@@ -870,7 +1111,40 @@ class PluginVendorScoreCard extends PolymerElement {
                 },
             },
 
+            sourcedata: {
+                type: Array,
+                reflectToAttribute: true,
+                value: function () {
+                    return [{
 
+                        title: "vendor",
+                        value: "vendor"
+
+                    },
+                    {
+
+                        title: "BB",
+                        value: "BB"
+
+                    },
+                    {
+
+                        title: "IC",
+                        value: "IC"
+                    },
+                    {
+
+                        title: "SAP",
+                        value: "SAP"
+                    },
+                    {
+
+                        title: "MDM",
+                        value: "MDM"
+                    }
+                    ];
+                }
+            },
             refentitydata: {
                 type: Array,
                 reflectToAttribute: true,
@@ -1006,6 +1280,7 @@ class PluginVendorScoreCard extends PolymerElement {
             }
 
             await this._calculateData();
+            this._manageVendorDisplay("");
             this.manageVisibility();
 
         } else {

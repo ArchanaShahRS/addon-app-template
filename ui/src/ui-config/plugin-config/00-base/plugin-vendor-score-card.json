@@ -31,14 +31,17 @@
                                   
                                     "ownershipAttrShortname":"thgvendornumber",
                                     "taxonomyAttrShortname":"thgmastertaxonomy",
-                                    "_rootNode":"productclassificationroot",
-                                    "WorkflowDetail":{
-                                        "workflowshortname": "collaboration",
-                                        "workflowstepshortname": "tobesubmitted",
-                                        "entityTypeshortname": "stagingitem"
+                                    "entityTypeshortname": "stagingitem",
+                                    "dataSourceAttrShortname":"thgdatasource",
+                                    "statusAttr":
+                                    {
+                                        "shortName":"thgwfstatus",
+                                        "value":"Submitted"
                                     },
-                                    "rejectionScoreAttrshortame":"thgentityrejectionscore"     
-
+                                    "rejectionScoreAttrshortame":"thgentityrejectionscore",
+                                    "_rootNode":"productclassificationroot"
+                                   
+                                   
                                 }
                             }
                         }
