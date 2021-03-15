@@ -341,7 +341,7 @@ class PluginVendorScoreCard extends PolymerElement {
     _entititesRejectedDivClicked() {
         let queryParam;
         queryParam = {
-            "attributes": { [this.rejectionScoreAttrshortName]: "1" },
+            "attributes": { [this.rejectionScoreAttrShortname]: "1" },
             "entitytype": this.entityTypeshortname
         };
 
@@ -894,7 +894,7 @@ class PluginVendorScoreCard extends PolymerElement {
                         "typesCriterion": [this.entityTypeshortname],
                         "attributesCriterion": [
                             {
-                                [this.rejectionScoreAttrshortName]: {
+                                [this.rejectionScoreAttrShortname]: {
                                     gte: 1
                                 }
                             }
@@ -1025,7 +1025,7 @@ class PluginVendorScoreCard extends PolymerElement {
                 },
                 reflectToAttribute: true
             },
-            rejectionScoreAttrshortName: {
+            rejectionScoreAttrShortname: {
                 type: String
             },
             spinnerFlag: {

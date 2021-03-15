@@ -38,7 +38,7 @@
                                         "shortName":"thgwfstatus",
                                         "value":"Submitted"
                                     },
-                                    "rejectionScoreAttrshortame":"thgentityrejectionscore",
+                                    "rejectionScoreAttrShortname":"thgentityrejectionscore",
                                     "_rootNode":"productclassificationroot"
                                    
                                    

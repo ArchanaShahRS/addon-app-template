@@ -122,7 +122,7 @@ class PluginMyCatalog extends PolymerElement {
             padding: 1%;
             position: relative;
             background: #fff;
-            margin: 1%;
+            margin: 0%;
             max-width: 100%;
             min-width: 20px;
             flex-direction: row;
